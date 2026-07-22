@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { useOrg, useOrgs } from "../hooks/useOrg";
 import {
@@ -203,9 +204,12 @@ function BitbucketConnectSection() {
     <Card className="p-5">
       <SectionTitle>Connect Bitbucket workspace</SectionTitle>
       <p className="mb-3 text-sm text-zinc-600">
-        PR review automation for Bitbucket uses a Workspace Access Token (Workspace settings →
-        Access tokens in Bitbucket, with repository read + pull request + webhook scopes), not
-        OAuth. Sign-in via Bitbucket is separate and already works regardless of this.
+        PR review automation for Bitbucket uses a token you generate yourself, not OAuth — sign-in
+        via Bitbucket is separate and already works regardless of this. See the{" "}
+        <Link to="/docs/bitbucket" target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 hover:underline">
+          full setup guide
+        </Link>{" "}
+        for exact steps (token scopes, connecting, and adding the per-repo webhook).
       </p>
       <form onSubmit={(e) => void submit(e)} className="flex flex-wrap items-end gap-2">
         <label className="basis-40">

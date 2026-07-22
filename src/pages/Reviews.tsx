@@ -1,168 +1,79 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useRuns, type RunRow } from "../features/runs/useRuns";
 import { useRepos } from "../features/repos/useRepos";
-import { useTriggerReview } from "../features/runs/useTriggerReview";
-import { demoOpenPrs, DEMO_MODE } from "../lib/demo";
-import { timeAgo, usd } from "../lib/format";
-import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
+import { timeAgo } from "../lib/format";
+import { Badge, Card, EmptyState, ErrorText, LoadingText } from "../components/ui";
 import { PageIntro } from "../components/layout/AppShell";
 
 type StatusFilter = "all" | "in_progress" | RunRow["status"];
 
+const PAGE_SIZES = [10, 25, 50] as const;
+
+function ChevronIcon({ direction }: { direction: "left" | "right" }) {
+  return (
+    <svg
+      viewBox="0 0 16 16"
+      fill="none"
+      className={`size-3.5 ${direction === "right" ? "rotate-180" : ""}`}
+      aria-hidden="true"
+    >
+      <path
+        d="m10 3.5-4.5 4.5 4.5 4.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const STATUS_LABEL: Record<RunRow["status"], string> = {
+  queued: "Queued",
+  running: "Running",
+  completed: "Completed",
+  failed: "Failed",
+  cancelled: "Cancelled",
+};
+
 function RunRowItem({ run }: { run: RunRow }) {
   return (
     <tr className="border-b border-zinc-200/60 last:border-0 hover:bg-zinc-100/50">
-      <td className="px-4 py-3">
+      <td className="px-4 py-2">
         <Link to={`/runs/${run.id}`} className="block min-w-0 hover:text-blue-600">
           <span className="text-sm font-medium text-zinc-900">
             {run.pull_requests?.repos?.name ?? "unknown"}
             <span className="text-zinc-500"> #{run.pull_requests?.number ?? "?"}</span>
           </span>
-          {run.summary && (
-            <span className="mt-0.5 block truncate text-xs text-zinc-500">{run.summary}</span>
-          )}
-          <span className="mt-0.5 block font-mono text-[11px] text-zinc-600">
-            {run.head_sha.slice(0, 7)}
+          <span className="type-mono mt-0.5 block text-zinc-600">{run.head_sha.slice(0, 7)}</span>
+        </Link>
+      </td>
+      <td className="hidden px-4 py-2 md:table-cell">
+        <Badge kind={run.trigger === "manual" ? "manual" : "automatic"} />
+      </td>
+      <td className="hidden px-4 py-2 type-meta lg:table-cell">{timeAgo(run.started_at)}</td>
+      <td className="hidden px-4 py-2 type-meta xl:table-cell">
+        <span className="text-zinc-700">
+          {run.verified}/{run.candidates} verified
+        </span>
+        <span className="text-zinc-500"> · {run.posted} comments</span>
+      </td>
+      <td className="px-4 py-2">
+        <Badge kind={run.status}>{STATUS_LABEL[run.status]}</Badge>
+      </td>
+      <td className="px-4 py-2 text-right">
+        <Link
+          to={`/runs/${run.id}`}
+          className="inline-flex items-center text-xs font-medium tracking-[-0.01em] text-blue-600 hover:text-blue-700 hover:underline"
+        >
+          Open review
+          <span aria-hidden="true" className="ml-1">
+            →
           </span>
         </Link>
       </td>
-      <td className="hidden px-4 py-3 md:table-cell">
-        <Badge kind={run.trigger === "manual" ? "manual" : "automatic"}>
-          {run.trigger === "manual" ? "manual" : "auto"}
-        </Badge>
-      </td>
-      <td className="hidden px-4 py-3 text-xs text-zinc-600 lg:table-cell">{timeAgo(run.started_at)}</td>
-      <td className="hidden px-4 py-3 text-xs text-zinc-600 xl:table-cell">
-        {run.verified}/{run.candidates} verified
-        <span className="text-zinc-600"> · {run.posted} comments</span>
-      </td>
-      <td className="hidden px-4 py-3 text-xs text-zinc-600 2xl:table-cell">
-        {run.llm_cost_usd > 0 ? usd(Number(run.llm_cost_usd)) : "—"}
-      </td>
-      <td className="px-4 py-3 text-right">
-        <div className="flex flex-col items-end gap-1">
-          <Badge kind={run.status} />
-          <Link to={`/runs/${run.id}`} className="text-[11px] text-blue-600 hover:underline">
-            Open review →
-          </Link>
-        </div>
-      </td>
     </tr>
-  );
-}
-
-function ManualTriggerPanel() {
-  const { data: repos } = useRepos();
-  const trigger = useTriggerReview();
-  const [prKey, setPrKey] = useState(demoOpenPrs[0] ? `${demoOpenPrs[0].repo}#${demoOpenPrs[0].number}` : "");
-
-  const options = DEMO_MODE
-    ? demoOpenPrs
-    : (repos ?? []).flatMap((r) =>
-        r.openPrs > 0
-          ? [{ repo: r.name, number: r.openPrs, title: `Open PR on ${r.name}`, headSha: undefined as string | undefined }]
-          : [],
-      );
-
-  // Live mode without open-PR API: let user type repo + PR number
-  const [liveRepo, setLiveRepo] = useState(repos?.[0]?.name ?? "");
-  const [livePr, setLivePr] = useState("1");
-  const [liveTitle, setLiveTitle] = useState("Manual review");
-
-  function start() {
-    if (DEMO_MODE) {
-      const pr = demoOpenPrs.find((p) => `${p.repo}#${p.number}` === prKey) ?? demoOpenPrs[0];
-      if (!pr) return;
-      trigger.mutate({
-        repo: pr.repo,
-        prNumber: pr.number,
-        title: pr.title,
-        headSha: pr.headSha,
-        trigger: "manual",
-      });
-      return;
-    }
-    trigger.mutate({
-      repo: liveRepo,
-      prNumber: Number(livePr),
-      title: liveTitle,
-      trigger: "manual",
-    });
-  }
-
-  return (
-    <Card className="p-4">
-      <SectionTitle hint="or wait for the next PR push — reviews start automatically">
-        Run a review manually
-      </SectionTitle>
-      <p className="mb-3 text-xs text-zinc-500">
-        Automatic reviews start when a PR is opened or updated. Use this to re-check the same PR
-        without a new push.
-      </p>
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-        {DEMO_MODE ? (
-          <label className="min-w-0 flex-1 text-xs text-zinc-500">
-            Pull request
-            <select
-              value={prKey}
-              onChange={(e) => setPrKey(e.target.value)}
-              className="mt-1 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-800"
-            >
-              {options.map((p) => (
-                <option key={`${p.repo}#${p.number}`} value={`${p.repo}#${p.number}`}>
-                  {p.repo} #{p.number} — {p.title}
-                </option>
-              ))}
-            </select>
-          </label>
-        ) : (
-          <>
-            <label className="text-xs text-zinc-500">
-              Repo
-              <select
-                value={liveRepo}
-                onChange={(e) => setLiveRepo(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-800"
-              >
-                {repos?.map((r) => (
-                  <option key={r.id} value={r.name}>
-                    {r.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="text-xs text-zinc-500">
-              PR #
-              <input
-                value={livePr}
-                onChange={(e) => setLivePr(e.target.value)}
-                className="mt-1 block w-24 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-800"
-              />
-            </label>
-            <label className="min-w-0 flex-1 text-xs text-zinc-500">
-              Title
-              <input
-                value={liveTitle}
-                onChange={(e) => setLiveTitle(e.target.value)}
-                className="mt-1 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-800"
-              />
-            </label>
-          </>
-        )}
-        <button
-          type="button"
-          disabled={trigger.isPending}
-          onClick={() => start()}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
-        >
-          {trigger.isPending ? "Starting…" : "Run code review"}
-        </button>
-      </div>
-      {trigger.isError && (
-        <p className="mt-2 text-xs text-red-600">{(trigger.error as Error).message}</p>
-      )}
-    </Card>
   );
 }
 
@@ -172,6 +83,8 @@ export default function Reviews() {
   const [status, setStatus] = useState<StatusFilter>("all");
   const [repoFilter, setRepoFilter] = useState("all");
   const [q, setQ] = useState("");
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState<number>(PAGE_SIZES[0]);
 
   const filtered = useMemo(() => {
     let list = runs ?? [];
@@ -211,10 +124,25 @@ export default function Reviews() {
     };
   }, [runs]);
 
+  const total = filtered.length;
+  const totalPages = Math.max(1, Math.ceil(total / pageSize));
+  const startIndex = (page - 1) * pageSize;
+  const pageRuns = filtered.slice(startIndex, startIndex + pageSize);
+  const rangeStart = total === 0 ? 0 : startIndex + 1;
+  const rangeEnd = Math.min(startIndex + pageSize, total);
+
+  useEffect(() => {
+    setPage(1);
+  }, [status, repoFilter, q, pageSize]);
+
+  useEffect(() => {
+    if (page > totalPages) setPage(totalPages);
+  }, [page, totalPages]);
+
   return (
     <div className="space-y-6">
       <PageIntro
-        description="Automatic on every PR open/update — or run manually anytime. Open a run to see comments, suggestions, and verification."
+        description="Automatic on every PR open/update. Open a review to inspect findings, or start a manual run from that page."
         actions={
           <Link
             to="/onboarding"
@@ -224,8 +152,6 @@ export default function Reviews() {
           </Link>
         }
       />
-
-      <ManualTriggerPanel />
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
@@ -244,8 +170,8 @@ export default function Reviews() {
                 : "border-zinc-200 bg-zinc-50 hover:border-zinc-300"
             }`}
           >
-            <p className="text-[11px] text-zinc-500">{c.label}</p>
-            <p className="mt-0.5 text-xl font-semibold tabular-nums">{c.value}</p>
+            <p className="type-label">{c.label}</p>
+            <p className="type-display mt-1">{c.value}</p>
           </button>
         ))}
       </div>
@@ -298,30 +224,81 @@ export default function Reviews() {
         {!isLoading && !error && filtered.length === 0 && (
           <div className="p-6">
             <EmptyState>
-              No review runs match. Open a PR (auto) or use <strong>Run code review</strong> above.
+              No review runs match. Open a PR to start an automatic review, or open an existing run and
+              use <strong>Manual run</strong>.
             </EmptyState>
           </div>
         )}
-        {filtered.length > 0 && (
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[640px] text-left">
-              <thead>
-                <tr className="border-b border-zinc-200 text-[11px] uppercase tracking-wide text-zinc-500">
-                  <th className="px-4 py-2.5 font-medium">Pull request</th>
-                  <th className="hidden px-4 py-2.5 font-medium md:table-cell">Trigger</th>
-                  <th className="hidden px-4 py-2.5 font-medium lg:table-cell">Started</th>
-                  <th className="hidden px-4 py-2.5 font-medium xl:table-cell">Findings</th>
-                  <th className="hidden px-4 py-2.5 font-medium 2xl:table-cell">Cost</th>
-                  <th className="px-4 py-2.5 text-right font-medium">Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((run) => (
-                  <RunRowItem key={run.id} run={run} />
-                ))}
-              </tbody>
-            </table>
-          </div>
+        {pageRuns.length > 0 && (
+          <>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left">
+                <thead>
+                  <tr className="border-b border-zinc-200">
+                    <th className="px-4 py-2 font-medium">Pull request</th>
+                    <th className="hidden px-4 py-2 font-medium md:table-cell">Trigger</th>
+                    <th className="hidden px-4 py-2 font-medium lg:table-cell">Started</th>
+                    <th className="hidden px-4 py-2 font-medium xl:table-cell">Findings</th>
+                    <th className="px-4 py-2 font-medium">Status</th>
+                    <th className="px-4 py-2 text-right font-medium">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageRuns.map((run) => (
+                    <RunRowItem key={run.id} run={run} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-zinc-200 bg-zinc-50/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-3">
+                <p className="text-xs tabular-nums text-zinc-500">
+                  Showing <span className="font-medium text-zinc-700">{rangeStart}</span>–
+                  <span className="font-medium text-zinc-700">{rangeEnd}</span> of{" "}
+                  <span className="font-medium text-zinc-700">{total}</span>
+                </p>
+                <label className="flex items-center gap-2 text-xs text-zinc-500">
+                  Rows
+                  <select
+                    value={pageSize}
+                    onChange={(event) => setPageSize(Number(event.target.value))}
+                    className="h-8 rounded-md border border-zinc-200 bg-zinc-50 px-2 text-xs text-zinc-700 outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                  >
+                    {PAGE_SIZES.map((size) => (
+                      <option key={size} value={size}>
+                        {size}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              </div>
+
+              <nav className="flex items-center gap-1" aria-label="Code review table pagination">
+                <button
+                  type="button"
+                  onClick={() => setPage((current) => Math.max(1, current - 1))}
+                  disabled={page === 1}
+                  className="inline-flex size-8 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-zinc-600 transition hover:border-zinc-300 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Previous page"
+                >
+                  <ChevronIcon direction="left" />
+                </button>
+                <span className="px-2 text-xs text-zinc-500">
+                  Page {page} of {totalPages}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setPage((current) => Math.min(totalPages, current + 1))}
+                  disabled={page === totalPages}
+                  className="inline-flex size-8 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-zinc-600 transition hover:border-zinc-300 hover:text-zinc-900 disabled:cursor-not-allowed disabled:opacity-40"
+                  aria-label="Next page"
+                >
+                  <ChevronIcon direction="right" />
+                </button>
+              </nav>
+            </div>
+          </>
         )}
       </Card>
     </div>

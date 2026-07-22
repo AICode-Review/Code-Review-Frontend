@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useRuns, type RunRow } from "../features/runs/useRuns";
 import { useAnalytics } from "../features/analytics/useAnalytics";
 import { useRepos, type Repo } from "../features/repos/useRepos";
-import { timeAgo, usd } from "../lib/format";
+import { summaryPreview, timeAgo } from "../lib/format";
 import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
 import { AreaTrendChart, CategoryBarChart, TrendChart } from "../components/charts";
 import { PageIntro } from "../components/layout/AppShell";
@@ -93,9 +93,9 @@ function KpiCard({
         aria-hidden="true"
       />
       <div className="relative">
-        <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-zinc-500">{label}</p>
-        <p className="mt-2 text-2xl font-semibold tracking-[-0.035em] text-zinc-950">{value}</p>
-        {hint && <p className={`mt-1.5 truncate text-[11px] ${toneClass}`}>{hint}</p>}
+        <p className="type-label">{label}</p>
+        <p className="type-display mt-2">{value}</p>
+        {hint && <p className={`type-meta mt-1.5 truncate ${toneClass}`}>{hint}</p>}
       </div>
     </div>
   );
@@ -131,7 +131,6 @@ function RunRowItem({ run }: { run: RunRow }) {
             {run.pull_requests?.repos?.name ?? "unknown"}
             <span className="text-zinc-500"> #{run.pull_requests?.number ?? "?"}</span>
           </span>
-          {run.summary && <span className="mt-0.5 block truncate text-xs text-zinc-500">{run.summary}</span>}
           <span className="mt-0.5 block font-mono text-[11px] text-zinc-500">{run.head_sha.slice(0, 7)}</span>
         </Link>
       </td>
@@ -147,9 +146,6 @@ function RunRowItem({ run }: { run: RunRow }) {
       </td>
       <td className="hidden px-4 py-3 text-xs tabular-nums text-zinc-600 2xl:table-cell">
         {formatLatency(run.latency_ms)}
-      </td>
-      <td className="hidden px-4 py-3 text-xs tabular-nums text-zinc-600 2xl:table-cell">
-        {run.llm_cost_usd > 0 ? usd(Number(run.llm_cost_usd)) : "—"}
       </td>
       <td className="px-4 py-3 text-right">
         <div className="flex flex-col items-end gap-1">
@@ -172,7 +168,7 @@ function buildAttention(runs: RunRow[], repos: Repo[]): AttentionItem[] {
       id: `fail-${run.id}`,
       severity: "critical",
       title: `Review failed on ${run.pull_requests?.repos?.name ?? "repo"} #${run.pull_requests?.number ?? "?"}`,
-      detail: run.summary ?? "Open the run to inspect the failure and re-trigger if needed.",
+      detail: run.summary ? summaryPreview(run.summary) : "Open the run to inspect the failure and re-trigger if needed.",
       href: `/runs/${run.id}`,
       cta: "Inspect run",
     });
@@ -249,7 +245,6 @@ export default function Dashboard() {
     const candidates = completed.reduce((sum, r) => sum + r.candidates, 0);
     const verified = completed.reduce((sum, r) => sum + r.verified, 0);
     const posted = completed.reduce((sum, r) => sum + r.posted, 0);
-    const cost = list.reduce((sum, r) => sum + Number(r.llm_cost_usd ?? 0), 0);
     const latencies = completed.map((r) => r.latency_ms).filter((v): v is number => v != null);
     return {
       total: list.length,
@@ -259,7 +254,6 @@ export default function Dashboard() {
       candidates,
       verified,
       posted,
-      cost,
       medianLatencyMs: median(latencies),
       verificationPct: candidates > 0 ? Math.round((verified / candidates) * 100) : null,
       postRate: verified > 0 ? Math.round((posted / verified) * 100) : null,
@@ -350,9 +344,9 @@ export default function Dashboard() {
           href="/reviews"
         />
         <KpiCard
-          label="LLM spend"
-          value={runStats.cost > 0 ? usd(runStats.cost) : "—"}
-          hint={`${postedThisWeek} findings posted this week`}
+          label="Findings posted"
+          value={String(postedThisWeek)}
+          hint="this week"
           href="/reviews"
         />
       </div>
@@ -622,7 +616,6 @@ export default function Dashboard() {
                     <th className="hidden px-4 py-2.5 font-medium lg:table-cell">Started</th>
                     <th className="hidden px-4 py-2.5 font-medium xl:table-cell">Verified</th>
                     <th className="hidden px-4 py-2.5 font-medium 2xl:table-cell">Latency</th>
-                    <th className="hidden px-4 py-2.5 font-medium 2xl:table-cell">Cost</th>
                     <th className="px-4 py-2.5 text-right font-medium">Status</th>
                   </tr>
                 </thead>

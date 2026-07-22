@@ -66,12 +66,12 @@ function SortHeader({
     <th
       scope="col"
       aria-sort={active ? (direction === "asc" ? "ascending" : "descending") : "none"}
-      className={`px-3 py-3 align-middle font-medium ${align === "right" ? "text-right" : "text-left"} ${className}`}
+      className={`px-3 py-2 align-middle font-medium ${align === "right" ? "text-right" : "text-left"} ${className}`}
     >
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className={`inline-flex items-center gap-1 rounded text-[11px] font-semibold uppercase tracking-wide transition hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
+        className={`inline-flex items-center gap-1 rounded text-[11px] font-semibold uppercase tracking-[0.055em] transition hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
           active ? "text-zinc-900" : "text-zinc-500"
         }`}
       >
@@ -99,7 +99,7 @@ function RateCell({ value, tone }: { value: number; tone: "good" | "noise" }) {
   return (
     <div className="text-left">
       <span className="text-xs font-medium tabular-nums text-zinc-700">{value}%</span>
-      <div className="mt-1 h-1 w-16 overflow-hidden rounded-full bg-zinc-100">
+      <div className="mt-0.5 h-1 w-16 overflow-hidden rounded-full bg-zinc-100">
         <div className={`h-full rounded-full ${color}`} style={{ width: `${Math.min(100, value)}%` }} />
       </div>
     </div>
@@ -310,7 +310,7 @@ export default function Repos() {
                         onSort={handleSort}
                         className="w-[32%] pl-13 md:w-[25%] lg:w-[22%]"
                       />
-                      <th scope="col" className="hidden w-[22%] px-3 py-3 text-left align-middle text-[11px] font-semibold uppercase tracking-wide text-zinc-500 md:table-cell lg:w-[19%]">
+                      <th scope="col" className="hidden w-[22%] px-3 py-2 text-left align-middle text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 md:table-cell lg:w-[19%]">
                         Review policy
                       </th>
                       <SortHeader
@@ -345,10 +345,10 @@ export default function Repos() {
                         onSort={handleSort}
                         className="hidden w-[10%] xl:table-cell"
                       />
-                      <th scope="col" className="hidden w-[16%] px-3 py-3 text-left align-middle text-[11px] font-semibold uppercase tracking-wide text-zinc-500 lg:table-cell xl:w-[13%]">
+                      <th scope="col" className="hidden w-[16%] px-3 py-2 text-left align-middle text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 lg:table-cell xl:w-[13%]">
                         Languages
                       </th>
-                      <th scope="col" className="w-10 px-2 py-3">
+                      <th scope="col" className="w-10 px-2 py-2">
                         <span className="sr-only">Actions</span>
                       </th>
                     </tr>
@@ -356,48 +356,46 @@ export default function Repos() {
                   <tbody className="divide-y divide-zinc-200/80 bg-zinc-50">
                     {pageRepos.map((repo) => (
                       <tr key={repo.id} className="group transition-colors hover:bg-blue-50/35">
-                        <td className="overflow-hidden px-3 py-1.5">
+                        <td className="overflow-hidden px-3 py-1">
                           <Link
                             to={`/repos/${repo.id}`}
-                            className="flex min-w-0 items-center gap-3 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                            className="flex min-w-0 items-center gap-2.5 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                           >
-                            <span className="flex size-7 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-zinc-500 transition group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-700">
+                            <span className="flex size-6 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-zinc-500 transition group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-700">
                               <RepositoryIcon />
                             </span>
                             <span className="min-w-0">
-                              <span className="block truncate font-medium text-zinc-900 group-hover:text-blue-700">
+                              <span className="block truncate text-sm font-medium leading-5 text-zinc-900 group-hover:text-blue-700">
                                 {repo.owner ? `${repo.owner}/` : ""}
                                 {repo.name}
                               </span>
-                              <span className="block font-mono text-[10px] leading-3 text-zinc-500">
-                                {repo.defaultBranch}
-                              </span>
+                              <span className="type-mono block leading-4 text-zinc-500">{repo.defaultBranch}</span>
                             </span>
                           </Link>
                         </td>
-                        <td className="hidden overflow-hidden px-3 py-1.5 md:table-cell">
+                        <td className="hidden overflow-hidden px-3 py-1 md:table-cell">
                           <div className="flex min-w-0 items-center gap-2 whitespace-nowrap">
                             <span className="text-xs font-medium capitalize text-zinc-700">{repo.strictness}</span>
                             <span className="text-zinc-300">·</span>
                             <span className="text-xs tabular-nums text-zinc-500">{repo.commentBudget} comments</span>
                           </div>
-                          <p className="text-[10px] leading-3 text-zinc-400">{repo.failOnCritical ? "Critical findings block" : "Advisory checks"}</p>
+                          <p className="type-meta leading-4">{repo.failOnCritical ? "Critical findings block" : "Advisory checks"}</p>
                         </td>
-                        <td className="px-3 py-1.5">
-                          <Badge kind={repo.indexStatus}>{repo.indexStatus}</Badge>
+                        <td className="px-3 py-1">
+                          <Badge kind={repo.indexStatus} />
                         </td>
-                        <td className="px-3 py-1.5 text-left">
-                          <span className="inline-flex min-w-7 items-center justify-center rounded-md bg-zinc-100 px-2 py-1 text-xs font-semibold tabular-nums text-zinc-700">
+                        <td className="px-3 py-1 text-left">
+                          <span className="inline-flex min-w-7 items-center justify-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-semibold tabular-nums text-zinc-700">
                             {repo.openPrs}
                           </span>
                         </td>
-                        <td className="hidden px-3 py-1.5 text-left lg:table-cell">
+                        <td className="hidden px-3 py-1 text-left lg:table-cell">
                           <RateCell value={repo.acceptancePct} tone="good" />
                         </td>
-                        <td className="hidden px-3 py-1.5 text-left xl:table-cell">
+                        <td className="hidden px-3 py-1 text-left xl:table-cell">
                           <RateCell value={repo.noisePct} tone="noise" />
                         </td>
-                        <td className="hidden px-3 py-1.5 text-left lg:table-cell">
+                        <td className="hidden px-3 py-1 text-left lg:table-cell">
                           {repo.tier1Langs.length > 0 ? (
                             <div className="flex flex-wrap gap-1">
                               {repo.tier1Langs.slice(0, 2).map((language) => (
@@ -418,11 +416,11 @@ export default function Repos() {
                             <span className="text-xs text-zinc-400">—</span>
                           )}
                         </td>
-                        <td className="px-2 py-1.5 text-right">
+                        <td className="px-2 py-1 text-right">
                           <Link
                             to={`/repos/${repo.id}`}
                             aria-label={`Open ${repo.name}`}
-                            className="inline-flex size-8 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-zinc-50 hover:text-blue-700 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                            className="inline-flex size-7 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-zinc-50 hover:text-blue-700 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                           >
                             <ChevronIcon direction="right" />
                           </Link>

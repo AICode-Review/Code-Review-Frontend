@@ -17,7 +17,24 @@ interface RepoRow {
   orgs?: { name: string } | null;
 }
 
-function fromRow(row: RepoRow): Repo {
+interface RepoFeedbackStats {
+  posted: number;
+  accepted: number;
+  dismissed: number;
+}
+
+/** Same formula as backend/src/routes/analyticsAggregation.ts's buildWeeklyAnalytics — kept
+ * in sync by hand since frontend/backend share no code (CLAUDE.md's boundary rule). */
+function feedbackPcts(stats: RepoFeedbackStats | undefined): { acceptancePct: number; noisePct: number } {
+  if (!stats) return { acceptancePct: 0, noisePct: 0 };
+  const feedbackTotal = stats.accepted + stats.dismissed;
+  return {
+    acceptancePct: feedbackTotal > 0 ? Math.round((stats.accepted / feedbackTotal) * 100) : 0,
+    noisePct: stats.posted > 0 ? Math.round((stats.dismissed / stats.posted) * 1000) / 10 : 0,
+  };
+}
+
+function fromRow(row: RepoRow, openPrs: number, feedback: RepoFeedbackStats | undefined): Repo {
   const config = row.config ?? {};
   return {
     id: row.id,
@@ -30,9 +47,8 @@ function fromRow(row: RepoRow): Repo {
     commentBudget: (config["commentBudget"] as number) ?? 7,
     ignoredPaths: (config["ignoredPaths"] as string[]) ?? [],
     failOnCritical: (config["failOnCritical"] as boolean) ?? false,
-    openPrs: (config["openPrs"] as number) ?? 0,
-    acceptancePct: (config["acceptancePct"] as number) ?? 0,
-    noisePct: (config["noisePct"] as number) ?? 0,
+    openPrs,
+    ...feedbackPcts(feedback),
   };
 }
 
@@ -52,7 +68,50 @@ export function useRepos() {
         .eq("org_id", orgId)
         .order("name");
       if (error) throw new Error(error.message);
-      return ((data ?? []) as unknown as RepoRow[]).map(fromRow);
+      const rows = (data ?? []) as unknown as RepoRow[];
+
+      // Live open-PR counts, one query for the whole org rather than one per repo.
+      const repoIds = rows.map((r) => r.id);
+      const openPrCounts = new Map<string, number>();
+      if (repoIds.length > 0) {
+        const { data: openPrs, error: prError } = await supabase
+          .from("pull_requests")
+          .select("repo_id")
+          .in("repo_id", repoIds)
+          .eq("state", "open");
+        if (prError) throw new Error(prError.message);
+        for (const pr of (openPrs ?? []) as { repo_id: string }[]) {
+          openPrCounts.set(pr.repo_id, (openPrCounts.get(pr.repo_id) ?? 0) + 1);
+        }
+      }
+
+      // Finding feedback per repo, via one nested-embed query (pull_requests -> review_runs ->
+      // findings) rather than N+1 per-repo round trips — RLS already scopes all three tables
+      // to the caller's org membership (0001_init.sql).
+      const feedbackByRepo = new Map<string, RepoFeedbackStats>();
+      if (repoIds.length > 0) {
+        const { data: prTree, error: feedbackError } = await supabase
+          .from("pull_requests")
+          .select("repo_id, review_runs(findings(posted, feedback))")
+          .in("repo_id", repoIds);
+        if (feedbackError) throw new Error(feedbackError.message);
+        type FindingRow = { posted: boolean; feedback: string | null };
+        type PrTreeRow = { repo_id: string; review_runs: { findings: FindingRow[] }[] | null };
+        for (const pr of (prTree ?? []) as unknown as PrTreeRow[]) {
+          const stats = feedbackByRepo.get(pr.repo_id) ?? { posted: 0, accepted: 0, dismissed: 0 };
+          for (const run of pr.review_runs ?? []) {
+            for (const f of run.findings ?? []) {
+              if (!f.posted) continue;
+              stats.posted++;
+              if (f.feedback === "accepted" || f.feedback === "fixed") stats.accepted++;
+              if (f.feedback === "dismissed" || f.feedback === "ignored") stats.dismissed++;
+            }
+          }
+          feedbackByRepo.set(pr.repo_id, stats);
+        }
+      }
+
+      return rows.map((row) => fromRow(row, openPrCounts.get(row.id) ?? 0, feedbackByRepo.get(row.id)));
     },
   });
 }

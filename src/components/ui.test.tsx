@@ -5,9 +5,9 @@ import { describe, expect, it, vi } from "vitest";
 import { Badge, Card, EmptyState, ErrorText, LoadingText, MetricTile, Pagination, PublicHeader, SectionTitle } from "./ui";
 
 describe("Badge", () => {
-  it("renders the kind as its own label when no children are given", () => {
+  it("renders a title-cased label when no children are given", () => {
     render(<Badge kind="completed" />);
-    expect(screen.getByText("completed")).toBeInTheDocument();
+    expect(screen.getByText("Completed")).toBeInTheDocument();
   });
 
   it("renders custom children instead of the kind label", () => {

@@ -1,5 +1,23 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.4;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.5;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.55;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.4;
+  --text-xl: 1.25rem;
+  --text-xl--line-height: 1.35;
+  --text-2xl: 1.5rem;
+  --text-2xl--line-height: 1.25;
+}
+
 :root {
   color-scheme: light;
   --app-bg: #f4f5f7;
@@ -11,157 +29,299 @@
 }
 
 /*
- * Authenticated app retro theme — two variants (light/dark), toggled via
- * data-theme on .app-shell (see components/layout/AppShell.tsx).
+ * Authenticated app theme — professional cool neutrals + semantic status colors.
+ * Light/dark toggled via data-theme on .app-shell (see AppShell.tsx).
  *
- * Rather than editing className strings across ~5,000 lines of pages/components,
- * this overrides Tailwind v4's own generated color tokens (--color-zinc-*,
- * --color-blue-*, etc. — real CSS custom properties emitted by `@import
- * "tailwindcss"`, confirmed in the build output) scoped under .app-shell. Every
- * existing bg-zinc-100 / text-blue-600 / border-red-200 / etc. class anywhere in
- * the authenticated app automatically repaints, including opacity-modifier
- * variants (bg-zinc-50/40), since Tailwind's color-mix()-based modifiers read
- * the same variable. zinc = neutral/parchment, blue = accent (repurposed as
- * gold, since this is a retro theme, not a blue one), red/emerald/amber = danger/
- * success/warning, indigo = the rare "manual" trigger badge.
+ * Rather than editing className strings across pages/components, this overrides
+ * Tailwind v4's generated color tokens (--color-zinc-*, --color-blue-*, etc.)
+ * scoped under .app-shell. Existing bg-zinc-100 / text-blue-600 / border-red-200
+ * classes automatically repaint, including opacity modifiers.
+ *
+ * Semantic roles (unchanged between themes):
+ *   zinc  = surfaces / ink
+ *   blue  = primary brand / interactive
+ *   red   = critical / danger / deletions
+ *   amber = major / warning
+ *   emerald = success / verified / additions
+ *   indigo = manual trigger / secondary accent
+ *
+ * Module accents (data-module on .app-shell) tint the workspace subtly per
+ * section without changing component classNames or behavior.
  */
 .app-shell[data-theme="light"] {
-  --color-zinc-50: #faf6ea;
-  --color-zinc-100: #f2ecd8;
-  --color-zinc-200: #e2d6b0;
-  --color-zinc-300: #cbb583;
-  --color-zinc-400: #a3915f;
-  --color-zinc-500: #7c6a45;
-  --color-zinc-600: #5e5033;
-  --color-zinc-700: #453a26;
-  --color-zinc-800: #2f2818;
-  --color-zinc-900: #1f1a0f;
-  --color-zinc-950: #14100a;
+  --color-zinc-50: #f8fafc;
+  --color-zinc-100: #f1f5f9;
+  --color-zinc-200: #e2e8f0;
+  --color-zinc-300: #cbd5e1;
+  --color-zinc-400: #94a3b8;
+  --color-zinc-500: #64748b;
+  --color-zinc-600: #475569;
+  --color-zinc-700: #334155;
+  --color-zinc-800: #1e293b;
+  --color-zinc-900: #0f172a;
+  --color-zinc-950: #020617;
 
-  --color-blue-50: #f7ecc9;
-  --color-blue-100: #f0dc9e;
-  --color-blue-400: #c9922a;
-  --color-blue-500: #b8860b;
-  --color-blue-600: #a6710a;
-  --color-blue-700: #8a5c08;
-  --color-blue-800: #6b4706;
+  --color-blue-50: #eff6ff;
+  --color-blue-100: #dbeafe;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-800: #1e40af;
 
-  --color-red-50: #f9e0d8;
-  --color-red-100: #f2c4b3;
-  --color-red-200: #e29c85;
-  --color-red-300: #cf745a;
-  --color-red-400: #b8543a;
-  --color-red-500: #9e3f28;
-  --color-red-600: #86331f;
-  --color-red-700: #6b2818;
-  --color-red-900: #3a1109;
+  --color-red-50: #fef2f2;
+  --color-red-100: #fee2e2;
+  --color-red-200: #fecaca;
+  --color-red-300: #fca5a5;
+  --color-red-400: #f87171;
+  --color-red-500: #ef4444;
+  --color-red-600: #dc2626;
+  --color-red-700: #b91c1c;
+  --color-red-900: #7f1d1d;
 
-  --color-emerald-50: #e6f0d8;
-  --color-emerald-100: #d0e4b5;
-  --color-emerald-200: #aecf85;
-  --color-emerald-500: #588a34;
-  --color-emerald-600: #497328;
-  --color-emerald-700: #3a5c1f;
-  --color-emerald-900: #1e3010;
+  --color-emerald-50: #ecfdf5;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-500: #10b981;
+  --color-emerald-600: #059669;
+  --color-emerald-700: #047857;
+  --color-emerald-900: #064e3b;
 
-  --color-amber-50: #f5e3c4;
-  --color-amber-100: #ecc98e;
-  --color-amber-200: #ddab5c;
-  --color-amber-500: #c17f22;
-  --color-amber-700: #935e10;
-  --color-amber-800: #754a0c;
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-500: #f59e0b;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
 
-  --color-indigo-50: #ede0e6;
-  --color-indigo-700: #6b3355;
+  --color-indigo-50: #eef2ff;
+  --color-indigo-700: #4338ca;
 
-  --radius-md: 0.125rem;
-  --radius-lg: 0.1875rem;
-  --radius-xl: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
 
-  --rt-accent-bg: #b8860b;
-  --rt-accent-bg-hover: #a6710a;
-  --rt-accent-fg: #14100a;
-  --rt-focus: #b8860b;
-  --rt-btn-shadow: 3px 3px 0 0 #cbb583;
+  --rt-accent-bg: #2563eb;
+  --rt-accent-bg-hover: #1d4ed8;
+  --rt-accent-fg: #ffffff;
+  --rt-focus: #2563eb;
+  --rt-btn-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(37, 99, 235, 0.18);
+
+  --module-dashboard: #2563eb;
+  --module-repos: #0284c7;
+  --module-prs: #7c3aed;
+  --module-reviews: #0d9488;
+  --module-rulebook: #b45309;
+  --module-settings: #475569;
+  --module-accent: var(--module-dashboard);
 }
 
 .app-shell[data-theme="dark"] {
   /*
-   * Reversed vs. the light theme on purpose: bg-zinc-50/100 are used
-   * throughout as "subtle surface tint" and text-zinc-900/950 as "primary
-   * ink" — those ROLES don't change between themes, only which raw value
-   * fills them. In a dark theme the subtle surface is near-black and the
-   * primary ink is near-cream, i.e. the opposite end of the 50->950 scale
-   * from where light mode puts them.
+   * Role-reversed scale: bg-zinc-50/100 stay "subtle surface", text-zinc-900/950
+   * stay "primary ink" — only the raw values flip for dark mode.
    */
-  --color-zinc-50: #0a0a08;
-  --color-zinc-100: #14170f;
-  --color-zinc-200: #241f14;
-  --color-zinc-300: #3a2f1f;
-  --color-zinc-400: #5a4a30;
-  --color-zinc-500: #6b6252;
-  --color-zinc-600: #8a8170;
-  --color-zinc-700: #a39a86;
-  --color-zinc-800: #c9c2b3;
-  --color-zinc-900: #f2ead9;
-  --color-zinc-950: #faf3e0;
+  --color-zinc-50: #0b1120;
+  --color-zinc-100: #111827;
+  --color-zinc-200: #1f2937;
+  --color-zinc-300: #374151;
+  --color-zinc-400: #4b5563;
+  --color-zinc-500: #6b7280;
+  --color-zinc-600: #9ca3af;
+  --color-zinc-700: #d1d5db;
+  --color-zinc-800: #e5e7eb;
+  --color-zinc-900: #f3f4f6;
+  --color-zinc-950: #f9fafb;
 
-  --color-blue-50: #241d0a;
-  --color-blue-100: #332812;
-  --color-blue-400: #ffb300;
-  --color-blue-500: #ffb300;
-  --color-blue-600: #ffcf66;
-  --color-blue-700: #ffcf66;
-  --color-blue-800: #ffdf99;
+  --color-blue-50: #172554;
+  --color-blue-100: #1e3a8a;
+  --color-blue-400: #60a5fa;
+  --color-blue-500: #3b82f6;
+  --color-blue-600: #93c5fd;
+  --color-blue-700: #bfdbfe;
+  --color-blue-800: #dbeafe;
 
-  --color-red-50: #2a1512;
-  --color-red-100: #3a1e19;
-  --color-red-200: #5c2f27;
-  --color-red-300: #7a3d33;
-  --color-red-400: #9c4f42;
-  --color-red-500: #d16a5a;
-  --color-red-600: #e88274;
-  --color-red-700: #f87171;
-  --color-red-900: #fca5a5;
+  --color-red-50: #450a0a;
+  --color-red-100: #7f1d1d;
+  --color-red-200: #991b1b;
+  --color-red-300: #b91c1c;
+  --color-red-400: #ef4444;
+  --color-red-500: #f87171;
+  --color-red-600: #fca5a5;
+  --color-red-700: #fecaca;
+  --color-red-900: #fee2e2;
 
-  --color-emerald-50: #16241a;
-  --color-emerald-100: #1c3322;
-  --color-emerald-200: #234227;
-  --color-emerald-500: #4ade80;
-  --color-emerald-600: #4ade80;
-  --color-emerald-700: #6ee89c;
-  --color-emerald-900: #86efac;
+  --color-emerald-50: #052e1c;
+  --color-emerald-100: #064e3b;
+  --color-emerald-200: #065f46;
+  --color-emerald-500: #34d399;
+  --color-emerald-600: #6ee7b7;
+  --color-emerald-700: #a7f3d0;
+  --color-emerald-900: #d1fae5;
 
-  --color-amber-50: #241c08;
-  --color-amber-100: #332810;
-  --color-amber-200: #4a3a14;
+  --color-amber-50: #451a03;
+  --color-amber-100: #78350f;
+  --color-amber-200: #92400e;
   --color-amber-500: #fbbf24;
-  --color-amber-700: #fbbf24;
+  --color-amber-700: #fcd34d;
   --color-amber-800: #fde68a;
 
-  --color-indigo-50: #201a2a;
-  --color-indigo-700: #c4b5fd;
+  --color-indigo-50: #1e1b4b;
+  --color-indigo-700: #a5b4fc;
 
-  --radius-md: 0.125rem;
-  --radius-lg: 0.1875rem;
-  --radius-xl: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
 
-  --rt-accent-bg: #ffb300;
-  --rt-accent-bg-hover: #ffcf66;
-  --rt-accent-fg: #000000;
-  --rt-focus: #ffb300;
-  --rt-btn-shadow: 3px 3px 0 0 #3a2f1f;
+  --rt-accent-bg: #3b82f6;
+  --rt-accent-bg-hover: #60a5fa;
+  --rt-accent-fg: #0b1120;
+  --rt-focus: #60a5fa;
+  --rt-btn-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(59, 130, 246, 0.22);
+
+  --module-dashboard: #60a5fa;
+  --module-repos: #38bdf8;
+  --module-prs: #a78bfa;
+  --module-reviews: #2dd4bf;
+  --module-rulebook: #fbbf24;
+  --module-settings: #94a3b8;
+  --module-accent: var(--module-dashboard);
+}
+
+.app-shell[data-module="dashboard"] {
+  --module-accent: var(--module-dashboard);
+}
+.app-shell[data-module="repos"] {
+  --module-accent: var(--module-repos);
+}
+.app-shell[data-module="prs"] {
+  --module-accent: var(--module-prs);
+}
+.app-shell[data-module="reviews"] {
+  --module-accent: var(--module-reviews);
+}
+.app-shell[data-module="rulebook"] {
+  --module-accent: var(--module-rulebook);
+}
+.app-shell[data-module="settings"] {
+  --module-accent: var(--module-settings);
 }
 
 .app-shell {
-  background: var(--color-zinc-50, #faf6ea);
+  background: var(--color-zinc-50, #f8fafc);
   color: var(--color-zinc-900);
-  font-family: var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  letter-spacing: -0.011em;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-/* Primary-action buttons (bg-zinc-900 + hover:bg-zinc-800 + text-white) get the
-   accent fill instead of reading as "ink-colored" — otherwise every primary CTA
-   would just be dark-text-colored rather than the branded amber/gold accent. */
+.app-shell :where(h1, h2, h3, h4) {
+  font-weight: 600;
+  color: var(--color-zinc-950);
+  letter-spacing: -0.02em;
+  line-height: 1.3;
+  text-wrap: balance;
+}
+
+.app-shell h1 {
+  font-size: 1.25rem;
+  letter-spacing: -0.025em;
+}
+
+.app-shell h2 {
+  font-size: 1.125rem;
+}
+
+.app-shell h3 {
+  font-size: 0.9375rem;
+  letter-spacing: -0.015em;
+}
+
+.app-shell :where(p, li) {
+  line-height: 1.55;
+}
+
+.app-shell :where(small) {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+.app-shell thead th {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  color: var(--color-zinc-500);
+}
+
+.app-shell tbody td {
+  font-size: 0.875rem;
+  letter-spacing: -0.01em;
+}
+
+.app-shell :where(input, select, textarea, button) {
+  font-family: inherit;
+  letter-spacing: inherit;
+}
+
+/* Shared type roles — use across pages for consistent hierarchy */
+.app-shell .type-label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: 0.055em;
+  text-transform: uppercase;
+  color: var(--color-zinc-500);
+}
+
+.app-shell .type-meta {
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--color-zinc-500);
+}
+
+.app-shell .type-body {
+  font-size: 0.875rem;
+  font-weight: 400;
+  line-height: 1.55;
+  letter-spacing: -0.01em;
+  color: var(--color-zinc-700);
+}
+
+.app-shell .type-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: var(--color-zinc-950);
+}
+
+.app-shell .type-display {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-zinc-950);
+}
+
+.app-shell .type-mono {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Primary CTAs (bg-zinc-900) use brand blue instead of near-black ink. */
 .app-shell :where(button, a).bg-zinc-900 {
   background-color: var(--rt-accent-bg);
   color: var(--rt-accent-fg);
@@ -174,7 +334,10 @@
 body {
   margin: 0;
   min-height: 100vh;
-  font-family: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  letter-spacing: -0.011em;
   background:
     radial-gradient(1200px 600px at 10% -10%, rgba(37, 99, 235, 0.06), transparent 55%),
     radial-gradient(900px 500px at 100% 0%, rgba(24, 24, 27, 0.04), transparent 50%),
@@ -182,28 +345,91 @@ body {
   color: var(--app-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
 code,
 pre,
 .font-mono {
-  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-family: var(--font-mono);
+  letter-spacing: 0;
 }
 
 ::selection {
   background: rgba(37, 99, 235, 0.18);
 }
 
-.app-shell[data-theme="light"] .app-workspace {
+.app-shell .app-workspace {
   background:
-    radial-gradient(700px 340px at 8% 0%, rgba(184, 134, 11, 0.06), transparent 65%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 180px);
+    radial-gradient(720px 360px at 6% 0%, color-mix(in srgb, var(--module-accent) 9%, transparent), transparent 62%),
+    linear-gradient(180deg, color-mix(in srgb, var(--color-zinc-50) 55%, transparent), transparent 200px);
 }
 
-.app-shell[data-theme="dark"] .app-workspace {
-  background:
-    radial-gradient(700px 340px at 8% 0%, rgba(255, 179, 0, 0.05), transparent 65%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent 180px);
+.app-shell .app-module-bar {
+  background: linear-gradient(
+    90deg,
+    var(--module-accent),
+    color-mix(in srgb, var(--module-accent) 35%, transparent) 55%,
+    transparent
+  );
+}
+
+.app-shell .nav-active {
+  background: color-mix(in srgb, var(--module-accent) 12%, var(--color-zinc-50));
+  color: color-mix(in srgb, var(--module-accent) 72%, var(--color-zinc-900));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--module-accent) 22%, transparent);
+}
+
+/* Smooth sidebar collapse — width animates; labels fade/clip instead of remounting. */
+.app-shell .app-sidebar {
+  width: 15rem;
+  transition: width 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-shell .app-sidebar[data-collapsed="true"] {
+  width: 4.25rem;
+}
+
+.app-shell .app-sidebar .sidebar-label {
+  overflow: hidden;
+  max-width: 11rem;
+  opacity: 1;
+  white-space: nowrap;
+  transition:
+    opacity 160ms ease,
+    max-width 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-shell .app-sidebar[data-collapsed="true"] .sidebar-label {
+  max-width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-shell .app-sidebar .sidebar-section-label {
+  overflow: hidden;
+  max-height: 1.5rem;
+  margin-bottom: 0.5rem;
+  opacity: 1;
+  transition:
+    opacity 140ms ease,
+    max-height 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    margin-bottom 280ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.app-shell .app-sidebar[data-collapsed="true"] .sidebar-section-label {
+  max-height: 0;
+  margin-bottom: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell .app-sidebar,
+  .app-shell .app-sidebar .sidebar-label,
+  .app-shell .app-sidebar .sidebar-section-label {
+    transition: none !important;
+  }
 }
 
 .app-shell :where(button, a, input, select, textarea) {

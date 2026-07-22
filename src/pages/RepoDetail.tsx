@@ -4,7 +4,7 @@ import { useRepo, useSaveRepoConfig } from "../features/repos/useRepos";
 import { useRuns } from "../features/runs/useRuns";
 import { useHealth } from "../features/health/useHealth";
 import { DEMO_MODE } from "../lib/demo";
-import { timeAgo, usd } from "../lib/format";
+import { timeAgo } from "../lib/format";
 import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
 import { AreaTrendChart, CategoryBarChart, TrendChart } from "../components/charts";
 
@@ -254,7 +254,7 @@ export default function RepoDetail() {
                   </p>
                   <div className="flex items-center gap-3 text-xs">
                     <span className="text-zinc-500">
-                      {run.verified}/{run.candidates} verified · {usd(Number(run.llm_cost_usd))}
+                      {run.verified}/{run.candidates} verified
                     </span>
                     <Badge kind={run.status} />
                   </div>

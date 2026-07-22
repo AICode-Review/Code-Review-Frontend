@@ -42,14 +42,14 @@ export default function SignIn() {
               "radial-gradient(700px 420px at 12% 8%, rgba(37,99,235,0.35), transparent 60%), radial-gradient(600px 420px at 100% 100%, rgba(37,99,235,0.18), transparent 55%)",
           }}
         />
-        <Link to="/" className="relative text-lg font-semibold tracking-tight">
+        <Link to="/" className="relative text-lg font-semibold tracking-[-0.02em]">
           CodeFerret
         </Link>
         <div className="relative">
-          <p className="max-w-sm text-2xl font-semibold leading-snug tracking-tight">
+          <p className="max-w-sm text-2xl font-semibold leading-snug tracking-[-0.025em]">
             Code review comments that survive verification before they reach you.
           </p>
-          <ul className="mt-8 space-y-3 text-sm text-zinc-300">
+          <ul className="mt-8 space-y-3 text-sm leading-6 text-zinc-300">
             {benefits.map((b) => (
               <li key={b} className="flex items-start gap-2.5">
                 <span className="mt-0.5 shrink-0 text-blue-400">✓</span>
@@ -58,7 +58,7 @@ export default function SignIn() {
             ))}
           </ul>
         </div>
-        <Link to="/security" className="relative text-xs text-zinc-500 hover:text-zinc-300">
+        <Link to="/security" className="relative text-xs tracking-[-0.01em] text-zinc-500 hover:text-zinc-300">
           How we handle your code →
         </Link>
       </div>
@@ -66,14 +66,14 @@ export default function SignIn() {
       {/* Auth panel */}
       <div className="flex flex-col items-center justify-center px-6 py-16">
         <div className="w-full max-w-sm">
-          <Link to="/" className="text-lg font-semibold tracking-tight text-zinc-900 lg:hidden">
+          <Link to="/" className="text-lg font-semibold tracking-[-0.02em] text-zinc-900 lg:hidden">
             CodeFerret
           </Link>
 
-          <h1 className="mt-6 text-2xl font-semibold tracking-tight text-zinc-900 lg:mt-0">
+          <h1 className="mt-6 text-2xl font-semibold tracking-[-0.025em] text-zinc-900 lg:mt-0">
             {DEMO_MODE ? "Explore the demo" : "Sign in to CodeFerret"}
           </h1>
-          <p className="mt-1.5 text-sm text-zinc-600">
+          <p className="mt-1.5 text-sm leading-6 text-zinc-600">
             {DEMO_MODE
               ? "No account needed — the dashboard is preloaded with sample data."
               : "Connect your GitHub or Bitbucket account to get started."}
@@ -120,6 +120,20 @@ export default function SignIn() {
               ? "Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in frontend/.env to enable real sign-in."
               : "This signs you into the CodeFerret dashboard. Automatic PR reviews need the GitHub App installed separately — you'll do that next, from onboarding."}
           </p>
+
+          {!DEMO_MODE && (
+            <p className="mt-3 text-xs leading-relaxed text-zinc-500">
+              By continuing you agree to the{" "}
+              <Link to="/terms" className="underline hover:text-zinc-700">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="underline hover:text-zinc-700">
+                Privacy Policy
+              </Link>
+              .
+            </p>
+          )}
 
           <Link to="/" className="mt-8 inline-block text-sm text-zinc-500 hover:text-zinc-700">
             ← Back to home

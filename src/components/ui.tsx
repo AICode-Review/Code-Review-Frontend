@@ -83,8 +83,8 @@ export function Card({ children, className = "" }: { children: ReactNode; classN
 export function SectionTitle({ children, hint }: { children: ReactNode; hint?: string }) {
   return (
     <div className="mb-3 flex items-baseline justify-between gap-2">
-      <h2 className="text-sm font-semibold tracking-[-0.01em] text-zinc-950">{children}</h2>
-      {hint && <span className="text-[11px] text-zinc-500">{hint}</span>}
+      <h2 className="text-sm font-semibold tracking-[-0.015em] text-zinc-950">{children}</h2>
+      {hint && <span className="type-meta">{hint}</span>}
     </div>
   );
 }
@@ -102,9 +102,9 @@ export function MetricTile({
 }) {
   return (
     <Card className="p-4">
-      <p className="text-xs text-zinc-500">{label}</p>
-      <p className="mt-1 text-2xl font-semibold tracking-tight text-zinc-900">{value}</p>
-      {sub && <p className={`mt-1 text-xs ${good ? "text-emerald-600" : "text-zinc-500"}`}>{sub}</p>}
+      <p className="type-label">{label}</p>
+      <p className="type-display mt-1.5">{value}</p>
+      {sub && <p className={`type-meta mt-1 ${good ? "text-emerald-600" : ""}`}>{sub}</p>}
     </Card>
   );
 }
@@ -138,12 +138,42 @@ const badgeStyles: Record<string, string> = {
   ignored: "bg-zinc-100 text-zinc-500",
 };
 
+/** Title-case labels when Badge is used without children. */
+const badgeLabels: Record<string, string> = {
+  queued: "Queued",
+  running: "Running",
+  completed: "Completed",
+  failed: "Failed",
+  cancelled: "Cancelled",
+  ready: "Ready",
+  indexing: "Indexing",
+  stale: "Stale",
+  none: "None",
+  active: "Active",
+  pending: "Pending",
+  learned: "Learned",
+  manual: "Manual",
+  automatic: "Auto",
+  critical: "Critical",
+  major: "Major",
+  minor: "Minor",
+  verified: "Verified",
+  rejected: "Rejected",
+  skipped: "Skipped",
+  posted: "Posted",
+  digest: "Digest",
+  accepted: "Accepted",
+  dismissed: "Dismissed",
+  fixed: "Fixed",
+  ignored: "Ignored",
+};
+
 export function Badge({ kind, children }: { kind: string; children?: ReactNode }) {
   return (
     <span
-      className={`inline-flex items-center rounded-full border border-black/5 px-2 py-0.5 text-[11px] font-medium leading-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.45)] ${badgeStyles[kind] ?? "bg-zinc-100 text-zinc-700"}`}
+      className={`inline-flex items-center rounded-md border border-black/5 px-2 py-0.5 text-[11px] font-semibold leading-4 tracking-[0.02em] ${badgeStyles[kind] ?? "bg-zinc-100 text-zinc-700"}`}
     >
-      {children ?? kind}
+      {children ?? badgeLabels[kind] ?? kind}
     </span>
   );
 }
@@ -156,14 +186,14 @@ export function EmptyState({ children }: { children: ReactNode }) {
           <path d="M4 5.5h12M4 10h8M4 14.5h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         </svg>
       </span>
-      <p className="text-sm leading-6 text-zinc-600">{children}</p>
+      <p className="type-body mx-auto max-w-md text-zinc-600">{children}</p>
     </div>
   );
 }
 
 export function LoadingText({ children = "Loading…" }: { children?: ReactNode }) {
   return (
-    <p className="inline-flex items-center gap-2 text-sm text-zinc-600">
+    <p className="type-body inline-flex items-center gap-2 text-zinc-600">
       <span className="size-3.5 animate-spin rounded-full border-2 border-zinc-200 border-t-blue-600 motion-reduce:animate-none" />
       {children}
     </p>
@@ -172,7 +202,7 @@ export function LoadingText({ children = "Loading…" }: { children?: ReactNode 
 
 export function ErrorText({ children }: { children: ReactNode }) {
   return (
-    <p className="inline-flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm text-red-700">
+    <p className="inline-flex items-start gap-2 rounded-lg bg-red-50 px-3 py-2 text-sm leading-5 text-red-700">
       <span className="mt-0.5 flex size-4 shrink-0 items-center justify-center rounded-full bg-red-100 text-[10px] font-bold">!</span>
       {children}
     </p>

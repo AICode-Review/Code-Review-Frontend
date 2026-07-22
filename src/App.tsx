@@ -1,6 +1,6 @@
 import { lazy, Suspense } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Navigate, Outlet, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { OrgProvider } from "./hooks/useOrg";
 import { PublicHeader } from "./components/ui";
@@ -13,6 +13,9 @@ const Pricing = lazy(() => import("./pages/public/Pricing"));
 const Security = lazy(() => import("./pages/public/Security"));
 const Benchmark = lazy(() => import("./pages/public/Benchmark"));
 const Cli = lazy(() => import("./pages/public/Cli"));
+const BitbucketSetup = lazy(() => import("./pages/public/BitbucketSetup"));
+const Terms = lazy(() => import("./pages/public/Terms"));
+const Privacy = lazy(() => import("./pages/public/Privacy"));
 const SignIn = lazy(() => import("./pages/SignIn"));
 const AcceptInvite = lazy(() => import("./pages/AcceptInvite"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -42,9 +45,14 @@ function PublicLayout() {
       <PublicHeader />
       <Outlet />
       <footer className="border-t border-[#3a2f1f] bg-[#0a0a08]">
-        <div className="mx-auto flex max-w-5xl flex-col gap-2 px-6 py-6 text-xs uppercase tracking-wide text-[#6b6252] sm:flex-row sm:items-center sm:justify-between">
+        <div className="mx-auto flex max-w-5xl flex-col gap-3 px-6 py-6 text-xs uppercase tracking-wide text-[#6b6252] sm:flex-row sm:items-center sm:justify-between">
           <span>© 2026 CodeFerret // EOF</span>
           <span>Web app · PR bot · CLI · GitHub · Bitbucket</span>
+          <nav className="flex gap-4">
+            <Link to="/terms" className="hover:text-[#ffb300]">Terms</Link>
+            <Link to="/privacy" className="hover:text-[#ffb300]">Privacy</Link>
+            <Link to="/security" className="hover:text-[#ffb300]">Security</Link>
+          </nav>
         </div>
       </footer>
     </div>
@@ -84,6 +92,9 @@ export default function App() {
               <Route path="/cli" element={<Cli />} />
               <Route path="/security" element={<Security />} />
               <Route path="/benchmark" element={<Benchmark />} />
+              <Route path="/docs/bitbucket" element={<BitbucketSetup />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/privacy" element={<Privacy />} />
             </Route>
 
             <Route path="/signin" element={<SignIn />} />

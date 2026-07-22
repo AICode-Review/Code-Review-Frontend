@@ -4,7 +4,7 @@ import { useRun, type Finding } from "../features/runs/useRun";
 import { useRerunFromRun } from "../features/runs/useTriggerReview";
 import { useRunDiff } from "../features/runs/useRunDiff";
 import { useRepos } from "../features/repos/useRepos";
-import { timeAgo, usd } from "../lib/format";
+import { summaryPreview, timeAgo } from "../lib/format";
 import { Badge, Card, EmptyState, ErrorText, LoadingText } from "../components/ui";
 import { ReviewComment } from "../components/review/ReviewComment";
 import { DiffViewer } from "../components/review/DiffViewer";
@@ -138,7 +138,8 @@ export default function RunDetail() {
     .sort((a, b) => severityOrder[a.severity] - severityOrder[b.severity]);
   const digest = findings.filter((f) => f.inDigest);
   const rejected = findings.filter((f) => f.verificationStatus === "rejected");
-  const canRerun = run.status === "completed" || run.status === "failed" || run.status === "cancelled";
+  const inFlight = run.status === "queued" || run.status === "running";
+  const canManualRun = !inFlight;
 
   return (
     <div className="space-y-6">
@@ -158,12 +159,12 @@ export default function RunDetail() {
               </>
             )}
           </p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight">
+          <h2 className="type-title mt-1">
             {repoName}
-            <span className="text-zinc-500"> #{prNumber}</span>
+            <span className="font-medium text-zinc-500"> #{prNumber}</span>
           </h2>
-          {run.summary && <p className="mt-1 text-sm text-zinc-600">{run.summary}</p>}
-          <p className="mt-2 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
+          {run.summary && <p className="type-body mt-1">{summaryPreview(run.summary, 220)}</p>}
+          <p className="mt-2 flex flex-wrap items-center gap-2 type-meta">
             <Badge kind={run.status} />
             <Badge kind={run.trigger === "manual" ? "manual" : "automatic"}>
               {run.trigger === "manual" ? "You ran this" : "Started automatically on PR"}
@@ -172,21 +173,23 @@ export default function RunDetail() {
             <span className="font-mono">{run.head_sha.slice(0, 7)}</span>
             <span>{timeAgo(run.started_at)}</span>
             {run.latency_ms !== null && <span>{(run.latency_ms / 1000).toFixed(0)}s</span>}
-            {run.llm_cost_usd > 0 && <span>{usd(Number(run.llm_cost_usd))}</span>}
           </p>
         </div>
 
         <div className="flex flex-wrap gap-2">
-          {canRerun && (
-            <button
-              type="button"
-              disabled={rerun.isPending}
-              onClick={() => rerun.rerun()}
-              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
-            >
-              {rerun.isPending ? "Starting…" : "Run review again"}
-            </button>
-          )}
+          <button
+            type="button"
+            disabled={!canManualRun || rerun.isPending}
+            onClick={() => rerun.rerun()}
+            title={
+              inFlight
+                ? "Wait for the current run to finish before starting a manual run"
+                : "Start a new review run for this PR (appears as trigger: manual)"
+            }
+            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {rerun.isPending ? "Starting…" : "Manual run"}
+          </button>
           <Link
             to="/reviews"
             className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
@@ -221,22 +224,22 @@ export default function RunDetail() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         <Card className="p-3">
-          <p className="text-[11px] text-zinc-500">Issues to fix</p>
-          <p className="mt-0.5 text-xl font-semibold">{posted.length}</p>
+          <p className="type-label">Issues to fix</p>
+          <p className="type-display mt-1">{posted.length}</p>
         </Card>
         <Card className="p-3">
-          <p className="text-[11px] text-zinc-500">Must fix</p>
-          <p className="mt-0.5 text-xl font-semibold text-red-600">
+          <p className="type-label">Must fix</p>
+          <p className="type-display mt-1 text-red-600">
             {posted.filter((f) => f.severity === "critical").length}
           </p>
         </Card>
         <Card className="p-3">
-          <p className="text-[11px] text-zinc-500">Lower priority</p>
-          <p className="mt-0.5 text-xl font-semibold">{digest.length}</p>
+          <p className="type-label">Lower priority</p>
+          <p className="type-display mt-1">{digest.length}</p>
         </Card>
         <Card className="p-3">
-          <p className="text-[11px] text-zinc-500">False alarms caught</p>
-          <p className="mt-0.5 text-xl font-semibold text-zinc-600">{rejected.length}</p>
+          <p className="type-label">False alarms caught</p>
+          <p className="type-display mt-1 text-zinc-600">{rejected.length}</p>
         </Card>
       </div>
 

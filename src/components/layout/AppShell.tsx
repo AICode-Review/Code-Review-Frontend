@@ -20,7 +20,7 @@ const titles: Record<string, { title: string; subtitle?: string }> = {
   "/dashboard": { title: "Dashboard", subtitle: "Review health and recent activity" },
   "/repos": { title: "Repositories", subtitle: "Connected repos and review config" },
   "/prs": { title: "Pull Requests", subtitle: "Every PR reviewed, with an advisory score" },
-  "/reviews": { title: "Code Review", subtitle: "Automatic on PR · run manually anytime" },
+  "/reviews": { title: "Code Review", subtitle: "Automatic on PR · manual run from an open review" },
   "/rulebook": { title: "Rulebook", subtitle: "Team standards learned from feedback" },
   "/settings": { title: "Settings", subtitle: "Account, billing, members, and audit" },
   "/profile": { title: "Profile", subtitle: "Your account and preferences" },
@@ -33,6 +33,18 @@ function pageMeta(pathname: string): { title: string; subtitle?: string } {
     return { title: "Code Review", subtitle: "Comments, suggestions, and verification" };
   }
   return titles[pathname] ?? { title: "CodeFerret" };
+}
+
+/** Maps the current route to a module accent used by index.css (data-module). */
+function pageModule(pathname: string): string {
+  if (pathname.startsWith("/repos")) return "repos";
+  if (pathname.startsWith("/prs")) return "prs";
+  if (pathname.startsWith("/reviews") || pathname.startsWith("/runs")) return "reviews";
+  if (pathname.startsWith("/rulebook")) return "rulebook";
+  if (pathname.startsWith("/settings") || pathname.startsWith("/profile") || pathname.startsWith("/onboarding")) {
+    return "settings";
+  }
+  return "dashboard";
 }
 
 function readCollapsed(): boolean {
@@ -154,20 +166,10 @@ function IconSettings({ className }: { className?: string }) {
   );
 }
 
-function IconCollapse({ className }: { className?: string }) {
+function IconMenu({ className }: { className?: string }) {
   return (
-    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <path d="M10 4L6 8l4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M3.5 3v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  );
-}
-
-function IconExpand({ className }: { className?: string }) {
-  return (
-    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
-      <path d="M6 4l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      <path d="M12.5 3v10" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+      <path d="M3 4.5h12M3 9h12M3 13.5h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
     </svg>
   );
 }
@@ -180,10 +182,8 @@ function SidebarNav({
   onNavigate?: () => void;
 }) {
   return (
-    <nav className={`flex flex-1 flex-col gap-0.5 py-3 ${collapsed ? "px-2" : "px-3"}`}>
-      {!collapsed && (
-        <p className="mb-2 px-2 text-[10px] font-medium uppercase tracking-wider text-zinc-500">Workspace</p>
-      )}
+    <nav className="flex flex-1 flex-col gap-0.5 px-2 py-3">
+      <p className="sidebar-section-label type-label px-2.5">Workspace</p>
       {nav.map((item) => (
         <NavLink
           key={item.to}
@@ -192,18 +192,15 @@ function SidebarNav({
           onClick={onNavigate}
           title={collapsed ? item.label : undefined}
           className={({ isActive }) =>
-            `relative flex items-center rounded-lg text-sm transition ${
-              collapsed ? "justify-center px-0 py-2.5" : "gap-2.5 px-2.5 py-2"
-            } ${
+            `relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-[background-color,color,box-shadow] ${
               isActive
-                ? "bg-blue-50 font-medium text-blue-800 shadow-[inset_0_0_0_1px_color-mix(in_srgb,var(--rt-focus)_18%,transparent)]"
+                ? "nav-active font-medium"
                 : "text-zinc-600 hover:bg-zinc-100/80 hover:text-zinc-950"
             }`
           }
         >
-          <item.icon className="shrink-0 opacity-80" />
-          {!collapsed && <span className="truncate tracking-wide">{item.label}</span>}
-          {collapsed && <span className="sr-only">{item.label}</span>}
+          <item.icon className="size-[18px] shrink-0 opacity-80" />
+          <span className="sidebar-label tracking-wide">{item.label}</span>
         </NavLink>
       ))}
     </nav>
@@ -297,66 +294,79 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
   const { data: org } = useOrg();
   const { data: orgs, selectedOrgId, selectOrg } = useOrgs();
   const kindLabel = org?.kind === "individual" ? "Personal account" : (org?.plan ?? "Free") + " plan";
-
-  if (collapsed) {
-    return (
-      <div
-        className="mx-auto flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 text-[11px] font-semibold uppercase text-zinc-600"
-        title={`${org?.name || "Organization"} · ${kindLabel}`}
-      >
-        {(org?.name || "Or").slice(0, 2)}
-      </div>
-    );
-  }
-
-  if (orgs.length <= 1) {
-    return (
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5">
-        <p className="text-[10px] uppercase tracking-wider text-zinc-500">
-          {org?.kind === "individual" ? "Personal" : "Organization"}
-        </p>
-        <p className="mt-0.5 truncate text-sm font-medium text-zinc-800">{org?.name || "—"}</p>
-        <p className="text-[11px] text-zinc-500">{kindLabel}</p>
-      </div>
-    );
-  }
+  const initials = (org?.name || "Or").slice(0, 2);
 
   return (
-    <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2.5">
-      <p className="text-[10px] uppercase tracking-wider text-zinc-500">Workspace</p>
-      <select
-        value={selectedOrgId ?? ""}
-        onChange={(e) => selectOrg(e.target.value)}
-        className="mt-1 w-full truncate rounded-md border border-zinc-200 bg-zinc-50 py-1 pl-1.5 pr-1 text-sm font-medium text-zinc-800"
-      >
-        {orgs.map((o) => (
-          <option key={o.id} value={o.id}>
-            {o.name} {o.kind === "individual" ? "(personal)" : ""}
-          </option>
-        ))}
-      </select>
-      <p className="mt-1 text-[11px] text-zinc-500">{kindLabel}</p>
+    <div
+      className="flex items-center gap-2 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+      title={collapsed ? `${org?.name || "Organization"} · ${kindLabel}` : undefined}
+    >
+      <span className="flex h-9 w-9 shrink-0 items-center justify-center text-[11px] font-semibold uppercase text-zinc-600">
+        {initials}
+      </span>
+      <div className="sidebar-label min-w-0 flex-1 py-2 pr-3">
+        {orgs.length <= 1 ? (
+          <>
+            <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+              {org?.kind === "individual" ? "Personal" : "Organization"}
+            </p>
+            <p className="truncate text-sm font-medium text-zinc-800">{org?.name || "—"}</p>
+            <p className="text-[11px] text-zinc-500">{kindLabel}</p>
+          </>
+        ) : (
+          <>
+            <p className="text-[10px] uppercase tracking-wider text-zinc-500">Workspace</p>
+            <select
+              value={selectedOrgId ?? ""}
+              onChange={(e) => selectOrg(e.target.value)}
+              className="mt-0.5 w-full truncate rounded-md border border-zinc-200 bg-zinc-50 py-1 pl-1.5 pr-1 text-sm font-medium text-zinc-800"
+              tabIndex={collapsed ? -1 : 0}
+              aria-hidden={collapsed}
+            >
+              {orgs.map((o) => (
+                <option key={o.id} value={o.id}>
+                  {o.name} {o.kind === "individual" ? "(personal)" : ""}
+                </option>
+              ))}
+            </select>
+            <p className="mt-0.5 text-[11px] text-zinc-500">{kindLabel}</p>
+          </>
+        )}
+      </div>
     </div>
   );
 }
 
-function SidebarBrand({ collapsed }: { collapsed?: boolean }) {
+function SidebarBrand({
+  collapsed,
+  onToggle,
+}: {
+  collapsed?: boolean;
+  onToggle?: () => void;
+}) {
   return (
-    <Link
-      to="/dashboard"
-      className={`flex items-center gap-2.5 py-4 ${collapsed ? "justify-center px-2" : "px-4"}`}
-      title={collapsed ? "CodeFerret" : undefined}
-    >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--rt-accent-bg)]/50 bg-[var(--rt-accent-bg)] text-[10px] font-bold text-[var(--rt-accent-fg)]">
-        CF
-      </span>
-      {!collapsed && (
-        <span className="min-w-0">
-          <span className="block text-sm font-semibold uppercase tracking-tight text-zinc-900">CodeFerret</span>
-          <span className="block text-[10px] uppercase tracking-wide text-zinc-500">AI code review</span>
-        </span>
+    <div className="flex items-center gap-1 px-2 py-3">
+      {onToggle && (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="shrink-0 rounded-lg p-2 text-zinc-600 transition-[background-color,color] hover:bg-zinc-100 hover:text-zinc-900"
+          aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+          title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          <IconMenu />
+        </button>
       )}
-    </Link>
+      <Link to="/dashboard" className="sidebar-label flex min-w-0 items-center gap-2.5" title="CodeFerret">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--rt-accent-bg)]/50 bg-[var(--rt-accent-bg)] text-[10px] font-bold text-[var(--rt-accent-fg)]">
+          CF
+        </span>
+        <span className="min-w-0">
+          <span className="block text-sm font-semibold tracking-[-0.02em] text-zinc-950">CodeFerret</span>
+          <span className="type-meta mt-0.5 block">AI code review</span>
+        </span>
+      </Link>
+    </div>
   );
 }
 
@@ -366,6 +376,7 @@ export function AppShell() {
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const [theme, setTheme] = useState<Theme>(readTheme);
   const meta = pageMeta(location.pathname);
+  const module = pageModule(location.pathname);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -396,34 +407,21 @@ export function AppShell() {
   }
 
   return (
-    <div className="app-shell flex h-dvh flex-col overflow-hidden" data-theme={theme}>
+    <div className="app-shell flex h-dvh flex-col overflow-hidden" data-theme={theme} data-module={module}>
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Desktop sidebar */}
         <aside
-          className={`hidden h-full shrink-0 flex-col overflow-hidden border-r border-zinc-200/80 bg-linear-to-b from-zinc-50/95 to-zinc-50/90 backdrop-blur-md transition-[width] duration-200 ease-out lg:flex ${
-            collapsed ? "w-17" : "w-60"
-          }`}
+          className="app-sidebar hidden h-full shrink-0 flex-col overflow-hidden border-r border-zinc-200/80 bg-linear-to-b from-zinc-50/95 to-zinc-100/70 backdrop-blur-md lg:flex"
+          data-collapsed={collapsed ? "true" : "false"}
         >
-          <div className="shrink-0">
-            <SidebarBrand collapsed={collapsed} />
+          <div className="shrink-0 border-b border-zinc-200/80">
+            <SidebarBrand collapsed={collapsed} onToggle={toggleCollapsed} />
           </div>
-          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+          <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain overflow-x-hidden">
             <SidebarNav collapsed={collapsed} />
           </div>
-          <div className={`shrink-0 border-t border-zinc-200 ${collapsed ? "p-2" : "p-3"}`}>
+          <div className="shrink-0 border-t border-zinc-200 p-2">
             <OrgSwitcher collapsed={collapsed} />
-            <button
-              type="button"
-              onClick={toggleCollapsed}
-              className={`mt-2 flex w-full items-center rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-600 transition hover:border-zinc-300 hover:text-zinc-900 ${
-                collapsed ? "justify-center p-2" : "justify-between gap-2 px-3 py-2 text-xs"
-              }`}
-              aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-              title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-              {!collapsed && <span>Collapse</span>}
-              {collapsed ? <IconExpand /> : <IconCollapse />}
-            </button>
           </div>
         </aside>
 
@@ -458,41 +456,44 @@ export function AppShell() {
         )}
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-          <header className="z-30 flex h-14 shrink-0 items-center gap-3 border-b border-zinc-200/80 bg-zinc-50/85 px-4 shadow-[0_1px_0_rgba(24,24,27,0.02)] backdrop-blur-xl sm:px-6">
-            <button
-              type="button"
-              className="rounded-lg border border-zinc-200 bg-zinc-50 p-2 text-zinc-700 lg:hidden"
-              aria-label="Open sidebar"
-              onClick={() => setMobileOpen(true)}
-            >
-              <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-                <path d="M3 4.5h12M3 9h12M3 13.5h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
-              </svg>
-            </button>
+          <header className="z-30 shrink-0 border-b border-zinc-200/80 bg-zinc-50/90 shadow-[0_1px_0_rgba(15,23,42,0.03)] backdrop-blur-xl">
+            <div className="app-module-bar h-0.5 w-full" aria-hidden="true" />
+            <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
+              <button
+                type="button"
+                className="rounded-lg border border-zinc-200 bg-zinc-50 p-2 text-zinc-700 lg:hidden"
+                aria-label="Open sidebar"
+                onClick={() => setMobileOpen(true)}
+              >
+                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+                  <path d="M3 4.5h12M3 9h12M3 13.5h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                </svg>
+              </button>
 
-            <div className="min-w-0 flex-1">
-              <h1 className="truncate text-sm font-semibold text-zinc-900 sm:text-base">{meta.title}</h1>
-              {meta.subtitle && (
-                <p className="hidden truncate text-xs text-zinc-500 sm:block">{meta.subtitle}</p>
-              )}
+              <div className="min-w-0 flex-1">
+                <h1 className="truncate text-base font-semibold tracking-[-0.02em] text-zinc-950">{meta.title}</h1>
+                {meta.subtitle && (
+                  <p className="type-meta mt-0.5 hidden truncate sm:block">{meta.subtitle}</p>
+                )}
+              </div>
+
+              <Link
+                to="/reviews"
+                className="hidden rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 sm:inline"
+              >
+                View reviews
+              </Link>
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="rounded-lg border border-zinc-200 bg-zinc-50 p-2 text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
+                aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+                title={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+              >
+                {theme === "light" ? <IconMoon /> : <IconSun />}
+              </button>
+              <ProfileMenu />
             </div>
-
-            <Link
-              to="/reviews"
-              className="hidden rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 sm:inline"
-            >
-              View reviews
-            </Link>
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="rounded-lg border border-zinc-200 bg-zinc-50 p-2 text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
-              aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
-              title={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
-            >
-              {theme === "light" ? <IconMoon /> : <IconSun />}
-            </button>
-            <ProfileMenu />
           </header>
 
           <main className="app-workspace min-h-0 flex-1 overflow-y-auto overscroll-contain">
@@ -520,8 +521,10 @@ export function PageIntro({
   return (
     <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-zinc-200/70 pb-4">
       <div>
-        {title && <h2 className="text-lg font-semibold tracking-[-0.02em] text-zinc-950">{title}</h2>}
-        {description && <p className={`${title ? "mt-1" : ""} max-w-3xl text-sm leading-6 text-zinc-600`}>{description}</p>}
+        {title && <h2 className="type-title">{title}</h2>}
+        {description && (
+          <p className={`type-body max-w-3xl ${title ? "mt-1" : ""}`}>{description}</p>
+        )}
       </div>
       {actions}
     </div>

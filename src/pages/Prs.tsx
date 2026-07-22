@@ -51,12 +51,12 @@ function SortHeader({
     <th
       scope="col"
       aria-sort={active ? (direction === "asc" ? "ascending" : "descending") : "none"}
-      className={`px-3 py-3 font-medium ${align === "right" ? "text-right" : "text-left"} ${className}`}
+      className={`px-3 py-2 font-medium ${align === "right" ? "text-right" : "text-left"} ${className}`}
     >
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className={`inline-flex items-center gap-1 rounded text-[11px] font-semibold uppercase tracking-wide transition hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
+        className={`inline-flex items-center gap-1 rounded text-[11px] font-semibold uppercase tracking-[0.055em] transition hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
           active ? "text-zinc-900" : "text-zinc-500"
         }`}
       >
@@ -235,48 +235,71 @@ export default function Prs() {
               <table className="w-full table-fixed border-collapse text-sm">
                 <thead className="sticky top-0 z-10 border-b border-zinc-200 bg-zinc-50">
                   <tr>
-                    <SortHeader label="PR" sortKey="number" activeKey={sortKey} direction={sortDirection} onSort={handleSort} className="w-[38%] md:w-[24%]" />
-                    <th scope="col" className="hidden w-[14%] px-3 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500 lg:table-cell">
+                    <SortHeader label="PR" sortKey="number" activeKey={sortKey} direction={sortDirection} onSort={handleSort} className="w-[34%] md:w-[22%]" />
+                    <th scope="col" className="hidden w-[14%] px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 lg:table-cell">
                       Author
                     </th>
-                    <th scope="col" className="hidden w-[14%] px-3 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500 md:table-cell">
+                    <th scope="col" className="hidden w-[12%] px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 md:table-cell">
                       Trigger
                     </th>
-                    <th scope="col" className="w-[18%] px-3 py-3 text-left text-[11px] font-semibold uppercase tracking-wide text-zinc-500">
+                    <th scope="col" className="w-[14%] px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500">
                       Status
                     </th>
-                    <SortHeader label="Score" sortKey="score" activeKey={sortKey} direction={sortDirection} onSort={handleSort} className="w-[14%]" />
-                    <SortHeader label="Updated" sortKey="updatedAt" activeKey={sortKey} direction={sortDirection} onSort={handleSort} align="right" className="w-[16%]" />
+                    <SortHeader label="Score" sortKey="score" activeKey={sortKey} direction={sortDirection} onSort={handleSort} className="w-[12%]" />
+                    <SortHeader label="Updated" sortKey="updatedAt" activeKey={sortKey} direction={sortDirection} onSort={handleSort} align="right" className="hidden w-[14%] sm:table-cell" />
+                    <th scope="col" className="w-[14%] px-3 py-2 text-right text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500">
+                      Action
+                    </th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-200/80 bg-zinc-50">
                   {pagePrs.map((pr) => (
                     <tr key={pr.id} className="group transition-colors hover:bg-blue-50/35">
-                      <td className="overflow-hidden px-3 py-2">
+                      <td className="overflow-hidden px-3 py-1.5">
                         {pr.latestRun ? (
                           <Link to={`/runs/${pr.latestRun.id}`} className="block min-w-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-                            <span className="block truncate font-medium text-zinc-900 group-hover:text-blue-700">
+                            <span className="block truncate text-sm font-medium leading-5 text-zinc-900 group-hover:text-blue-700">
                               {pr.repoName} <span className="text-zinc-500">#{pr.number}</span>
                             </span>
-                            {pr.latestRun.summary && <span className="block truncate text-xs text-zinc-500">{pr.latestRun.summary}</span>}
                           </Link>
                         ) : (
-                          <span className="block truncate font-medium text-zinc-900">
+                          <span className="block truncate text-sm font-medium leading-5 text-zinc-900">
                             {pr.repoName} <span className="text-zinc-500">#{pr.number}</span>
                           </span>
                         )}
                       </td>
-                      <td className="hidden truncate px-3 py-2 text-xs text-zinc-600 lg:table-cell">
+                      <td className="hidden truncate px-3 py-1.5 type-meta lg:table-cell">
                         {pr.openedBy ?? <span className="text-zinc-400">—</span>}
                       </td>
-                      <td className="hidden px-3 py-2 md:table-cell">
-                        {pr.latestRun && <Badge kind={pr.latestRun.trigger === "manual" ? "manual" : "automatic"}>{pr.latestRun.trigger === "manual" ? "manual" : "auto"}</Badge>}
+                      <td className="hidden px-3 py-1.5 md:table-cell">
+                        {pr.latestRun ? (
+                          <Badge kind={pr.latestRun.trigger === "manual" ? "manual" : "automatic"} />
+                        ) : (
+                          <span className="text-xs text-zinc-400">—</span>
+                        )}
                       </td>
-                      <td className="px-3 py-2">{pr.latestRun ? <Badge kind={pr.latestRun.status} /> : <span className="text-xs text-zinc-400">—</span>}</td>
-                      <td className="px-3 py-2">
+                      <td className="px-3 py-1.5">
+                        {pr.latestRun ? <Badge kind={pr.latestRun.status} /> : <span className="text-xs text-zinc-400">—</span>}
+                      </td>
+                      <td className="px-3 py-1.5">
                         <ScoreCell score={pr.score} />
                       </td>
-                      <td className="px-3 py-2 text-right text-xs text-zinc-500">{timeAgo(pr.updatedAt)}</td>
+                      <td className="hidden px-3 py-1.5 text-right type-meta sm:table-cell">{timeAgo(pr.updatedAt)}</td>
+                      <td className="px-3 py-1.5 text-right">
+                        {pr.latestRun ? (
+                          <Link
+                            to={`/runs/${pr.latestRun.id}`}
+                            className="inline-flex items-center text-xs font-medium tracking-[-0.01em] text-blue-600 hover:text-blue-700 hover:underline"
+                          >
+                            Open review
+                            <span aria-hidden="true" className="ml-1">
+                              →
+                            </span>
+                          </Link>
+                        ) : (
+                          <span className="text-xs text-zinc-400">—</span>
+                        )}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
