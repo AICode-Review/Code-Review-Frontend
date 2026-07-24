@@ -7,6 +7,7 @@ import { summaryPreview, timeAgo } from "../lib/format";
 import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
 import { AreaTrendChart, CategoryBarChart, TrendChart } from "../components/charts";
 import { PageIntro } from "../components/layout/AppShell";
+import { useOrg } from "../hooks/useOrg";
 
 type AttentionItem = {
   id: string;
@@ -217,6 +218,7 @@ function buildAttention(runs: RunRow[], repos: Repo[]): AttentionItem[] {
 }
 
 export default function Dashboard() {
+  const { data: org } = useOrg();
   const { data: runs, isLoading, error } = useRuns();
   const { data: repos } = useRepos();
   const { data: analytics, isLoading: analyticsLoading } = useAnalytics();
@@ -273,6 +275,8 @@ export default function Dashboard() {
   const acceptedDelta = deltaLabel(latest?.acceptancePct, previous?.acceptancePct);
   const noiseDelta = deltaLabel(latest?.noisePct, previous?.noisePct);
   const latencyDelta = deltaLabel(latest?.medianLatencyMin, previous?.medianLatencyMin, "m");
+  const platformLabel =
+    org?.platform === "bitbucket" ? "Bitbucket" : org?.platform === "github" ? "GitHub" : org?.platform ?? "";
 
   return (
     <div className="space-y-5">
@@ -287,15 +291,36 @@ export default function Dashboard() {
               All reviews
             </Link>
             <Link
-              to="/onboarding"
+              to={org?.platform === "bitbucket" ? "/docs/bitbucket" : "/onboarding"}
               className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-zinc-800"
             >
-              Add repository
+              {org?.platform === "bitbucket" ? "Bitbucket setup" : "Add repository"}
             </Link>
           </div>
         }
       />
 
+      {org && (
+        <div className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700">
+          Viewing <strong>{org.name}</strong>
+          {platformLabel ? ` (${platformLabel})` : ""}.
+          {org.platform === "bitbucket" && (repos?.length ?? 0) === 0 && (
+            <>
+              {" "}
+              No Bitbucket repos yet — add a webhook on each repo, then open a PR.{" "}
+              <Link to="/docs/bitbucket" className="font-medium text-blue-600 hover:underline">
+                Setup guide
+              </Link>
+            </>
+          )}
+          {org.platform === "github" && (
+            <>
+              {" "}
+              To see Bitbucket, pick the workspace marked <strong>· Bitbucket</strong> in the sidebar.
+            </>
+          )}
+        </div>
+      )}
       <div className="grid grid-cols-2 gap-3 xl:grid-cols-6">
         <KpiCard
           label="Acceptance"

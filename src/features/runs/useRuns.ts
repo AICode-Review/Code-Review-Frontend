@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../lib/supabase";
 import { DEMO_MODE } from "../../lib/demo";
 import { getDemoRuns, subscribeDemoStore } from "../../lib/demoStore";
+import { useOrg } from "../../hooks/useOrg";
 
 export interface RunRow {
   id: string;
@@ -28,11 +29,14 @@ export interface RunRow {
 }
 
 /**
- * Runs feed: RLS-scoped read straight from Supabase, kept live via a
- * realtime subscription on review_runs (DESIGN.md §3, §10).
+ * Runs feed for the currently-selected org only (RLS alone is not enough —
+ * a user in GitHub + Bitbucket orgs would otherwise see both orgs' runs mixed
+ * on every dashboard). Kept live via realtime on review_runs.
  * In demo mode it serves the mutable demo store (supports re-run).
  */
 export function useRuns(repoName?: string) {
+  const { data: org } = useOrg();
+  const orgId = org?.id;
   const queryClient = useQueryClient();
   const [, bump] = useState(0);
 
@@ -49,7 +53,7 @@ export function useRuns(repoName?: string) {
   useEffect(() => {
     if (!supabase) return;
     const channel = supabase
-      .channel("review_runs_feed")
+      .channel(`review_runs_feed_${orgId ?? "none"}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "review_runs" }, () => {
         void queryClient.invalidateQueries({ queryKey: ["runs"] });
         void queryClient.invalidateQueries({ queryKey: ["analytics"] });
@@ -58,25 +62,39 @@ export function useRuns(repoName?: string) {
     return () => {
       void supabase?.removeChannel(channel);
     };
-  }, [queryClient]);
+  }, [queryClient, orgId]);
 
   return useQuery({
-    queryKey: ["runs", repoName ?? "all", bump],
+    queryKey: ["runs", orgId, repoName ?? "all", bump],
+    enabled: DEMO_MODE || Boolean(orgId),
     queryFn: async (): Promise<RunRow[]> => {
-      if (DEMO_MODE || !supabase) {
+      if (DEMO_MODE || !supabase || !orgId) {
         const rows = getDemoRuns();
-        return repoName
-          ? rows.filter((r) => r.pull_requests?.repos?.name === repoName)
-          : rows;
+        return repoName ? rows.filter((r) => r.pull_requests?.repos?.name === repoName) : rows;
       }
+
+      // Scope to this org's repos first — same pattern as usePrs — so a Bitbucket
+      // workspace never inherits GitHub/Demo runs the user can still RLS-read.
+      let reposQuery = supabase.from("repos").select("id").eq("org_id", orgId);
+      if (repoName) reposQuery = reposQuery.eq("name", repoName);
+      const { data: repoRows, error: repoError } = await reposQuery;
+      if (repoError) throw new Error(repoError.message);
+      const repoIds = (repoRows ?? []).map((r) => r.id as string);
+      if (repoIds.length === 0) return [];
+
+      const { data: prRows, error: prError } = await supabase.from("pull_requests").select("id").in("repo_id", repoIds);
+      if (prError) throw new Error(prError.message);
+      const prIds = (prRows ?? []).map((p) => p.id as string);
+      if (prIds.length === 0) return [];
+
       const { data, error } = await supabase
         .from("review_runs")
-        .select("*, pull_requests(number, repos(name))")
+        .select("*, pull_requests(number, opened_by, repos(name))")
+        .in("pr_id", prIds)
         .order("started_at", { ascending: false })
         .limit(50);
       if (error) throw new Error(error.message);
-      const rows = (data ?? []) as unknown as RunRow[];
-      return repoName ? rows.filter((r) => r.pull_requests?.repos?.name === repoName) : rows;
+      return (data ?? []) as unknown as RunRow[];
     },
   });
 }

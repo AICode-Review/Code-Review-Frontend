@@ -13,7 +13,8 @@ import {
   type DemoMember,
 } from "../../lib/demo";
 import { checkoutUrlSchema } from "../../lib/schemas";
-import { useOrg } from "../../hooks/useOrg";
+import { useOrg, type Org } from "../../hooks/useOrg";
+import { useAuth } from "../../hooks/useAuth";
 
 export type Member = DemoMember;
 export type AuditEntry = DemoAuditEntry;
@@ -320,12 +321,81 @@ export function useBitbucketConnect() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (args: { workspaceSlug: string; workspaceName: string; accessToken: string }): Promise<{ orgId: string }> => {
+    mutationFn: async (args: {
+      workspaceSlug: string;
+      workspaceName: string;
+      accessToken: string;
+      accountEmail?: string;
+    }): Promise<{
+      orgId: string;
+      repoCount: number;
+      syncError?: string;
+      workspace?: {
+        orgId: string;
+        name: string;
+        workspaceSlug: string;
+        accountEmail: string;
+        repoCount: number;
+      };
+    }> => {
       if (DEMO_MODE) throw new Error("Connecting Bitbucket is unavailable in demo mode.");
-      return api<{ orgId: string }>("/api/bitbucket/connect", { method: "POST", body: JSON.stringify(args) });
+      if (!args.accountEmail?.trim()) {
+        throw new Error("Atlassian account email is required for Bitbucket API tokens.");
+      }
+      return api("/api/bitbucket/connect", {
+        method: "POST",
+        body: JSON.stringify({ ...args, accountEmail: args.accountEmail.trim() }),
+      });
     },
-    onSuccess: () => {
-      void queryClient.invalidateQueries({ queryKey: ["orgs"] });
+    onSuccess: async (data, vars) => {
+      queryClient.setQueryData<Org[]>(["orgs"], (prev) => {
+        const list = prev ?? [];
+        if (list.some((o) => o.id === data.orgId)) {
+          return list.map((o) => (o.id === data.orgId ? { ...o, name: vars.workspaceName } : o));
+        }
+        return [
+          ...list,
+          {
+            id: data.orgId,
+            name: vars.workspaceName,
+            kind: "team",
+            plan: "free",
+            role: "owner",
+            platform: "bitbucket",
+          },
+        ];
+      });
+      await queryClient.invalidateQueries({ queryKey: ["orgs"] });
+      await queryClient.refetchQueries({ queryKey: ["orgs"] });
+      await queryClient.invalidateQueries({ queryKey: ["repos"] });
+      await queryClient.invalidateQueries({ queryKey: ["bitbucket-workspaces"] });
     },
+  });
+}
+
+export interface BitbucketWorkspaceRow {
+  orgId: string;
+  name: string;
+  workspaceSlug: string;
+  role: string;
+  plan: string;
+  repoCount: number;
+  accountEmail: string | null;
+  tokenPresent: boolean;
+  tokenExpiresAt: string | null;
+}
+
+/** Connected Bitbucket workspaces for the signed-in user (Settings → Bitbucket accounts). */
+export function useBitbucketWorkspaces() {
+  const { authenticated } = useAuth();
+  return useQuery({
+    queryKey: ["bitbucket-workspaces"],
+    enabled: DEMO_MODE || authenticated,
+    queryFn: async (): Promise<BitbucketWorkspaceRow[]> => {
+      if (DEMO_MODE) return [];
+      const res = await api<{ workspaces: BitbucketWorkspaceRow[] }>("/api/bitbucket/workspaces");
+      return res.workspaces;
+    },
+    staleTime: 30_000,
   });
 }

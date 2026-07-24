@@ -120,7 +120,7 @@ export default function Onboarding() {
               Install on GitHub ↗
             </a>
             <Link
-              to="/settings"
+              to="/settings/bitbucket"
               className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
             >
               Connect Bitbucket in Settings

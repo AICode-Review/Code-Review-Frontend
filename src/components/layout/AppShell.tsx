@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
-import { useOrg, useOrgs } from "../../hooks/useOrg";
+import { useOrg, useOrgs, type Org } from "../../hooks/useOrg";
 
 const SIDEBAR_KEY = "codeferret.sidebar.collapsed";
 const THEME_KEY = "codeferret.theme";
@@ -23,6 +23,7 @@ const titles: Record<string, { title: string; subtitle?: string }> = {
   "/reviews": { title: "Code Review", subtitle: "Automatic on PR · manual run from an open review" },
   "/rulebook": { title: "Rulebook", subtitle: "Team standards learned from feedback" },
   "/settings": { title: "Settings", subtitle: "Account, billing, members, and audit" },
+  "/settings/bitbucket": { title: "Bitbucket accounts", subtitle: "Connect and manage Bitbucket workspaces" },
   "/profile": { title: "Profile", subtitle: "Your account and preferences" },
   "/onboarding": { title: "Onboarding", subtitle: "Get your first review in under 3 minutes" },
 };
@@ -31,6 +32,9 @@ function pageMeta(pathname: string): { title: string; subtitle?: string } {
   if (pathname.startsWith("/repos/")) return { title: "Repository", subtitle: "Config, health, and runs" };
   if (pathname.startsWith("/runs/") || pathname.startsWith("/reviews/")) {
     return { title: "Code Review", subtitle: "Comments, suggestions, and verification" };
+  }
+  if (pathname === "/settings/bitbucket") {
+    return titles["/settings/bitbucket"] ?? { title: "Bitbucket accounts" };
   }
   return titles[pathname] ?? { title: "CodeFerret" };
 }
@@ -290,16 +294,25 @@ function ProfileMenu() {
   );
 }
 
+function platformLabel(platform: Org["platform"] | undefined): string {
+  if (platform === "bitbucket") return "Bitbucket";
+  if (platform === "github") return "GitHub";
+  if (platform === "demo") return "Demo";
+  return "";
+}
+
 function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
   const { data: org } = useOrg();
   const { data: orgs, selectedOrgId, selectOrg } = useOrgs();
   const kindLabel = org?.kind === "individual" ? "Personal account" : (org?.plan ?? "Free") + " plan";
+  const platform = platformLabel(org?.platform);
+  const subLabel = platform ? `${platform} · ${kindLabel}` : kindLabel;
   const initials = (org?.name || "Or").slice(0, 2);
 
   return (
     <div
       className="flex items-center gap-2 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
-      title={collapsed ? `${org?.name || "Organization"} · ${kindLabel}` : undefined}
+      title={collapsed ? `${org?.name || "Organization"} · ${subLabel}` : undefined}
     >
       <span className="flex h-9 w-9 shrink-0 items-center justify-center text-[11px] font-semibold uppercase text-zinc-600">
         {initials}
@@ -311,7 +324,7 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
               {org?.kind === "individual" ? "Personal" : "Organization"}
             </p>
             <p className="truncate text-sm font-medium text-zinc-800">{org?.name || "—"}</p>
-            <p className="text-[11px] text-zinc-500">{kindLabel}</p>
+            <p className="text-[11px] text-zinc-500">{subLabel}</p>
           </>
         ) : (
           <>
@@ -325,11 +338,13 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
             >
               {orgs.map((o) => (
                 <option key={o.id} value={o.id}>
-                  {o.name} {o.kind === "individual" ? "(personal)" : ""}
+                  {o.name}
+                  {o.kind === "individual" ? " (personal)" : ""}
+                  {o.platform === "bitbucket" ? " · Bitbucket" : o.platform === "github" ? " · GitHub" : ""}
                 </option>
               ))}
             </select>
-            <p className="mt-0.5 text-[11px] text-zinc-500">{kindLabel}</p>
+            <p className="mt-0.5 text-[11px] text-zinc-500">{subLabel}</p>
           </>
         )}
       </div>

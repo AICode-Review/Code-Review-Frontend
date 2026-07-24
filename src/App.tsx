@@ -29,6 +29,7 @@ const RunDetail = lazy(() => import("./pages/RunDetail"));
 const Reviews = lazy(() => import("./pages/Reviews"));
 const Rulebook = lazy(() => import("./pages/Rulebook"));
 const Settings = lazy(() => import("./pages/Settings"));
+const BitbucketAccounts = lazy(() => import("./pages/BitbucketAccounts"));
 const Profile = lazy(() => import("./pages/Profile"));
 
 function RouteFallback() {
@@ -88,7 +89,12 @@ function NotFound() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true,
+        }}
+      >
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route element={<PublicLayout />}>
@@ -115,6 +121,7 @@ export default function App() {
               <Route path="/runs/:id" element={<RunDetail />} />
               <Route path="/rulebook" element={<Rulebook />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/settings/bitbucket" element={<BitbucketAccounts />} />
               <Route path="/profile" element={<Profile />} />
             </Route>
 

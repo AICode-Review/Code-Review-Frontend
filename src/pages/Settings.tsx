@@ -1,12 +1,12 @@
 import { useState, type FormEvent } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { useOrg, useOrgs } from "../hooks/useOrg";
+import { useOrg } from "../hooks/useOrg";
 import {
   useAuditLog,
   useBilling,
   useBillingCheckout,
-  useBitbucketConnect,
+  useBitbucketWorkspaces,
   useCancelSubscription,
   useChangePlan,
   useCreateInvite,
@@ -170,90 +170,49 @@ function InviteSection() {
   );
 }
 
-function BitbucketConnectSection() {
-  const connect = useBitbucketConnect();
-  const { selectOrg } = useOrgs();
-  const [workspaceSlug, setWorkspaceSlug] = useState("");
-  const [workspaceName, setWorkspaceName] = useState("");
-  const [accessToken, setAccessToken] = useState("");
-  const [formError, setFormError] = useState<string | null>(null);
-  const [connected, setConnected] = useState(false);
-
-  async function submit(e: FormEvent) {
-    e.preventDefault();
-    setFormError(null);
-    setConnected(false);
-    if (!workspaceSlug.trim() || !workspaceName.trim() || !accessToken.trim()) return;
-    try {
-      const { orgId } = await connect.mutateAsync({
-        workspaceSlug: workspaceSlug.trim(),
-        workspaceName: workspaceName.trim(),
-        accessToken: accessToken.trim(),
-      });
-      setWorkspaceSlug("");
-      setWorkspaceName("");
-      setAccessToken("");
-      setConnected(true);
-      selectOrg(orgId);
-    } catch (err) {
-      setFormError((err as Error).message);
-    }
-  }
+function BitbucketAccountsSection() {
+  const { data: workspaces, isLoading } = useBitbucketWorkspaces();
+  const count = workspaces?.length ?? 0;
 
   return (
     <Card className="p-5">
-      <SectionTitle>Connect Bitbucket workspace</SectionTitle>
+      <SectionTitle hint={count > 0 ? `${count} connected` : undefined}>Bitbucket accounts</SectionTitle>
       <p className="mb-3 text-sm text-zinc-600">
-        PR review automation for Bitbucket uses a token you generate yourself, not OAuth — sign-in
-        via Bitbucket is separate and already works regardless of this. See the{" "}
-        <Link to="/docs/bitbucket" target="_blank" rel="noopener noreferrer" className="font-medium text-blue-600 hover:underline">
-          full setup guide
-        </Link>{" "}
-        for exact steps (token scopes, connecting, and adding the per-repo webhook).
+        Manage Bitbucket workspace connections on a dedicated page. Slug, display name, and Atlassian
+        email are kept after save so you can update tokens without re-entering everything.
       </p>
-      <form onSubmit={(e) => void submit(e)} className="flex flex-wrap items-end gap-2">
-        <label className="basis-40">
-          <span className="mb-1 block text-xs text-zinc-500">Workspace slug</span>
-          <input
-            required
-            value={workspaceSlug}
-            onChange={(e) => setWorkspaceSlug(e.target.value)}
-            placeholder="acme-team"
-            className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
-          />
-        </label>
-        <label className="basis-40">
-          <span className="mb-1 block text-xs text-zinc-500">Display name</span>
-          <input
-            required
-            value={workspaceName}
-            onChange={(e) => setWorkspaceName(e.target.value)}
-            placeholder="Acme Team"
-            className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
-          />
-        </label>
-        <label className="flex-1 basis-56">
-          <span className="mb-1 block text-xs text-zinc-500">Workspace access token</span>
-          <input
-            required
-            type="password"
-            value={accessToken}
-            onChange={(e) => setAccessToken(e.target.value)}
-            placeholder="••••••••••••"
-            className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
-          />
-        </label>
-        <button
-          type="submit"
-          disabled={DEMO_MODE || connect.isPending}
-          title={DEMO_MODE ? "Connecting Bitbucket is unavailable in demo mode" : undefined}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+      {isLoading && <LoadingText>Loading…</LoadingText>}
+      {!isLoading && count > 0 && (
+        <ul className="mb-3 space-y-1.5 text-sm text-zinc-700">
+          {workspaces!.map((w) => (
+            <li key={w.orgId} className="flex flex-wrap items-center gap-2">
+              <span className="font-medium text-zinc-900">{w.name}</span>
+              <span className="text-xs text-zinc-500">({w.workspaceSlug})</span>
+              <span className="text-xs text-zinc-500">· {w.repoCount} repo{w.repoCount === 1 ? "" : "s"}</span>
+              {w.accountEmail && <span className="text-xs text-zinc-500">· {w.accountEmail}</span>}
+            </li>
+          ))}
+        </ul>
+      )}
+      {!isLoading && count === 0 && (
+        <p className="mb-3 text-sm text-zinc-500">No Bitbucket workspaces connected yet.</p>
+      )}
+      <div className="flex flex-wrap gap-2">
+        <Link
+          to="/settings/bitbucket"
+          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
         >
-          {connect.isPending ? "Connecting…" : "Connect"}
-        </button>
-      </form>
-      {formError && <p className="mt-2 text-xs text-red-600">{formError}</p>}
-      {connected && <p className="mt-2 text-xs text-emerald-600">Connected — switched to the new workspace.</p>}
+          Manage Bitbucket accounts
+        </Link>
+        <Link
+          to="/docs/bitbucket"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
+        >
+          Setup guide
+        </Link>
+      </div>
     </Card>
   );
 }
@@ -391,7 +350,7 @@ export default function Settings() {
           </Card>
 
           <InviteSection />
-          <BitbucketConnectSection />
+          <BitbucketAccountsSection />
         </div>
 
         <div className="min-w-0 space-y-4">

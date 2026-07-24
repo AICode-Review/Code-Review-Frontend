@@ -5,12 +5,12 @@ const steps: Array<{ icon: IconName; title: string; body: string }> = [
   {
     icon: "lock",
     title: "1. Create an API token",
-    body: "Bitbucket account avatar → Account settings → Security tab → Create and manage API tokens → Create API token with scopes. Name it, set an expiry, select Bitbucket as the app, then choose exactly three scopes: read:repository:bitbucket, read:pullrequest:bitbucket, write:pullrequest:bitbucket. Copy the token immediately — it's shown once.",
+    body: "Bitbucket account avatar → Account settings → Security tab → Create and manage API tokens → Create API token with scopes. Name it, set an expiry, select Bitbucket as the app, then choose exactly three scopes: read:repository:bitbucket, read:pullrequest:bitbucket, write:pullrequest:bitbucket. Copy the token immediately — it's shown once. Private repos are fine with these scopes.",
   },
   {
     icon: "code",
     title: "2. Connect the workspace",
-    body: "In CodeFerret: Settings → “Connect Bitbucket workspace.” Enter the workspace slug (from the Bitbucket URL, e.g. acme-team), a display name, and paste the API token from step 1. This creates the org and stores the token encrypted — nothing else to configure here.",
+    body: "In CodeFerret: Settings → Bitbucket accounts (/settings/bitbucket). Enter the workspace slug (from the Bitbucket URL, e.g. aicode_review93), a display name, your Atlassian account email (required for personal API tokens), and paste the token. Slug, name, and email stay filled after save so you can update the token later. Repositories are imported on connect — including private ones.",
   },
   {
     icon: "shield",
@@ -20,7 +20,7 @@ const steps: Array<{ icon: IconName; title: string; body: string }> = [
   {
     icon: "scan",
     title: "4. Open or push to a PR",
-    body: "No separate “select repos” step — the first PR event that arrives via the webhook automatically registers that repo and runs a review. Open a pull request (or push a new commit to one) on a connected repo to see it work.",
+    body: "Repos appear after connect; reviews start when a PR event arrives via the webhook. Open a pull request (or push a new commit to one) on a connected repo to see a review run.",
   },
 ];
 

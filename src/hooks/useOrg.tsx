@@ -67,16 +67,19 @@ const OrgContext = createContext<OrgContextValue | null>(null);
  * one or more team orgs at once.
  */
 export function OrgProvider({ children }: { children: ReactNode }) {
-  const { data: orgs = [], isLoading } = useOrgsQuery();
+  const { data: orgs = [], isLoading, isFetching } = useOrgsQuery();
   const [selectedOrgId, setSelectedOrgId] = useState<string | null>(readStoredOrgId);
 
   useEffect(() => {
     if (orgs.length === 0) return;
     if (selectedOrgId && orgs.some((o) => o.id === selectedOrgId)) return;
+    // Keep a stored id that isn't in the list yet (e.g. right after Bitbucket connect,
+    // while orgs are refetching) — only fall back once the fetch has settled.
+    if (selectedOrgId && (isLoading || isFetching)) return;
     const fallback = orgs[0]!.id;
     setSelectedOrgId(fallback);
     storeOrgId(fallback);
-  }, [orgs, selectedOrgId]);
+  }, [orgs, selectedOrgId, isLoading, isFetching]);
 
   function selectOrg(id: string) {
     setSelectedOrgId(id);
