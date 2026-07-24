@@ -163,7 +163,7 @@ export default function RunDetail() {
             {repoName}
             <span className="font-medium text-zinc-500"> #{prNumber}</span>
           </h2>
-          {run.summary && <p className="type-body mt-1">{summaryPreview(run.summary, 220)}</p>}
+          {run.summary && <p className="type-body mt-1 whitespace-pre-line">{summaryPreview(run.summary, 4000)}</p>}
           <p className="mt-2 flex flex-wrap items-center gap-2 type-meta">
             <Badge kind={run.status} />
             <Badge kind={run.trigger === "manual" ? "manual" : "automatic"}>

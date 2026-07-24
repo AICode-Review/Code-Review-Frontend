@@ -34,8 +34,12 @@ describe("summaryPreview", () => {
     expect(preview).toContain("Risk: 🔴 high");
   });
 
-  it("collapses newlines into a single line", () => {
-    expect(summaryPreview("line one\nline two\nline three")).toBe("line one line two line three");
+  it("preserves line breaks but collapses horizontal whitespace", () => {
+    expect(summaryPreview("line one\nline two  \t line three")).toBe("line one\nline two line three");
+  });
+
+  it("caps runs of 3+ blank lines down to one blank line", () => {
+    expect(summaryPreview("line one\n\n\n\nline two")).toBe("line one\n\nline two");
   });
 
   it("truncates with an ellipsis past maxLen", () => {

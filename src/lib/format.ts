@@ -20,14 +20,17 @@ export function usd(amount: number): string {
 /**
  * `review_runs.summary` is GitHub-comment markdown (starts with an HTML comment marker
  * used to find/update the comment in place — see engine/delivery.ts's buildSummaryMarkdown)
- * — never meant to be dumped raw into a UI row. Strips markup down to a single-line preview.
+ * — never meant to be dumped raw into a UI row. Strips markdown syntax down to plain text;
+ * line breaks are kept (render with `whitespace-pre-line`) so a multi-finding summary stays
+ * readable instead of collapsing into one dense run-on line.
  */
 export function summaryPreview(summary: string, maxLen = 160): string {
   const plain = summary
     .replace(/<!--[\s\S]*?-->/g, "") // marker comment
     .replace(/^#{1,6}\s*/gm, "") // heading hashes
     .replace(/[*_`]/g, "") // bold/italic/inline-code markers
-    .replace(/\s+/g, " ")
+    .replace(/[ \t]+/g, " ") // collapse horizontal whitespace only — keep line breaks
+    .replace(/\n{3,}/g, "\n\n") // cap blank-line runs at one
     .trim();
   return plain.length > maxLen ? `${plain.slice(0, maxLen - 1).trimEnd()}…` : plain;
 }
