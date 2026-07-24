@@ -73,9 +73,11 @@ export default function Security() {
             Questions, or a security disclosure?
           </p>
           <p className="mt-1.5 text-sm text-[#a39a86]">security@codeferret.dev</p>
+          {/* Pricing is temporarily disabled — not deleted, see App.tsx's commented-out route.
           <Link to="/pricing" className="mt-4 inline-flex text-xs font-medium text-[#ffb300] hover:underline">
             &gt; See plans that fit your team
           </Link>
+          */}
         </Reveal>
       </div>
     </div>

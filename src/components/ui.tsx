@@ -22,7 +22,7 @@ export function PublicHeader() {
     <header className="sticky top-0 z-40 border-b border-[#3a2f1f] bg-[#0a0a08]/95 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-6">
         <Link
-          to="/"
+          to="/signin"
           className="inline-flex items-center gap-2.5 rounded-none font-mono text-lg font-bold uppercase tracking-tight text-[#f2ead9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffb300]"
           onClick={() => setOpen(false)}
         >
@@ -45,9 +45,11 @@ export function PublicHeader() {
             open ? "flex" : "hidden"
           } absolute left-0 right-0 top-[61px] z-20 flex-col gap-1 border-b border-[#3a2f1f] bg-[#0a0a08] px-5 py-3 shadow-[0_8px_0_0_#000] sm:px-6 md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none`}
         >
+          {/* Pricing is temporarily disabled — not deleted, see App.tsx's commented-out route.
           <NavLink to="/pricing" className={linkClass} onClick={() => setOpen(false)}>
             Pricing
           </NavLink>
+          */}
           <NavLink to="/cli" className={linkClass} onClick={() => setOpen(false)}>
             CLI
           </NavLink>

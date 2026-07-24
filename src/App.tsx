@@ -8,8 +8,10 @@ import { AppShell } from "./components/layout/AppShell";
 
 // Route-level code splitting — each page becomes its own chunk, fetched on
 // navigation instead of all bundled into one ~1.1MB entry file.
-const Landing = lazy(() => import("./pages/public/Landing"));
-const Pricing = lazy(() => import("./pages/public/Pricing"));
+// Landing and Pricing are temporarily disabled (routes commented out below) —
+// not deleted, just not reachable anywhere in the frontend right now.
+// const Landing = lazy(() => import("./pages/public/Landing"));
+// const Pricing = lazy(() => import("./pages/public/Pricing"));
 const Security = lazy(() => import("./pages/public/Security"));
 const Benchmark = lazy(() => import("./pages/public/Benchmark"));
 const Cli = lazy(() => import("./pages/public/Cli"));
@@ -77,7 +79,10 @@ function ProtectedShell() {
 
 function NotFound() {
   const { authenticated } = useAuth();
-  return <Navigate to={authenticated ? "/dashboard" : "/"} replace />;
+  // "/" itself has no matching route while Landing is disabled (see the commented-out
+  // routes below), so it falls through to here too — send unauthenticated visitors to
+  // /signin instead of "/", which would otherwise just bounce back to this same component.
+  return <Navigate to={authenticated ? "/dashboard" : "/signin"} replace />;
 }
 
 export default function App() {
@@ -87,8 +92,8 @@ export default function App() {
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route element={<PublicLayout />}>
-              <Route path="/" element={<Landing />} />
-              <Route path="/pricing" element={<Pricing />} />
+              {/* <Route path="/" element={<Landing />} /> */}
+              {/* <Route path="/pricing" element={<Pricing />} /> */}
               <Route path="/cli" element={<Cli />} />
               <Route path="/security" element={<Security />} />
               <Route path="/benchmark" element={<Benchmark />} />
