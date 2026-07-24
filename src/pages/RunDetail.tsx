@@ -141,6 +141,14 @@ export default function RunDetail() {
   const inFlight = run.status === "queued" || run.status === "running";
   const canManualRun = !inFlight;
 
+  const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
+  const summaryParts = [
+    diff ? `${plural(diff.stats.files, "file")} changed (+${diff.stats.additions}/-${diff.stats.deletions})` : null,
+    run.status === "completed" ? plural(posted.length, "issue") + " to fix" : null,
+    digest.length > 0 ? `${plural(digest.length, "lower-priority note")}` : null,
+    rejected.length > 0 ? `${plural(rejected.length, "false alarm")} filtered out` : null,
+  ].filter((p): p is string => p !== null);
+
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -163,6 +171,9 @@ export default function RunDetail() {
             {repoName}
             <span className="font-medium text-zinc-500"> #{prNumber}</span>
           </h2>
+          {summaryParts.length > 0 && (
+            <p className="type-body mt-1 text-zinc-600">{summaryParts.join(" · ")}</p>
+          )}
           <p className="mt-2 flex flex-wrap items-center gap-2 type-meta">
             <Badge kind={run.status} />
             <Badge kind={run.trigger === "manual" ? "manual" : "automatic"}>
