@@ -33,6 +33,7 @@ function categoryLabel(category: string): string {
     concurrency: "Concurrency",
     errors: "Error handling",
     tests: "Tests",
+    performance: "Performance",
     style: "Style",
   };
   return map[category] ?? category;

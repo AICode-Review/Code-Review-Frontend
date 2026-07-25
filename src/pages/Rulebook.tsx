@@ -130,7 +130,7 @@ export default function Rulebook() {
             onChange={(e) => setNewCategory(e.target.value)}
             className="rounded-lg border border-zinc-300 bg-zinc-50 px-2 py-2 text-sm text-zinc-700"
           >
-            {["style", "logic", "security", "contracts", "errors", "tests", "concurrency"].map((c) => (
+            {["style", "logic", "security", "contracts", "errors", "tests", "concurrency", "performance"].map((c) => (
               <option key={c} value={c}>
                 {c}
               </option>
