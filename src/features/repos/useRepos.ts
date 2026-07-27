@@ -73,34 +73,31 @@ export function useRepos() {
       if (error) throw new Error(error.message);
       const rows = (data ?? []) as unknown as RepoRow[];
 
-      // Live open-PR counts, one query for the whole org rather than one per repo.
+      // Open-PR counts and finding feedback both only depend on repoIds (not on each
+      // other), so they run in parallel — this previously awaited them one after the
+      // other, adding a full extra network round-trip for no reason.
       const repoIds = rows.map((r) => r.id);
       const openPrCounts = new Map<string, number>();
+      const feedbackByRepo = new Map<string, RepoFeedbackStats>();
+
       if (repoIds.length > 0) {
-        const { data: openPrs, error: prError } = await supabase
-          .from("pull_requests")
-          .select("repo_id")
-          .in("repo_id", repoIds)
-          .eq("state", "open");
-        if (prError) throw new Error(prError.message);
-        for (const pr of (openPrs ?? []) as { repo_id: string }[]) {
+        const [openPrsResult, feedbackResult] = await Promise.all([
+          supabase.from("pull_requests").select("repo_id").in("repo_id", repoIds).eq("state", "open"),
+          // One nested-embed query (pull_requests -> review_runs -> findings) rather than
+          // N+1 per-repo round trips — RLS already scopes all three tables to the
+          // caller's org membership (0001_init.sql).
+          supabase.from("pull_requests").select("repo_id, review_runs(findings(posted, feedback))").in("repo_id", repoIds),
+        ]);
+
+        if (openPrsResult.error) throw new Error(openPrsResult.error.message);
+        for (const pr of (openPrsResult.data ?? []) as { repo_id: string }[]) {
           openPrCounts.set(pr.repo_id, (openPrCounts.get(pr.repo_id) ?? 0) + 1);
         }
-      }
 
-      // Finding feedback per repo, via one nested-embed query (pull_requests -> review_runs ->
-      // findings) rather than N+1 per-repo round trips — RLS already scopes all three tables
-      // to the caller's org membership (0001_init.sql).
-      const feedbackByRepo = new Map<string, RepoFeedbackStats>();
-      if (repoIds.length > 0) {
-        const { data: prTree, error: feedbackError } = await supabase
-          .from("pull_requests")
-          .select("repo_id, review_runs(findings(posted, feedback))")
-          .in("repo_id", repoIds);
-        if (feedbackError) throw new Error(feedbackError.message);
+        if (feedbackResult.error) throw new Error(feedbackResult.error.message);
         type FindingRow = { posted: boolean; feedback: string | null };
         type PrTreeRow = { repo_id: string; review_runs: { findings: FindingRow[] }[] | null };
-        for (const pr of (prTree ?? []) as unknown as PrTreeRow[]) {
+        for (const pr of (feedbackResult.data ?? []) as unknown as PrTreeRow[]) {
           const stats = feedbackByRepo.get(pr.repo_id) ?? { posted: 0, accepted: 0, dismissed: 0 };
           for (const run of pr.review_runs ?? []) {
             for (const f of run.findings ?? []) {

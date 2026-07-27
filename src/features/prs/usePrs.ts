@@ -4,7 +4,6 @@ import { supabase } from "../../lib/supabase";
 import { DEMO_MODE, demoFindings, demoRuns } from "../../lib/demo";
 import { computePrScore } from "../../lib/prScore";
 import { useOrg } from "../../hooks/useOrg";
-import { useRepos } from "../repos/useRepos";
 import type { RunRow } from "../runs/useRuns";
 
 export interface PrListItem {
@@ -65,11 +64,8 @@ function demoPrList(): PrListItem[] {
 /** Every pull request CodeFerret has ever seen for the current org, one row each, with the latest run's status and an advisory 0-100 score. */
 export function usePrs() {
   const { data: org } = useOrg();
-  const { data: repos } = useRepos();
   const orgId = org?.id;
   const queryClient = useQueryClient();
-  const repoIds = (repos ?? []).map((repo) => repo.id);
-  const repoKey = repoIds.join(",");
 
   useEffect(() => {
     if (!supabase || DEMO_MODE) return;
@@ -93,11 +89,18 @@ export function usePrs() {
   }, [queryClient]);
 
   return useQuery({
-    queryKey: ["prs", orgId, repoKey],
-    enabled: DEMO_MODE || (Boolean(orgId) && repos !== undefined),
+    queryKey: ["prs", orgId],
+    enabled: DEMO_MODE || Boolean(orgId),
     queryFn: async (): Promise<PrListItem[]> => {
       if (DEMO_MODE || !supabase || !orgId) return demoPrList();
 
+      // Only the repo ids are needed here — fetched directly (not via the full
+      // useRepos() hook) so this query doesn't have to wait on useRepos' own,
+      // heavier computation (open-PR counts, feedback stats) that this page
+      // doesn't use at all.
+      const { data: repoRows, error: repoErr } = await supabase.from("repos").select("id").eq("org_id", orgId);
+      if (repoErr) throw new Error(repoErr.message);
+      const repoIds = (repoRows ?? []).map((r) => r.id as string);
       if (repoIds.length === 0) return [];
 
       const { data: prRows, error: prErr } = await supabase
