@@ -120,43 +120,77 @@ function FunnelStep({ label, value, total, color }: { label: string; value: numb
   );
 }
 
-function RunRowItem({ run }: { run: RunRow }) {
+function RunCard({ run }: { run: RunRow }) {
   const verificationPct =
     run.candidates > 0 ? Math.round((run.verified / run.candidates) * 100) : null;
 
   return (
-    <tr className="border-b border-zinc-100 last:border-0 hover:bg-zinc-50/80">
-      <td className="px-4 py-3">
-        <Link to={`/runs/${run.id}`} className="block min-w-0 hover:text-blue-700">
-          <span className="text-sm font-medium text-zinc-900">
-            {run.pull_requests?.repos?.name ?? "unknown"}
-            <span className="text-zinc-500"> #{run.pull_requests?.number ?? "?"}</span>
-          </span>
-          <span className="mt-0.5 block font-mono text-[11px] text-zinc-500">{run.head_sha.slice(0, 7)}</span>
-        </Link>
-      </td>
-      <td className="hidden px-4 py-3 md:table-cell">
-        <Badge kind={run.trigger === "manual" ? "manual" : "automatic"}>
-          {run.trigger === "manual" ? "manual" : "auto"}
-        </Badge>
-      </td>
-      <td className="hidden px-4 py-3 text-xs tabular-nums text-zinc-600 lg:table-cell">{timeAgo(run.started_at)}</td>
-      <td className="hidden px-4 py-3 text-xs tabular-nums text-zinc-600 xl:table-cell">
-        {run.verified}/{run.candidates}
-        {verificationPct !== null && <span className="text-zinc-400"> · {verificationPct}%</span>}
-      </td>
-      <td className="hidden px-4 py-3 text-xs tabular-nums text-zinc-600 2xl:table-cell">
-        {formatLatency(run.latency_ms)}
-      </td>
-      <td className="px-4 py-3 text-right">
-        <div className="flex flex-col items-end gap-1">
-          <Badge kind={run.status} />
-          <Link to={`/runs/${run.id}`} className="text-[11px] text-blue-600 hover:underline">
-            Open →
-          </Link>
+    <li>
+      <Link
+        to={`/runs/${run.id}`}
+        className="flex items-center justify-between gap-4 px-4 py-3.5 transition hover:bg-zinc-50/80"
+      >
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="truncate text-sm font-medium text-zinc-900">
+              {run.pull_requests?.repos?.name ?? "unknown"}
+              <span className="text-zinc-500"> #{run.pull_requests?.number ?? "?"}</span>
+            </span>
+            <Badge kind={run.trigger === "manual" ? "manual" : "automatic"}>
+              {run.trigger === "manual" ? "manual" : "auto"}
+            </Badge>
+          </div>
+          <p className="mt-1 truncate text-[11px] text-zinc-500">
+            {timeAgo(run.started_at)}
+            {verificationPct !== null && ` · ${run.verified}/${run.candidates} verified (${verificationPct}%)`}
+            {run.latency_ms != null && ` · ${formatLatency(run.latency_ms)}`}
+          </p>
         </div>
-      </td>
-    </tr>
+        <Badge kind={run.status} />
+      </Link>
+    </li>
+  );
+}
+
+function RepoCard({ repo }: { repo: Repo }) {
+  const accept = repo.acceptancePct;
+  const noise = repo.noisePct;
+  return (
+    <Link
+      to={`/repos/${repo.id}`}
+      className="block rounded-lg border border-zinc-200 p-3 transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-zinc-50/60 hover:shadow-sm"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <p className="truncate text-sm font-medium text-zinc-900">{repo.name}</p>
+        <Badge kind={repo.indexStatus}>{repo.indexStatus}</Badge>
+      </div>
+      <p className="mt-0.5 text-[11px] capitalize text-zinc-500">
+        {repo.openPrs} open PR{repo.openPrs === 1 ? "" : "s"} · {repo.strictness}
+      </p>
+      <div className="mt-2.5 grid grid-cols-2 gap-3">
+        <div>
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="text-zinc-500">Accept</span>
+            <span className="font-medium tabular-nums text-zinc-800">{accept !== null ? `${accept}%` : "—"}</span>
+          </div>
+          <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-100">
+            <div className="h-full rounded-full bg-emerald-500" style={{ width: `${Math.min(100, accept ?? 0)}%` }} />
+          </div>
+        </div>
+        <div>
+          <div className="flex items-center justify-between text-[11px]">
+            <span className="text-zinc-500">Noise</span>
+            <span className="font-medium tabular-nums text-zinc-800">{noise !== null ? `${noise}%` : "—"}</span>
+          </div>
+          <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-100">
+            <div
+              className={`h-full rounded-full ${(noise ?? 0) > 5 ? "bg-amber-500" : "bg-emerald-500"}`}
+              style={{ width: `${Math.min(100, noise ?? 0)}%` }}
+            />
+          </div>
+        </div>
+      </div>
+    </Link>
   );
 }
 
@@ -564,45 +598,10 @@ export default function Dashboard() {
               </EmptyState>
             </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[420px] text-left text-sm">
-                <thead>
-                  <tr className="border-b border-zinc-100 text-[11px] uppercase tracking-wide text-zinc-500">
-                    <th className="px-4 py-2.5 font-medium">Repository</th>
-                    <th className="px-4 py-2.5 font-medium">Index</th>
-                    <th className="px-4 py-2.5 text-right font-medium">PRs</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Accept</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Noise</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {repoMonitor.map((repo) => (
-                    <tr key={repo.id} className="border-b border-zinc-50 last:border-0 hover:bg-zinc-50/80">
-                      <td className="px-4 py-2.5">
-                        <Link to={`/repos/${repo.id}`} className="font-medium text-zinc-900 hover:text-blue-700">
-                          {repo.name}
-                        </Link>
-                        <p className="text-[11px] capitalize text-zinc-500">{repo.strictness} · budget {repo.commentBudget}</p>
-                      </td>
-                      <td className="px-4 py-2.5">
-                        <Badge kind={repo.indexStatus}>{repo.indexStatus}</Badge>
-                      </td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-zinc-700">{repo.openPrs}</td>
-                      <td className="px-4 py-2.5 text-right tabular-nums text-zinc-700">
-                        {/* null = no feedback data yet, distinct from a genuine (and meaningful) 0% */}
-                        {repo.acceptancePct !== null ? `${repo.acceptancePct}%` : "—"}
-                      </td>
-                      <td
-                        className={`px-4 py-2.5 text-right tabular-nums ${
-                          (repo.noisePct ?? 0) > 5 ? "font-medium text-amber-700" : "text-zinc-700"
-                        }`}
-                      >
-                        {repo.noisePct !== null ? `${repo.noisePct}%` : "—"}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+            <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
+              {repoMonitor.map((repo) => (
+                <RepoCard key={repo.id} repo={repo} />
+              ))}
             </div>
           )}
         </Card>
@@ -636,25 +635,11 @@ export default function Dashboard() {
             </div>
           )}
           {recent.length > 0 && (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[640px] text-left">
-                <thead>
-                  <tr className="border-b border-zinc-100 text-[11px] uppercase tracking-wide text-zinc-500">
-                    <th className="px-4 py-2.5 font-medium">Pull request</th>
-                    <th className="hidden px-4 py-2.5 font-medium md:table-cell">Trigger</th>
-                    <th className="hidden px-4 py-2.5 font-medium lg:table-cell">Started</th>
-                    <th className="hidden px-4 py-2.5 font-medium xl:table-cell">Verified</th>
-                    <th className="hidden px-4 py-2.5 font-medium 2xl:table-cell">Latency</th>
-                    <th className="px-4 py-2.5 text-right font-medium">Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {recent.map((run) => (
-                    <RunRowItem key={run.id} run={run} />
-                  ))}
-                </tbody>
-              </table>
-            </div>
+            <ul className="divide-y divide-zinc-100">
+              {recent.map((run) => (
+                <RunCard key={run.id} run={run} />
+              ))}
+            </ul>
           )}
         </Card>
       </div>
