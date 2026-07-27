@@ -179,7 +179,7 @@ export function GroupedBarChart({
 }) {
   return (
     <ResponsiveContainer width="100%" height={height}>
-      <BarChart data={data} margin={{ top: 8, right: 12, bottom: 24, left: -16 }} barGap={4}>
+      <BarChart data={data} margin={{ top: 28, right: 12, bottom: 44, left: -8 }} barGap={4}>
         <CartesianGrid stroke={GRID} vertical={false} />
         <XAxis
           dataKey={xKey}
@@ -187,11 +187,17 @@ export function GroupedBarChart({
           interval={0}
           angle={-30}
           textAnchor="end"
-          height={50}
+          height={60}
         />
-        <YAxis {...axisProps} width={40} unit={unit} domain={yDomain} />
+        {/* Wide enough that a 3-digit value with a unit (e.g. "100%") never gets clipped —
+            a narrower width here previously truncated leading digits, making "100%"/"75%"
+            render as "0%"/"5%". */}
+        <YAxis {...axisProps} width={50} unit={unit} domain={yDomain} />
         <Tooltip {...tooltipStyle} cursor={{ fill: "color-mix(in srgb, var(--color-zinc-900) 6%, transparent)" }} />
-        <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: "var(--color-zinc-600)" }} />
+        {/* Pinned to the top, not the (recharts) default bottom — the bottom margin is
+            already reserved for the angled category labels, and the two would otherwise
+            render on top of each other. */}
+        <Legend verticalAlign="top" align="right" height={28} iconType="circle" wrapperStyle={{ fontSize: 12, color: "var(--color-zinc-600)" }} />
         {series.map((s, i) => (
           <Bar key={s.key} dataKey={s.key} name={s.label} fill={SERIES[i % SERIES.length]} radius={[4, 4, 0, 0]} maxBarSize={28} />
         ))}
