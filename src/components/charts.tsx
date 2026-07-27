@@ -11,9 +11,12 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   Legend,
   Line,
   LineChart,
+  Pie,
+  PieChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -155,5 +158,98 @@ export function CategoryBarChart({
         <Bar dataKey={yKey} name={label} fill={SERIES[0]} radius={[4, 4, 0, 0]} maxBarSize={36} />
       </BarChart>
     </ResponsiveContainer>
+  );
+}
+
+/** Multiple series grouped side-by-side per category — e.g. accept% vs noise% per repo. */
+export function GroupedBarChart({
+  data,
+  xKey,
+  series,
+  yDomain,
+  unit,
+  height = 220,
+}: {
+  data: object[];
+  xKey: string;
+  series: SeriesSpec[];
+  yDomain?: [number, number];
+  unit?: string;
+  height?: number;
+}) {
+  return (
+    <ResponsiveContainer width="100%" height={height}>
+      <BarChart data={data} margin={{ top: 8, right: 12, bottom: 24, left: -16 }} barGap={4}>
+        <CartesianGrid stroke={GRID} vertical={false} />
+        <XAxis
+          dataKey={xKey}
+          {...axisProps}
+          interval={0}
+          angle={-30}
+          textAnchor="end"
+          height={50}
+        />
+        <YAxis {...axisProps} width={40} unit={unit} domain={yDomain} />
+        <Tooltip {...tooltipStyle} cursor={{ fill: "color-mix(in srgb, var(--color-zinc-900) 6%, transparent)" }} />
+        <Legend iconType="circle" wrapperStyle={{ fontSize: 12, color: "var(--color-zinc-600)" }} />
+        {series.map((s, i) => (
+          <Bar key={s.key} dataKey={s.key} name={s.label} fill={SERIES[i % SERIES.length]} radius={[4, 4, 0, 0]} maxBarSize={28} />
+        ))}
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+export interface DonutSlice {
+  name: string;
+  value: number;
+  color?: string;
+}
+
+/** Small donut with a side legend — for a handful of categories (e.g. run status counts). */
+export function DonutChart({ data, height = 160 }: { data: DonutSlice[]; height?: number }) {
+  if (data.length === 0) return null;
+  const size = Math.max(height, 120);
+  const outerRadius = Math.floor(size * 0.4);
+  const innerRadius = Math.floor(outerRadius * 0.6);
+
+  return (
+    <div className="flex items-center gap-4" style={{ minHeight: size }}>
+      <div className="shrink-0 overflow-visible" style={{ width: size, height: size }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart margin={{ top: 4, right: 4, bottom: 4, left: 4 }}>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={innerRadius}
+              outerRadius={outerRadius}
+              paddingAngle={2}
+              stroke="var(--color-zinc-50)"
+              strokeWidth={2}
+            >
+              {data.map((entry, i) => (
+                <Cell key={entry.name} fill={entry.color ?? SERIES[i % SERIES.length]} />
+              ))}
+            </Pie>
+            <Tooltip {...tooltipStyle} />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+      <ul className="flex min-w-0 flex-1 flex-col justify-center gap-1.5 text-xs">
+        {data.map((d, i) => (
+          <li key={d.name} className="flex items-center gap-2 text-zinc-700">
+            <span
+              className="inline-block size-2.5 shrink-0 rounded-sm"
+              style={{ background: d.color ?? SERIES[i % SERIES.length] }}
+            />
+            <span className="min-w-0 truncate capitalize">{d.name}</span>
+            <span className="ml-auto tabular-nums text-zinc-500">{d.value}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }

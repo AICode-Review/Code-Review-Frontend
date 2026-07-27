@@ -5,9 +5,17 @@ import { useAnalytics } from "../features/analytics/useAnalytics";
 import { useRepos, type Repo } from "../features/repos/useRepos";
 import { summaryPreview, timeAgo } from "../lib/format";
 import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
-import { AreaTrendChart, CategoryBarChart, TrendChart } from "../components/charts";
+import { AreaTrendChart, CategoryBarChart, DonutChart, GroupedBarChart, TrendChart } from "../components/charts";
 import { PageIntro } from "../components/layout/AppShell";
 import { useOrg } from "../hooks/useOrg";
+
+const RUN_STATUS_COLORS: Record<string, string> = {
+  completed: "var(--color-emerald-600)",
+  failed: "var(--color-red-600)",
+  running: "var(--color-blue-600)",
+  queued: "var(--color-amber-500)",
+  cancelled: "var(--color-zinc-400)",
+};
 
 type AttentionItem = {
   id: string;
@@ -152,48 +160,6 @@ function RunCard({ run }: { run: RunRow }) {
   );
 }
 
-function RepoCard({ repo }: { repo: Repo }) {
-  const accept = repo.acceptancePct;
-  const noise = repo.noisePct;
-  return (
-    <Link
-      to={`/repos/${repo.id}`}
-      className="block rounded-lg border border-zinc-200 p-3 transition hover:-translate-y-0.5 hover:border-zinc-300 hover:bg-zinc-50/60 hover:shadow-sm"
-    >
-      <div className="flex items-center justify-between gap-2">
-        <p className="truncate text-sm font-medium text-zinc-900">{repo.name}</p>
-        <Badge kind={repo.indexStatus}>{repo.indexStatus}</Badge>
-      </div>
-      <p className="mt-0.5 text-[11px] capitalize text-zinc-500">
-        {repo.openPrs} open PR{repo.openPrs === 1 ? "" : "s"} · {repo.strictness}
-      </p>
-      <div className="mt-2.5 grid grid-cols-2 gap-3">
-        <div>
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="text-zinc-500">Accept</span>
-            <span className="font-medium tabular-nums text-zinc-800">{accept !== null ? `${accept}%` : "—"}</span>
-          </div>
-          <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-100">
-            <div className="h-full rounded-full bg-emerald-500" style={{ width: `${Math.min(100, accept ?? 0)}%` }} />
-          </div>
-        </div>
-        <div>
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="text-zinc-500">Noise</span>
-            <span className="font-medium tabular-nums text-zinc-800">{noise !== null ? `${noise}%` : "—"}</span>
-          </div>
-          <div className="mt-1 h-1 overflow-hidden rounded-full bg-zinc-100">
-            <div
-              className={`h-full rounded-full ${(noise ?? 0) > 5 ? "bg-amber-500" : "bg-emerald-500"}`}
-              style={{ width: `${Math.min(100, noise ?? 0)}%` }}
-            />
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-}
-
 function buildAttention(runs: RunRow[], repos: Repo[]): AttentionItem[] {
   const items: AttentionItem[] = [];
 
@@ -307,7 +273,19 @@ export default function Dashboard() {
       .slice(0, 6);
   }, [repos]);
 
-  const recent = (runs ?? []).slice(0, 8);
+  const recent = (runs ?? []).slice(0, 5);
+
+  const statusBreakdown = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const r of runs ?? []) counts.set(r.status, (counts.get(r.status) ?? 0) + 1);
+    return [...counts.entries()].map(([name, value]) => ({ name, value, color: RUN_STATUS_COLORS[name] }));
+  }, [runs]);
+
+  const repoChartData = repoMonitor.map((repo) => ({
+    name: repo.name,
+    accept: repo.acceptancePct ?? 0,
+    noise: repo.noisePct ?? 0,
+  }));
   const postedThisWeek = latest?.findingsPosted ?? 0;
   const acceptedDelta = deltaLabel(latest?.acceptancePct, previous?.acceptancePct);
   const noiseDelta = deltaLabel(latest?.noisePct, previous?.noisePct);
@@ -598,10 +576,18 @@ export default function Dashboard() {
               </EmptyState>
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-3 p-4 sm:grid-cols-2">
-              {repoMonitor.map((repo) => (
-                <RepoCard key={repo.id} repo={repo} />
-              ))}
+            <div className="p-4">
+              <GroupedBarChart
+                data={repoChartData}
+                xKey="name"
+                yDomain={[0, 100]}
+                unit="%"
+                height={260}
+                series={[
+                  { key: "accept", label: "Accept %" },
+                  { key: "noise", label: "Noise %" },
+                ]}
+              />
             </div>
           )}
         </Card>
@@ -632,6 +618,11 @@ export default function Dashboard() {
                 </Link>{" "}
                 and open a pull request.
               </EmptyState>
+            </div>
+          )}
+          {statusBreakdown.length > 0 && (
+            <div className="border-b border-zinc-100 px-4 py-3">
+              <DonutChart data={statusBreakdown} height={110} />
             </div>
           )}
           {recent.length > 0 && (
