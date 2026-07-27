@@ -84,8 +84,10 @@ function SortHeader({
   );
 }
 
-function RateCell({ value, tone }: { value: number; tone: "good" | "noise" }) {
-  if (value <= 0) return <span className="block text-left text-xs text-zinc-400">—</span>;
+function RateCell({ value, tone }: { value: number | null; tone: "good" | "noise" }) {
+  // null = no feedback data yet — distinct from a genuine 0%, which is meaningful either
+  // way (0% noise is the best possible score, 0% acceptance the worst) and must still render.
+  if (value === null) return <span className="block text-left text-xs text-zinc-400">—</span>;
 
   const color =
     tone === "good"

@@ -175,7 +175,10 @@ function buildAttention(runs: RunRow[], repos: Repo[]): AttentionItem[] {
     });
   }
 
-  const noisyRepos = repos.filter((r) => r.noisePct > 5).sort((a, b) => b.noisePct - a.noisePct).slice(0, 2);
+  const noisyRepos = repos
+    .filter((r): r is Repo & { noisePct: number } => r.noisePct !== null && r.noisePct > 5)
+    .sort((a, b) => b.noisePct - a.noisePct)
+    .slice(0, 2);
   for (const repo of noisyRepos) {
     items.push({
       id: `noise-${repo.id}`,
@@ -266,7 +269,7 @@ export default function Dashboard() {
 
   const repoMonitor = useMemo(() => {
     return [...(repos ?? [])]
-      .sort((a, b) => b.noisePct - a.noisePct || b.openPrs - a.openPrs)
+      .sort((a, b) => (b.noisePct ?? 0) - (a.noisePct ?? 0) || b.openPrs - a.openPrs)
       .slice(0, 6);
   }, [repos]);
 
@@ -586,14 +589,15 @@ export default function Dashboard() {
                       </td>
                       <td className="px-4 py-2.5 text-right tabular-nums text-zinc-700">{repo.openPrs}</td>
                       <td className="px-4 py-2.5 text-right tabular-nums text-zinc-700">
-                        {repo.acceptancePct > 0 ? `${repo.acceptancePct}%` : "—"}
+                        {/* null = no feedback data yet, distinct from a genuine (and meaningful) 0% */}
+                        {repo.acceptancePct !== null ? `${repo.acceptancePct}%` : "—"}
                       </td>
                       <td
                         className={`px-4 py-2.5 text-right tabular-nums ${
-                          repo.noisePct > 5 ? "font-medium text-amber-700" : "text-zinc-700"
+                          (repo.noisePct ?? 0) > 5 ? "font-medium text-amber-700" : "text-zinc-700"
                         }`}
                       >
-                        {repo.noisePct > 0 ? `${repo.noisePct}%` : "—"}
+                        {repo.noisePct !== null ? `${repo.noisePct}%` : "—"}
                       </td>
                     </tr>
                   ))}

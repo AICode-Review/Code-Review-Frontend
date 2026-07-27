@@ -24,13 +24,16 @@ interface RepoFeedbackStats {
 }
 
 /** Same formula as backend/src/routes/analyticsAggregation.ts's buildWeeklyAnalytics — kept
- * in sync by hand since frontend/backend share no code (CLAUDE.md's boundary rule). */
-function feedbackPcts(stats: RepoFeedbackStats | undefined): { acceptancePct: number; noisePct: number } {
-  if (!stats) return { acceptancePct: 0, noisePct: 0 };
+ * in sync by hand since frontend/backend share no code (CLAUDE.md's boundary rule).
+ * Returns null (not 0) when there's no underlying data — a genuine 0% is meaningful
+ * either way (0% noise is the best possible score, 0% acceptance the worst), so it
+ * must stay distinguishable from "no feedback yet" all the way to the UI. */
+function feedbackPcts(stats: RepoFeedbackStats | undefined): { acceptancePct: number | null; noisePct: number | null } {
+  if (!stats) return { acceptancePct: null, noisePct: null };
   const feedbackTotal = stats.accepted + stats.dismissed;
   return {
-    acceptancePct: feedbackTotal > 0 ? Math.round((stats.accepted / feedbackTotal) * 100) : 0,
-    noisePct: stats.posted > 0 ? Math.round((stats.dismissed / stats.posted) * 1000) / 10 : 0,
+    acceptancePct: feedbackTotal > 0 ? Math.round((stats.accepted / feedbackTotal) * 100) : null,
+    noisePct: stats.posted > 0 ? Math.round((stats.dismissed / stats.posted) * 1000) / 10 : null,
   };
 }
 

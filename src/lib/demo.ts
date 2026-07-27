@@ -29,8 +29,9 @@ export interface DemoRepo {
   ignoredPaths: string[];
   failOnCritical: boolean;
   openPrs: number;
-  acceptancePct: number;
-  noisePct: number;
+  /** null = no feedback data yet (distinct from a genuine 0%, which is meaningful either way). */
+  acceptancePct: number | null;
+  noisePct: number | null;
 }
 
 export const demoRepos: DemoRepo[] = [
