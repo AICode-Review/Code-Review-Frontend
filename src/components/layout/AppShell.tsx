@@ -311,28 +311,30 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
 
   return (
     <div
-      className="flex items-center gap-2 overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50"
+      className={`flex overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 p-2 ${
+        collapsed ? "justify-center" : "items-center gap-2.5"
+      }`}
       title={collapsed ? `${org?.name || "Organization"} · ${subLabel}` : undefined}
     >
-      <span className="flex h-9 w-9 shrink-0 items-center justify-center text-[11px] font-semibold uppercase text-zinc-600">
+      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-[11px] font-semibold uppercase text-zinc-700">
         {initials}
       </span>
-      <div className="sidebar-label min-w-0 flex-1 py-2 pr-3">
+      <div className="sidebar-label flex min-w-0 flex-1 flex-col gap-0.5">
         {orgs.length <= 1 ? (
           <>
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500">
+            <p className="text-[10px] uppercase leading-none tracking-wider text-zinc-500">
               {org?.kind === "individual" ? "Personal" : "Organization"}
             </p>
-            <p className="truncate text-sm font-medium text-zinc-800">{org?.name || "—"}</p>
-            <p className="text-[11px] text-zinc-500">{subLabel}</p>
+            <p className="truncate text-sm font-medium leading-snug text-zinc-800">{org?.name || "—"}</p>
+            <p className="truncate text-[11px] leading-snug text-zinc-500">{subLabel}</p>
           </>
         ) : (
           <>
-            <p className="text-[10px] uppercase tracking-wider text-zinc-500">Workspace</p>
+            <p className="text-[10px] uppercase leading-none tracking-wider text-zinc-500">Workspace</p>
             <select
               value={selectedOrgId ?? ""}
               onChange={(e) => selectOrg(e.target.value)}
-              className="mt-0.5 w-full truncate rounded-md border border-zinc-200 bg-zinc-50 py-1 pl-1.5 pr-1 text-sm font-medium text-zinc-800"
+              className="w-full min-w-0 truncate rounded-md border border-zinc-200 bg-white py-1 pl-1.5 pr-6 text-sm font-medium leading-snug text-zinc-800"
               tabIndex={collapsed ? -1 : 0}
               aria-hidden={collapsed}
             >
@@ -344,7 +346,7 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
                 </option>
               ))}
             </select>
-            <p className="mt-0.5 text-[11px] text-zinc-500">{subLabel}</p>
+            <p className="truncate text-[11px] leading-snug text-zinc-500">{subLabel}</p>
           </>
         )}
       </div>
