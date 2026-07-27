@@ -334,7 +334,7 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
             <select
               value={selectedOrgId ?? ""}
               onChange={(e) => selectOrg(e.target.value)}
-              className="w-full min-w-0 truncate rounded-md border border-zinc-200 bg-white py-1 pl-1.5 pr-6 text-sm font-medium leading-snug text-zinc-800"
+              className="w-full min-w-0 truncate rounded-md border border-zinc-200 bg-zinc-50 py-1 pl-1.5 pr-6 text-sm font-medium leading-snug text-zinc-800"
               tabIndex={collapsed ? -1 : 0}
               aria-hidden={collapsed}
             >
