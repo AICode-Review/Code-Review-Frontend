@@ -4,8 +4,7 @@ import { useRepo, useSaveRepoConfig } from "../features/repos/useRepos";
 import { useRuns } from "../features/runs/useRuns";
 import { useHealth } from "../features/health/useHealth";
 import { DEMO_MODE } from "../lib/demo";
-import { timeAgo } from "../lib/format";
-import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
+import { Badge, Card, EmptyState, ErrorText, FilterPill, LoadingText, RunCard, SectionTitle } from "../components/ui";
 import { AreaTrendChart, CategoryBarChart, TrendChart } from "../components/charts";
 
 const strictnessOptions = ["chill", "standard", "strict"] as const;
@@ -98,18 +97,9 @@ export default function RepoDetail() {
             <label className="text-xs text-zinc-600">Strictness</label>
             <div className="mt-2 flex flex-wrap gap-2">
               {strictnessOptions.map((opt) => (
-                <button
-                  key={opt}
-                  type="button"
-                  onClick={() => setStrictness(opt)}
-                  className={`rounded-lg border px-3 py-1.5 text-sm capitalize ${
-                    effStrictness === opt
-                      ? "border-blue-500 bg-blue-50 text-blue-800"
-                      : "border-zinc-300 text-zinc-600 hover:border-zinc-400"
-                  }`}
-                >
+                <FilterPill key={opt} active={effStrictness === opt} onClick={() => setStrictness(opt)} size="md">
                   {opt}
-                </button>
+                </FilterPill>
               ))}
             </div>
 
@@ -242,24 +232,7 @@ export default function RepoDetail() {
         {runs && runs.length > 0 && (
           <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-zinc-50">
             {runs.map((run) => (
-              <li key={run.id}>
-                <Link
-                  to={`/runs/${run.id}`}
-                  className="flex items-center justify-between gap-4 px-4 py-3 transition hover:bg-zinc-100/80"
-                >
-                  <p className="text-sm">
-                    #{run.pull_requests?.number}
-                    <span className="ml-2 font-mono text-xs text-zinc-500">{run.head_sha.slice(0, 7)}</span>
-                    <span className="ml-2 text-xs text-zinc-500">{timeAgo(run.started_at)}</span>
-                  </p>
-                  <div className="flex items-center gap-3 text-xs">
-                    <span className="text-zinc-500">
-                      {run.verified}/{run.candidates} verified
-                    </span>
-                    <Badge kind={run.status} />
-                  </div>
-                </Link>
-              </li>
+              <RunCard key={run.id} run={run} />
             ))}
           </ul>
         )}

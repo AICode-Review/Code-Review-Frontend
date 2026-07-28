@@ -8,6 +8,12 @@ export function timeAgo(iso: string, now: Date = new Date()): string {
   return `${Math.floor(hours / 24)}d ago`;
 }
 
+export function formatLatency(ms: number | null | undefined): string {
+  if (ms == null) return "—";
+  if (ms < 60_000) return `${Math.round(ms / 1000)}s`;
+  return `${(ms / 60_000).toFixed(1)}m`;
+}
+
 export function usd(amount: number): string {
   return new Intl.NumberFormat("en-US", {
     style: "currency",

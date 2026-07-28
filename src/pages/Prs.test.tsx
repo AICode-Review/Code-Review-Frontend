@@ -26,17 +26,16 @@ async function renderPrs() {
 }
 
 describe("Prs page (demo mode)", () => {
-  it("loads and renders the demo pull request list in a table", async () => {
+  it("loads and renders the demo pull request list", async () => {
     await renderPrs();
-    expect(screen.getByRole("table")).toBeInTheDocument();
-    // header row + at least one data row
-    expect(screen.getAllByRole("row").length).toBeGreaterThan(1);
+    expect(screen.getByRole("list")).toBeInTheDocument();
+    expect(screen.getAllByRole("listitem").length).toBeGreaterThan(0);
   });
 
   it("filters rows via the search box", async () => {
     const user = userEvent.setup();
     await renderPrs();
-    const rowsBefore = within(screen.getByRole("table")).getAllByRole("row").length;
+    const rowsBefore = within(screen.getByRole("list")).getAllByRole("listitem").length;
 
     const search = screen.getByPlaceholderText(/Search repo, PR #, author, or summary/i);
     await user.type(search, "zzz-no-such-repo-or-summary-zzz");
@@ -46,7 +45,7 @@ describe("Prs page (demo mode)", () => {
 
     await user.clear(search);
     await flush();
-    const rowsAfter = within(screen.getByRole("table")).getAllByRole("row").length;
+    const rowsAfter = within(screen.getByRole("list")).getAllByRole("listitem").length;
     expect(rowsAfter).toBe(rowsBefore); // clearing the filter restores the original rows
   });
 
@@ -60,7 +59,7 @@ describe("Prs page (demo mode)", () => {
     await user.type(search, "priya-dev");
     await flush();
 
-    const rows = within(screen.getByRole("table")).getAllByRole("row").slice(1); // drop header row
+    const rows = within(screen.getByRole("list")).getAllByRole("listitem");
     expect(rows.length).toBeGreaterThan(0);
     for (const row of rows) {
       expect(within(row).getByText("priya-dev")).toBeInTheDocument();
@@ -71,19 +70,17 @@ describe("Prs page (demo mode)", () => {
     const user = userEvent.setup();
     await renderPrs();
 
-    // aria-sort lives on the <th>, not the <button> inside it.
     const prButton = screen.getByRole("button", { name: "PR" });
-    const prColumnHeader = prButton.closest("th");
-    if (!prColumnHeader) throw new Error("PR sort button is not inside a <th>");
 
     await user.click(prButton);
     await flush();
-    expect(prColumnHeader).toHaveAttribute("aria-sort", expect.stringMatching(/ascending|descending/));
-    const firstDirection = prColumnHeader.getAttribute("aria-sort");
+    expect(prButton).toHaveAttribute("aria-pressed", "true");
+    const firstDirection = prButton.textContent;
 
     await user.click(prButton);
     await flush();
-    expect(prColumnHeader.getAttribute("aria-sort")).not.toBe(firstDirection);
+    expect(prButton).toHaveAttribute("aria-pressed", "true");
+    expect(prButton.textContent).not.toBe(firstDirection);
   });
 
   it("shows a 'Clear filters' control only once a filter is active", async () => {

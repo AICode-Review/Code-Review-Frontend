@@ -29,43 +29,40 @@ function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   );
 }
 
-function SortHeader({
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "number", label: "PR" },
+  { key: "score", label: "Score" },
+  { key: "updatedAt", label: "Updated" },
+];
+
+function SortPill({
   label,
   sortKey,
   activeKey,
   direction,
   onSort,
-  align = "left",
-  className = "",
 }: {
   label: string;
   sortKey: SortKey;
   activeKey: SortKey;
   direction: SortDirection;
   onSort: (key: SortKey) => void;
-  align?: "left" | "right";
-  className?: string;
 }) {
   const active = activeKey === sortKey;
   return (
-    <th
-      scope="col"
-      aria-sort={active ? (direction === "asc" ? "ascending" : "descending") : "none"}
-      className={`px-3 py-2 font-medium ${align === "right" ? "text-right" : "text-left"} ${className}`}
+    <button
+      type="button"
+      onClick={() => onSort(sortKey)}
+      aria-pressed={active}
+      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
+        active
+          ? "border-blue-300 bg-blue-50 text-blue-700"
+          : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-zinc-300"
+      }`}
     >
-      <button
-        type="button"
-        onClick={() => onSort(sortKey)}
-        className={`inline-flex items-center gap-1 rounded text-[11px] font-semibold uppercase tracking-[0.055em] transition hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
-          active ? "text-zinc-900" : "text-zinc-500"
-        }`}
-      >
-        {label}
-        <span className={`text-[10px] transition ${active ? "text-blue-600" : "text-zinc-300"}`} aria-hidden="true">
-          {active && direction === "desc" ? "↓" : "↑"}
-        </span>
-      </button>
-    </th>
+      {label}
+      {active && <span aria-hidden="true">{direction === "desc" ? "↓" : "↑"}</span>}
+    </button>
   );
 }
 
@@ -221,6 +218,20 @@ export default function Prs() {
             </div>
           </div>
 
+          <div className="flex shrink-0 flex-wrap items-center gap-1.5 border-b border-zinc-200 bg-zinc-50 px-2.5 py-2 sm:px-3">
+            <span className="type-label mr-1">Sort</span>
+            {SORT_OPTIONS.map((option) => (
+              <SortPill
+                key={option.key}
+                label={option.label}
+                sortKey={option.key}
+                activeKey={sortKey}
+                direction={sortDirection}
+                onSort={handleSort}
+              />
+            ))}
+          </div>
+
           {pagePrs.length === 0 && hasFilters ? (
             <div className="min-h-0 flex-1 p-8">
               <EmptyState>
@@ -231,79 +242,85 @@ export default function Prs() {
               </EmptyState>
             </div>
           ) : (
-            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
-              <table className="w-full table-fixed border-collapse text-sm">
-                <thead className="sticky top-0 z-10 border-b border-zinc-200 bg-zinc-50">
-                  <tr>
-                    <SortHeader label="PR" sortKey="number" activeKey={sortKey} direction={sortDirection} onSort={handleSort} className="w-[34%] md:w-[22%]" />
-                    <th scope="col" className="hidden w-[14%] px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 lg:table-cell">
-                      Author
-                    </th>
-                    <th scope="col" className="hidden w-[12%] px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 md:table-cell">
-                      Trigger
-                    </th>
-                    <th scope="col" className="w-[14%] px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500">
-                      Status
-                    </th>
-                    <SortHeader label="Score" sortKey="score" activeKey={sortKey} direction={sortDirection} onSort={handleSort} className="w-[12%]" />
-                    <SortHeader label="Updated" sortKey="updatedAt" activeKey={sortKey} direction={sortDirection} onSort={handleSort} align="right" className="hidden w-[14%] sm:table-cell" />
-                    <th scope="col" className="w-[14%] px-3 py-2 text-right text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500">
-                      Action
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-200/80 bg-zinc-50">
-                  {pagePrs.map((pr) => (
-                    <tr key={pr.id} className="group transition-colors hover:bg-blue-50/35">
-                      <td className="overflow-hidden px-3 py-1.5">
-                        {pr.latestRun ? (
-                          <Link to={`/runs/${pr.latestRun.id}`} className="block min-w-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-                            <span className="block truncate text-sm font-medium leading-5 text-zinc-900 group-hover:text-blue-700">
-                              {pr.repoName} <span className="text-zinc-500">#{pr.number}</span>
-                            </span>
-                          </Link>
-                        ) : (
-                          <span className="block truncate text-sm font-medium leading-5 text-zinc-900">
+            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-2.5 sm:p-3">
+              <ul className="flex flex-col gap-2">
+                {pagePrs.map((pr) => (
+                  <li
+                    key={pr.id}
+                    className="group flex flex-col gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3.5 transition hover:border-blue-200 hover:bg-blue-50/40 sm:flex-row sm:items-center sm:gap-4"
+                  >
+                    <div className="min-w-0 flex-1">
+                      {pr.latestRun ? (
+                        <Link
+                          to={`/runs/${pr.latestRun.id}`}
+                          className="block min-w-0 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                        >
+                          <span className="block truncate text-sm font-medium text-zinc-900 group-hover:text-blue-700">
                             {pr.repoName} <span className="text-zinc-500">#{pr.number}</span>
                           </span>
-                        )}
-                      </td>
-                      <td className="hidden truncate px-3 py-1.5 type-meta lg:table-cell">
-                        {pr.openedBy ?? <span className="text-zinc-400">—</span>}
-                      </td>
-                      <td className="hidden px-3 py-1.5 md:table-cell">
-                        {pr.latestRun ? (
-                          <Badge kind={pr.latestRun.trigger === "manual" ? "manual" : "automatic"} />
-                        ) : (
-                          <span className="text-xs text-zinc-400">—</span>
-                        )}
-                      </td>
-                      <td className="px-3 py-1.5">
-                        {pr.latestRun ? <Badge kind={pr.latestRun.status} /> : <span className="text-xs text-zinc-400">—</span>}
-                      </td>
-                      <td className="px-3 py-1.5">
-                        <ScoreCell score={pr.score} />
-                      </td>
-                      <td className="hidden px-3 py-1.5 text-right type-meta sm:table-cell">{timeAgo(pr.updatedAt)}</td>
-                      <td className="px-3 py-1.5 text-right">
-                        {pr.latestRun ? (
-                          <Link
-                            to={`/runs/${pr.latestRun.id}`}
-                            className="inline-flex items-center text-xs font-medium tracking-[-0.01em] text-blue-600 hover:text-blue-700 hover:underline"
-                          >
-                            Open review
-                            <span aria-hidden="true" className="ml-1">
-                              →
-                            </span>
-                          </Link>
-                        ) : (
-                          <span className="text-xs text-zinc-400">—</span>
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                        </Link>
+                      ) : (
+                        <span className="block truncate text-sm font-medium text-zinc-900">
+                          {pr.repoName} <span className="text-zinc-500">#{pr.number}</span>
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 sm:shrink-0">
+                      <div className="min-w-[6rem]">
+                        <p className="type-label">Author</p>
+                        <p className="mt-0.5 truncate text-xs text-zinc-600">
+                          {pr.openedBy ?? <span className="text-zinc-400">—</span>}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="type-label">Trigger</p>
+                        <div className="mt-0.5">
+                          {pr.latestRun ? (
+                            <Badge kind={pr.latestRun.trigger === "manual" ? "manual" : "automatic"} />
+                          ) : (
+                            <span className="text-xs text-zinc-400">—</span>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="type-label">Status</p>
+                        <div className="mt-0.5">
+                          {pr.latestRun ? (
+                            <Badge kind={pr.latestRun.status} />
+                          ) : (
+                            <span className="text-xs text-zinc-400">—</span>
+                          )}
+                        </div>
+                      </div>
+                      <div>
+                        <p className="type-label">Score</p>
+                        <div className="mt-0.5">
+                          <ScoreCell score={pr.score} />
+                        </div>
+                      </div>
+                      <div>
+                        <p className="type-label">Updated</p>
+                        <p className="mt-0.5 text-xs text-zinc-500">{timeAgo(pr.updatedAt)}</p>
+                      </div>
+                    </div>
+
+                    {pr.latestRun ? (
+                      <Link
+                        to={`/runs/${pr.latestRun.id}`}
+                        className="inline-flex shrink-0 items-center text-xs font-medium tracking-[-0.01em] text-blue-600 hover:text-blue-700 hover:underline"
+                      >
+                        Open review
+                        <span aria-hidden="true" className="ml-1">
+                          →
+                        </span>
+                      </Link>
+                    ) : (
+                      <span className="shrink-0 text-xs text-zinc-400">—</span>
+                    )}
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
 
