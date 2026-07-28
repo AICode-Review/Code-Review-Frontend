@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { useRulebook, type Rule } from "../features/rulebook/useRulebook";
 import { useRepos } from "../features/repos/useRepos";
 import { timeAgo } from "../lib/format";
-import { Badge, Card, EmptyState, ErrorText, FilterPill, LoadingText, SectionTitle } from "../components/ui";
+import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
 import { PageIntro } from "../components/layout/AppShell";
 
 function RuleRow({
@@ -101,9 +101,18 @@ export default function Rulebook() {
       <div className="flex flex-wrap items-center gap-2 text-sm">
         <span className="text-xs text-zinc-500">Scope:</span>
         {["all", "org", ...(repos?.map((r) => r.name) ?? [])].map((scope) => (
-          <FilterPill key={scope} active={repoFilter === scope} onClick={() => setRepoFilter(scope)}>
+          <button
+            key={scope}
+            type="button"
+            onClick={() => setRepoFilter(scope)}
+            className={`rounded-lg border px-2.5 py-1 text-xs ${
+              repoFilter === scope
+                ? "border-blue-500 bg-blue-50 text-blue-800"
+                : "border-zinc-300 text-zinc-600 hover:border-zinc-400"
+            }`}
+          >
             {scope === "all" ? "All" : scope === "org" ? "Org-wide" : scope}
-          </FilterPill>
+          </button>
         ))}
       </div>
 

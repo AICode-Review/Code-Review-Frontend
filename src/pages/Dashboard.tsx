@@ -3,8 +3,8 @@ import { Link } from "react-router-dom";
 import { useRuns, type RunRow } from "../features/runs/useRuns";
 import { useAnalytics } from "../features/analytics/useAnalytics";
 import { useRepos, type Repo } from "../features/repos/useRepos";
-import { formatLatency, summaryPreview } from "../lib/format";
-import { Badge, Card, EmptyState, ErrorText, KpiCard, LoadingText, RunCard, SectionTitle } from "../components/ui";
+import { summaryPreview, timeAgo } from "../lib/format";
+import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
 import { AreaTrendChart, CategoryBarChart, DonutChart, GroupedBarChart, TrendChart } from "../components/charts";
 import { PageIntro } from "../components/layout/AppShell";
 import { useOrg } from "../hooks/useOrg";
@@ -58,11 +58,57 @@ function median(values: number[]): number | null {
   return sorted.length % 2 === 0 ? (sorted[mid - 1]! + sorted[mid]!) / 2 : sorted[mid]!;
 }
 
+function formatLatency(ms: number | null | undefined): string {
+  if (ms == null) return "—";
+  if (ms < 60_000) return `${Math.round(ms / 1000)}s`;
+  return `${(ms / 60_000).toFixed(1)}m`;
+}
+
 function deltaLabel(current: number | undefined, previous: number | undefined, unit = "pts"): string | null {
   if (current == null || previous == null) return null;
   const delta = Math.round((current - previous) * 10) / 10;
   const sign = delta > 0 ? "+" : "";
   return `${sign}${delta}${unit === "%" ? "" : ` ${unit}`}${unit === "%" ? "%" : ""}`;
+}
+
+function KpiCard({
+  label,
+  value,
+  hint,
+  tone = "neutral",
+  href,
+}: {
+  label: string;
+  value: string;
+  hint?: string | null;
+  tone?: "good" | "warn" | "neutral";
+  href?: string;
+}) {
+  const toneClass =
+    tone === "good" ? "text-emerald-700" : tone === "warn" ? "text-amber-700" : "text-zinc-500";
+  const accentClass =
+    tone === "good"
+      ? "from-emerald-500 to-emerald-200"
+      : tone === "warn"
+        ? "from-amber-500 to-amber-200"
+        : "from-blue-600 to-blue-400";
+  const glowClass =
+    tone === "good" ? "bg-emerald-100" : tone === "warn" ? "bg-amber-100" : "bg-blue-100";
+  const body = (
+    <div className="group relative overflow-hidden rounded-xl border border-zinc-200/90 bg-zinc-50 p-4 shadow-sm shadow-zinc-200/40 transition duration-200 hover:-translate-y-0.5 hover:border-zinc-300 hover:shadow-md">
+      <div className={`absolute inset-x-0 top-0 h-0.5 bg-linear-to-r ${accentClass}`} />
+      <div
+        className={`absolute -right-8 -top-8 size-20 rounded-full opacity-0 blur-2xl transition-opacity group-hover:opacity-70 ${glowClass}`}
+        aria-hidden="true"
+      />
+      <div className="relative">
+        <p className="type-label">{label}</p>
+        <p className="type-display mt-2">{value}</p>
+        {hint && <p className={`type-meta mt-1.5 truncate ${toneClass}`}>{hint}</p>}
+      </div>
+    </div>
+  );
+  return href ? <Link to={href} className="block">{body}</Link> : body;
 }
 
 function FunnelStep({ label, value, total, color }: { label: string; value: number; total: number; color: string }) {
@@ -79,6 +125,38 @@ function FunnelStep({ label, value, total, color }: { label: string; value: numb
         <div className={`h-full rounded-full ${color}`} style={{ width: `${pct}%` }} />
       </div>
     </div>
+  );
+}
+
+function RunCard({ run }: { run: RunRow }) {
+  const verificationPct =
+    run.candidates > 0 ? Math.round((run.verified / run.candidates) * 100) : null;
+
+  return (
+    <li>
+      <Link
+        to={`/runs/${run.id}`}
+        className="flex items-center justify-between gap-4 px-4 py-3.5 transition hover:bg-zinc-50/80"
+      >
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="truncate text-sm font-medium text-zinc-900">
+              {run.pull_requests?.repos?.name ?? "unknown"}
+              <span className="text-zinc-500"> #{run.pull_requests?.number ?? "?"}</span>
+            </span>
+            <Badge kind={run.trigger === "manual" ? "manual" : "automatic"}>
+              {run.trigger === "manual" ? "manual" : "auto"}
+            </Badge>
+          </div>
+          <p className="mt-1 truncate text-[11px] text-zinc-500">
+            {timeAgo(run.started_at)}
+            {verificationPct !== null && ` · ${run.verified}/${run.candidates} verified (${verificationPct}%)`}
+            {run.latency_ms != null && ` · ${formatLatency(run.latency_ms)}`}
+          </p>
+        </div>
+        <Badge kind={run.status} />
+      </Link>
+    </li>
   );
 }
 

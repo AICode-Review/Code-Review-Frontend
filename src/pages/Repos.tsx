@@ -44,42 +44,43 @@ function ChevronIcon({ direction }: { direction: "left" | "right" }) {
   );
 }
 
-const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "name", label: "Repository" },
-  { key: "indexStatus", label: "Index" },
-  { key: "openPrs", label: "Open PRs" },
-  { key: "acceptancePct", label: "Acceptance" },
-  { key: "noisePct", label: "Noise" },
-];
-
-function SortPill({
+function SortHeader({
   label,
   sortKey,
   activeKey,
   direction,
   onSort,
+  align = "left",
+  className = "",
 }: {
   label: string;
   sortKey: SortKey;
   activeKey: SortKey;
   direction: SortDirection;
   onSort: (key: SortKey) => void;
+  align?: "left" | "right";
+  className?: string;
 }) {
   const active = activeKey === sortKey;
   return (
-    <button
-      type="button"
-      onClick={() => onSort(sortKey)}
-      aria-pressed={active}
-      className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
-        active
-          ? "border-blue-300 bg-blue-50 text-blue-700"
-          : "border-zinc-200 bg-zinc-50 text-zinc-600 hover:border-zinc-300"
-      }`}
+    <th
+      scope="col"
+      aria-sort={active ? (direction === "asc" ? "ascending" : "descending") : "none"}
+      className={`px-3 py-2 align-middle font-medium ${align === "right" ? "text-right" : "text-left"} ${className}`}
     >
-      {label}
-      {active && <span aria-hidden="true">{direction === "desc" ? "↓" : "↑"}</span>}
-    </button>
+      <button
+        type="button"
+        onClick={() => onSort(sortKey)}
+        className={`inline-flex items-center gap-1 rounded text-[11px] font-semibold uppercase tracking-[0.055em] transition hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 ${
+          active ? "text-zinc-900" : "text-zinc-500"
+        }`}
+      >
+        {label}
+        <span className={`text-[10px] transition ${active ? "text-blue-600" : "text-zinc-300"}`} aria-hidden="true">
+          {active && direction === "desc" ? "↓" : "↑"}
+        </span>
+      </button>
+    </th>
   );
 }
 
@@ -289,20 +290,6 @@ export default function Repos() {
               </div>
             </div>
 
-            <div className="flex shrink-0 flex-wrap items-center gap-1.5 border-b border-zinc-200 bg-zinc-50 px-2.5 py-2 sm:px-3">
-              <span className="type-label mr-1">Sort</span>
-              {SORT_OPTIONS.map((option) => (
-                <SortPill
-                  key={option.key}
-                  label={option.label}
-                  sortKey={option.key}
-                  activeKey={sortKey}
-                  direction={sortDirection}
-                  onSort={handleSort}
-                />
-              ))}
-            </div>
-
             {pageRepos.length === 0 ? (
               <div className="min-h-0 flex-1 p-8">
                 <EmptyState>
@@ -313,91 +300,137 @@ export default function Repos() {
                 </EmptyState>
               </div>
             ) : (
-              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden p-2.5 sm:p-3">
-                <ul className="flex flex-col gap-2">
-                  {pageRepos.map((repo) => (
-                    <li key={repo.id}>
-                      <Link
-                        to={`/repos/${repo.id}`}
-                        className="group flex flex-col gap-3 rounded-xl border border-zinc-200 bg-zinc-50 p-3.5 transition hover:border-blue-200 hover:bg-blue-50/40 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 sm:flex-row sm:items-center sm:gap-4"
-                      >
-                        <div className="flex min-w-0 flex-1 items-center gap-2.5">
-                          <span className="flex size-8 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-zinc-500 transition group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-700">
-                            <RepositoryIcon />
-                          </span>
-                          <span className="min-w-0">
-                            <span className="block truncate text-sm font-medium text-zinc-900 group-hover:text-blue-700">
-                              {repo.owner ? `${repo.owner}/` : ""}
-                              {repo.name}
+              <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
+                <table className="w-full table-fixed border-collapse text-sm [&_td]:align-middle">
+                  <thead className="sticky top-0 z-10 border-b border-zinc-200 bg-zinc-50">
+                    <tr>
+                      <SortHeader
+                        label="Repository"
+                        sortKey="name"
+                        activeKey={sortKey}
+                        direction={sortDirection}
+                        onSort={handleSort}
+                        className="w-[32%] pl-13 md:w-[25%] lg:w-[22%]"
+                      />
+                      <th scope="col" className="hidden w-[22%] px-3 py-2 text-left align-middle text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 md:table-cell lg:w-[19%]">
+                        Review policy
+                      </th>
+                      <SortHeader
+                        label="Index"
+                        sortKey="indexStatus"
+                        activeKey={sortKey}
+                        direction={sortDirection}
+                        onSort={handleSort}
+                        className="w-[15%] md:w-[12%] lg:w-[10%]"
+                      />
+                      <SortHeader
+                        label="Open PRs"
+                        sortKey="openPrs"
+                        activeKey={sortKey}
+                        direction={sortDirection}
+                        onSort={handleSort}
+                        className="w-[14%] md:w-[10%] lg:w-[9%]"
+                      />
+                      <SortHeader
+                        label="Acceptance"
+                        sortKey="acceptancePct"
+                        activeKey={sortKey}
+                        direction={sortDirection}
+                        onSort={handleSort}
+                        className="hidden w-[12%] lg:table-cell"
+                      />
+                      <SortHeader
+                        label="Noise"
+                        sortKey="noisePct"
+                        activeKey={sortKey}
+                        direction={sortDirection}
+                        onSort={handleSort}
+                        className="hidden w-[10%] xl:table-cell"
+                      />
+                      <th scope="col" className="hidden w-[16%] px-3 py-2 text-left align-middle text-[11px] font-semibold uppercase tracking-[0.055em] text-zinc-500 lg:table-cell xl:w-[13%]">
+                        Languages
+                      </th>
+                      <th scope="col" className="w-10 px-2 py-2">
+                        <span className="sr-only">Actions</span>
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-zinc-200/80 bg-zinc-50">
+                    {pageRepos.map((repo) => (
+                      <tr key={repo.id} className="group transition-colors hover:bg-blue-50/35">
+                        <td className="overflow-hidden px-3 py-1">
+                          <Link
+                            to={`/repos/${repo.id}`}
+                            className="flex min-w-0 items-center gap-2.5 rounded focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                          >
+                            <span className="flex size-6 shrink-0 items-center justify-center rounded-md border border-zinc-200 bg-zinc-50 text-zinc-500 transition group-hover:border-blue-200 group-hover:bg-blue-50 group-hover:text-blue-700">
+                              <RepositoryIcon />
                             </span>
-                            <span className="type-mono block text-zinc-500">{repo.defaultBranch}</span>
-                          </span>
-                        </div>
-
-                        <div className="flex flex-wrap items-center gap-x-5 gap-y-2.5 sm:shrink-0">
-                          <div className="min-w-[7rem]">
-                            <p className="type-label">Policy</p>
-                            <p className="mt-0.5 text-xs font-medium capitalize text-zinc-700">
-                              {repo.strictness}
-                              <span className="ml-1 font-normal text-zinc-400">
-                                · {repo.commentBudget} comments
+                            <span className="min-w-0">
+                              <span className="block truncate text-sm font-medium leading-5 text-zinc-900 group-hover:text-blue-700">
+                                {repo.owner ? `${repo.owner}/` : ""}
+                                {repo.name}
                               </span>
-                            </p>
-                          </div>
-                          <div>
-                            <p className="type-label">Index</p>
-                            <div className="mt-0.5">
-                              <Badge kind={repo.indexStatus} />
-                            </div>
-                          </div>
-                          <div>
-                            <p className="type-label">Open PRs</p>
-                            <span className="mt-0.5 inline-flex min-w-7 items-center justify-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-semibold tabular-nums text-zinc-700">
-                              {repo.openPrs}
+                              <span className="type-mono block leading-4 text-zinc-500">{repo.defaultBranch}</span>
                             </span>
+                          </Link>
+                        </td>
+                        <td className="hidden overflow-hidden px-3 py-1 md:table-cell">
+                          <div className="flex min-w-0 items-center gap-2 whitespace-nowrap">
+                            <span className="text-xs font-medium capitalize text-zinc-700">{repo.strictness}</span>
+                            <span className="text-zinc-300">·</span>
+                            <span className="text-xs tabular-nums text-zinc-500">{repo.commentBudget} comments</span>
                           </div>
-                          <div>
-                            <p className="type-label">Acceptance</p>
-                            <RateCell value={repo.acceptancePct} tone="good" />
-                          </div>
-                          <div>
-                            <p className="type-label">Noise</p>
-                            <RateCell value={repo.noisePct} tone="noise" />
-                          </div>
-                          <div className="max-w-[11rem]">
-                            <p className="type-label">Languages</p>
-                            {repo.tier1Langs.length > 0 ? (
-                              <div className="mt-0.5 flex flex-wrap gap-1">
-                                {repo.tier1Langs.slice(0, 3).map((language) => (
-                                  <span
-                                    key={language}
-                                    className="rounded-md border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-[10px] font-medium capitalize text-zinc-600"
-                                  >
-                                    {language}
-                                  </span>
-                                ))}
-                                {repo.tier1Langs.length > 3 && (
-                                  <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-500">
-                                    +{repo.tier1Langs.length - 3}
-                                  </span>
-                                )}
-                              </div>
-                            ) : (
-                              <span className="mt-0.5 block text-xs text-zinc-400">—</span>
-                            )}
-                          </div>
-                        </div>
-
-                        <span
-                          className="hidden shrink-0 text-zinc-300 transition group-hover:text-blue-600 sm:block"
-                          aria-hidden="true"
-                        >
-                          <ChevronIcon direction="right" />
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
+                          <p className="type-meta leading-4">{repo.failOnCritical ? "Critical findings block" : "Advisory checks"}</p>
+                        </td>
+                        <td className="px-3 py-1">
+                          <Badge kind={repo.indexStatus} />
+                        </td>
+                        <td className="px-3 py-1 text-left">
+                          <span className="inline-flex min-w-7 items-center justify-center rounded-md bg-zinc-100 px-2 py-0.5 text-xs font-semibold tabular-nums text-zinc-700">
+                            {repo.openPrs}
+                          </span>
+                        </td>
+                        <td className="hidden px-3 py-1 text-left lg:table-cell">
+                          <RateCell value={repo.acceptancePct} tone="good" />
+                        </td>
+                        <td className="hidden px-3 py-1 text-left xl:table-cell">
+                          <RateCell value={repo.noisePct} tone="noise" />
+                        </td>
+                        <td className="hidden px-3 py-1 text-left lg:table-cell">
+                          {repo.tier1Langs.length > 0 ? (
+                            <div className="flex flex-wrap gap-1">
+                              {repo.tier1Langs.slice(0, 2).map((language) => (
+                                <span
+                                  key={language}
+                                  className="rounded-md border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-[10px] font-medium capitalize text-zinc-600"
+                                >
+                                  {language}
+                                </span>
+                              ))}
+                              {repo.tier1Langs.length > 2 && (
+                                <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] text-zinc-500">
+                                  +{repo.tier1Langs.length - 2}
+                                </span>
+                              )}
+                            </div>
+                          ) : (
+                            <span className="text-xs text-zinc-400">—</span>
+                          )}
+                        </td>
+                        <td className="px-2 py-1 text-right">
+                          <Link
+                            to={`/repos/${repo.id}`}
+                            aria-label={`Open ${repo.name}`}
+                            className="inline-flex size-7 items-center justify-center rounded-lg text-zinc-400 transition hover:bg-zinc-50 hover:text-blue-700 hover:shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                          >
+                            <ChevronIcon direction="right" />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             )}
 

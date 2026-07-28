@@ -300,32 +300,48 @@ export default function Settings() {
               {membersError && <ErrorText>{(membersError as Error).message}</ErrorText>}
               {members && members.length === 0 && <EmptyState>No members yet.</EmptyState>}
               {members && members.length > 0 && (
-                <ul className="divide-y divide-zinc-200 text-sm">
-                  {members.map((m) => (
-                    <li key={m.id} className="flex flex-wrap items-center justify-between gap-3 py-2.5">
-                      <div className="min-w-0">
-                        <span className="text-zinc-800">{m.handle}</span>
-                        {m.email && <span className="ml-2 text-xs text-zinc-500">{m.email}</span>}
-                        <p className="mt-0.5 text-xs capitalize text-zinc-500">{m.role}</p>
-                      </div>
-                      <div className="flex shrink-0 items-center gap-3">
-                        <Badge kind={m.seatActive ? "active" : "none"}>
-                          {m.seatActive ? "active" : "inactive"}
-                        </Badge>
-                        {org?.role === "owner" && m.role !== "owner" && (
-                          <button
-                            type="button"
-                            onClick={() => removeMember.mutate(m.id)}
-                            disabled={removeMember.isPending}
-                            className="text-xs text-zinc-500 hover:text-red-600 disabled:opacity-50"
-                          >
-                            Remove
-                          </button>
-                        )}
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[480px] text-sm">
+                    <thead>
+                      <tr className="text-left text-xs text-zinc-500">
+                        <th className="pb-2 font-normal">Member</th>
+                        <th className="pb-2 font-normal">Role</th>
+                        <th className="pb-2 font-normal">Seat</th>
+                        {org?.role === "owner" && <th className="pb-2 font-normal" />}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-200">
+                      {members.map((m) => (
+                        <tr key={m.id}>
+                          <td className="py-2">
+                            <span className="text-zinc-800">{m.handle}</span>
+                            {m.email && <span className="ml-2 text-xs text-zinc-500">{m.email}</span>}
+                          </td>
+                          <td className="py-2 capitalize text-zinc-600">{m.role}</td>
+                          <td className="py-2">
+                            <Badge kind={m.seatActive ? "active" : "none"}>
+                              {m.seatActive ? "active" : "inactive"}
+                            </Badge>
+                          </td>
+                          {org?.role === "owner" && (
+                            <td className="py-2 text-right">
+                              {m.role !== "owner" && (
+                                <button
+                                  type="button"
+                                  onClick={() => removeMember.mutate(m.id)}
+                                  disabled={removeMember.isPending}
+                                  className="text-xs text-zinc-500 hover:text-red-600 disabled:opacity-50"
+                                >
+                                  Remove
+                                </button>
+                              )}
+                            </td>
+                          )}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               )}
               {removeMember.isError && (
                 <p className="mt-2 text-xs text-red-600">{(removeMember.error as Error).message}</p>

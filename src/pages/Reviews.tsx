@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useRuns, type RunRow } from "../features/runs/useRuns";
 import { useRepos } from "../features/repos/useRepos";
 import { timeAgo } from "../lib/format";
-import { Badge, Card, EmptyState, ErrorText, KpiCard, LoadingText } from "../components/ui";
+import { Badge, Card, EmptyState, ErrorText, LoadingText } from "../components/ui";
 import { PageIntro } from "../components/layout/AppShell";
 
 type StatusFilter = "all" | "in_progress" | RunRow["status"];
@@ -39,55 +39,41 @@ const STATUS_LABEL: Record<RunRow["status"], string> = {
 
 function RunRowItem({ run }: { run: RunRow }) {
   return (
-    <li>
-      <Link
-        to={`/runs/${run.id}`}
-        className="group flex flex-col gap-3 border-b border-zinc-200/60 px-4 py-3 transition last:border-0 hover:bg-zinc-100/50 sm:flex-row sm:items-center sm:gap-4"
-      >
-        <div className="min-w-0 flex-1">
-          <span className="block truncate text-sm font-medium text-zinc-900 group-hover:text-blue-600">
+    <tr className="border-b border-zinc-200/60 last:border-0 hover:bg-zinc-100/50">
+      <td className="px-4 py-2">
+        <Link to={`/runs/${run.id}`} className="block min-w-0 hover:text-blue-600">
+          <span className="text-sm font-medium text-zinc-900">
             {run.pull_requests?.repos?.name ?? "unknown"}
             <span className="text-zinc-500"> #{run.pull_requests?.number ?? "?"}</span>
           </span>
-          <span className="type-mono block text-zinc-600">{run.head_sha.slice(0, 7)}</span>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-x-5 gap-y-2 sm:shrink-0">
-          <div>
-            <p className="type-label">Trigger</p>
-            <div className="mt-0.5">
-              <Badge kind={run.trigger === "manual" ? "manual" : "automatic"} />
-            </div>
-          </div>
-          <div>
-            <p className="type-label">Started</p>
-            <p className="type-meta mt-0.5">{timeAgo(run.started_at)}</p>
-          </div>
-          <div>
-            <p className="type-label">Findings</p>
-            <p className="type-meta mt-0.5">
-              <span className="text-zinc-700">
-                {run.verified}/{run.candidates} verified
-              </span>
-              <span className="text-zinc-500"> · {run.posted} comments</span>
-            </p>
-          </div>
-          <div>
-            <p className="type-label">Status</p>
-            <div className="mt-0.5">
-              <Badge kind={run.status}>{STATUS_LABEL[run.status]}</Badge>
-            </div>
-          </div>
-        </div>
-
-        <span className="inline-flex shrink-0 items-center text-xs font-medium tracking-[-0.01em] text-blue-600 group-hover:text-blue-700 group-hover:underline">
+          <span className="type-mono mt-0.5 block text-zinc-600">{run.head_sha.slice(0, 7)}</span>
+        </Link>
+      </td>
+      <td className="hidden px-4 py-2 md:table-cell">
+        <Badge kind={run.trigger === "manual" ? "manual" : "automatic"} />
+      </td>
+      <td className="hidden px-4 py-2 type-meta lg:table-cell">{timeAgo(run.started_at)}</td>
+      <td className="hidden px-4 py-2 type-meta xl:table-cell">
+        <span className="text-zinc-700">
+          {run.verified}/{run.candidates} verified
+        </span>
+        <span className="text-zinc-500"> · {run.posted} comments</span>
+      </td>
+      <td className="px-4 py-2">
+        <Badge kind={run.status}>{STATUS_LABEL[run.status]}</Badge>
+      </td>
+      <td className="px-4 py-2 text-right">
+        <Link
+          to={`/runs/${run.id}`}
+          className="inline-flex items-center text-xs font-medium tracking-[-0.01em] text-blue-600 hover:text-blue-700 hover:underline"
+        >
           Open review
           <span aria-hidden="true" className="ml-1">
             →
           </span>
-        </span>
-      </Link>
-    </li>
+        </Link>
+      </td>
+    </tr>
   );
 }
 
@@ -169,19 +155,24 @@ export default function Reviews() {
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
         {[
-          { key: "all" as const, label: "All runs", value: counts.all, tone: "neutral" as const },
-          { key: "in_progress" as const, label: "In progress", value: counts.running, tone: "neutral" as const },
-          { key: "completed" as const, label: "Completed", value: counts.completed, tone: "good" as const },
-          { key: "failed" as const, label: "Failed", value: counts.failed, tone: "warn" as const },
+          { key: "all" as const, label: "All runs", value: counts.all },
+          { key: "in_progress" as const, label: "In progress", value: counts.running },
+          { key: "completed" as const, label: "Completed", value: counts.completed },
+          { key: "failed" as const, label: "Failed", value: counts.failed },
         ].map((c) => (
-          <KpiCard
+          <button
             key={c.key}
-            label={c.label}
-            value={String(c.value)}
-            tone={c.tone}
-            active={status === c.key}
+            type="button"
             onClick={() => setStatus(c.key)}
-          />
+            className={`rounded-xl border px-3 py-3 text-left transition ${
+              status === c.key
+                ? "border-blue-400 bg-blue-50"
+                : "border-zinc-200 bg-zinc-50 hover:border-zinc-300"
+            }`}
+          >
+            <p className="type-label">{c.label}</p>
+            <p className="type-display mt-1">{c.value}</p>
+          </button>
         ))}
       </div>
 
@@ -240,11 +231,25 @@ export default function Reviews() {
         )}
         {pageRuns.length > 0 && (
           <>
-            <ul>
-              {pageRuns.map((run) => (
-                <RunRowItem key={run.id} run={run} />
-              ))}
-            </ul>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-[640px] text-left">
+                <thead>
+                  <tr className="border-b border-zinc-200">
+                    <th className="px-4 py-2 font-medium">Pull request</th>
+                    <th className="hidden px-4 py-2 font-medium md:table-cell">Trigger</th>
+                    <th className="hidden px-4 py-2 font-medium lg:table-cell">Started</th>
+                    <th className="hidden px-4 py-2 font-medium xl:table-cell">Findings</th>
+                    <th className="px-4 py-2 font-medium">Status</th>
+                    <th className="px-4 py-2 text-right font-medium">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pageRuns.map((run) => (
+                    <RunRowItem key={run.id} run={run} />
+                  ))}
+                </tbody>
+              </table>
+            </div>
 
             <div className="flex flex-col gap-2 border-t border-zinc-200 bg-zinc-50/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
@@ -269,7 +274,7 @@ export default function Reviews() {
                 </label>
               </div>
 
-              <nav className="flex items-center gap-1" aria-label="Code review pagination">
+              <nav className="flex items-center gap-1" aria-label="Code review table pagination">
                 <button
                   type="button"
                   onClick={() => setPage((current) => Math.max(1, current - 1))}

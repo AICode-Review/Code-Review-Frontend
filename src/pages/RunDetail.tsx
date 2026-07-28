@@ -5,7 +5,7 @@ import { useRerunFromRun } from "../features/runs/useTriggerReview";
 import { useRunDiff } from "../features/runs/useRunDiff";
 import { useRepos } from "../features/repos/useRepos";
 import { timeAgo } from "../lib/format";
-import { Badge, Card, EmptyState, ErrorText, KpiCard, LoadingText } from "../components/ui";
+import { Badge, Card, EmptyState, ErrorText, LoadingText } from "../components/ui";
 import { ReviewComment } from "../components/review/ReviewComment";
 import { DiffViewer } from "../components/review/DiffViewer";
 
@@ -233,14 +233,24 @@ export default function RunDetail() {
       </Card>
 
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <KpiCard label="Issues to fix" value={String(posted.length)} />
-        <KpiCard
-          label="Must fix"
-          value={String(posted.filter((f) => f.severity === "critical").length)}
-          tone="warn"
-        />
-        <KpiCard label="Lower priority" value={String(digest.length)} />
-        <KpiCard label="False alarms caught" value={String(rejected.length)} />
+        <Card className="p-3">
+          <p className="type-label">Issues to fix</p>
+          <p className="type-display mt-1">{posted.length}</p>
+        </Card>
+        <Card className="p-3">
+          <p className="type-label">Must fix</p>
+          <p className="type-display mt-1 text-red-600">
+            {posted.filter((f) => f.severity === "critical").length}
+          </p>
+        </Card>
+        <Card className="p-3">
+          <p className="type-label">Lower priority</p>
+          <p className="type-display mt-1">{digest.length}</p>
+        </Card>
+        <Card className="p-3">
+          <p className="type-label">False alarms caught</p>
+          <p className="type-display mt-1 text-zinc-600">{rejected.length}</p>
+        </Card>
       </div>
 
       {diffLoading && (
