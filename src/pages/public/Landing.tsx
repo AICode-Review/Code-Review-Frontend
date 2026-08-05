@@ -1,258 +1,270 @@
 import { Link } from "react-router-dom";
-import { CornerBrackets, Cursor, GridTexture, Icon, type IconName, Reveal, Scanlines } from "../../components/retro";
+import { CornerBrackets, GridTexture, Icon, type IconName, Reveal } from "../../components/retro";
+import { Seo } from "../../components/Seo";
 
 const capabilities: Array<{ icon: IconName; title: string; body: string }> = [
   {
     icon: "shield",
-    title: "EVERY FINDING EARNS ITS PLACE",
+    title: "Every finding earns its place",
     body: "We check the cited code, then hand the claim to a different model for cross-examination. Refuted or uncertain claims never reach your PR.",
   },
   {
     icon: "scan",
-    title: "SPECIALISTS, NOT ONE GIANT PROMPT",
+    title: "Specialists, not one giant prompt",
     body: "Focused passes inspect logic, security, contracts, concurrency, error handling, tests, and your team's own rules — independently.",
   },
   {
     icon: "budget",
-    title: "A HARD LIMIT ON REVIEW NOISE",
+    title: "A hard limit on review noise",
     body: "Only verified critical and major issues become line comments. Everything else collapses into one digest.",
   },
   {
     icon: "rulebook",
-    title: "REVIEWS THAT LEARN YOUR STANDARDS",
+    title: "Reviews that learn your standards",
     body: "Feedback becomes durable, repo-aware guidance. Add, approve, pause, or remove rules in plain language.",
   },
   {
     icon: "code",
-    title: "EVERY LANGUAGE, GENUINELY",
-    body: "Nothing is filtered from review except actual binaries. Kotlin, Swift, React Native, Flutter — full LLM-level analysis, not a Tier-1 allow-list.",
+    title: "Every language, genuinely",
+    body: "Nothing is filtered from review except actual binaries. Kotlin, Swift, React Native, Flutter — full LLM-level analysis.",
   },
   {
     icon: "lock",
-    title: "A SCORE FOR EVERY PR",
-    body: "Every pull request gets a 0-100 score and its own page — track review health across a repo, not just comment-by-comment.",
+    title: "A score for every PR",
+    body: "Every pull request gets a 0–100 score and its own page — track review health across a repo, not just comment-by-comment.",
   },
 ];
 
 const surfaces: Array<{ icon: IconName; title: string; body: string; to: string }> = [
   {
     icon: "shield",
-    title: "PR BOT",
+    title: "PR bot",
     body: "Installs on GitHub or Bitbucket. Reviews every push automatically and posts only what survived verification.",
     to: "/onboarding",
   },
   {
     icon: "code",
-    title: "CLI",
-    body: "Run the same multi-pass, verified pipeline locally — before you even open a pull request.",
-    to: "/cli",
+    title: "Features",
+    body: "Specialist passes, cross-model verification, execution-sandbox repro, and a rulebook that learns your team's standards.",
+    to: "/features",
   },
   {
     icon: "scan",
-    title: "DASHBOARD",
+    title: "Dashboard",
     body: "PR scores, run history, rulebook, and repo health, all org-scoped and live.",
     to: "/signin",
   },
 ];
 
 const targets = [
-  { value: "> 70%", label: "VERIFIED CATCH RATE" },
-  { value: "< 2", label: "FALSE POS. / RUN" },
-  { value: "< 5%", label: "NOISE DISMISSAL" },
-  { value: "< 5m", label: "MEDIAN LATENCY" },
+  { value: "> 70%", label: "Verified catch rate" },
+  { value: "< 2", label: "False pos. / run" },
+  { value: "< 5%", label: "Noise dismissal" },
+  { value: "< 5m", label: "Median latency" },
 ];
 
-const steps = ["READ THE REAL DIFF AND FILES", "RUN FOCUSED SPECIALIST PASSES", "CROSS-EXAMINE EVERY CANDIDATE", "SHIP ONLY VERIFIED SIGNAL"];
+const steps = [
+  "Read the real diff and files",
+  "Run focused specialist passes",
+  "Cross-examine every candidate",
+  "Ship only verified signal",
+];
 
 const rulebookRules: Array<[string, string, string]> = [
-  ["SECURITY", "Require an authorization check before account-scoped writes.", "12 signals"],
-  ["ERRORS", "Never swallow payment provider errors; attach the request ID.", "7 signals"],
-  ["TESTS", "Changes to fee calculations require boundary-value tests.", "manual"],
+  ["Security", "Require an authorization check before account-scoped writes.", "12 signals"],
+  ["Errors", "Never swallow payment provider errors; attach the request ID.", "7 signals"],
+  ["Tests", "Changes to fee calculations require boundary-value tests.", "manual"],
 ];
 
 const rulebookFeatures: Array<[string, string]> = [
-  ["PLAIN-LANGUAGE RULES", "Add team standards without prompt engineering."],
-  ["EVIDENCE BEFORE ACTIVATION", "Learned rules stay reviewable and reversible."],
-  ["PRIVATE BY DESIGN", "Ephemeral source snapshots and encrypted tokens."],
-  ["ALL-LANGUAGE REVIEW", "Every source language receives LLM-level analysis."],
+  ["Plain-language rules", "Add team standards without prompt engineering."],
+  ["Evidence before activation", "Learned rules stay reviewable and reversible."],
+  ["Private by design", "Ephemeral source snapshots and encrypted tokens."],
+  ["All-language review", "Every source language receives LLM-level analysis."],
 ];
 
 export default function Landing() {
   return (
-    <main className="overflow-hidden bg-[#0a0a08] font-mono text-[#c9c2b3] selection:bg-[#ffb300] selection:text-black">
-      <section className="relative isolate border-b border-[#3a2f1f]">
-        <Scanlines />
+    <main className="overflow-hidden">
+      <Seo
+        title="CodeFerret — AI code review your team can trust"
+        description="Every finding gets cross-examined by a second model before it ever reaches your PR. No noise, no made-up bugs — just signal, verified."
+        path="/"
+      />
+
+      {/* Hero — brand-first, one composition */}
+      <section className="relative isolate overflow-hidden border-b border-[var(--mk-border)]">
+        <div className="mk-mesh absolute inset-0 -z-10" aria-hidden="true" />
         <div
-          className="pointer-events-none absolute inset-0 -z-10"
+          className="pointer-events-none absolute inset-0 -z-10 opacity-50"
           aria-hidden="true"
           style={{
-            background:
-              "radial-gradient(circle at 50% 0%, rgba(255,179,0,.10), transparent 34rem), linear-gradient(rgba(255,179,0,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,179,0,.05) 1px, transparent 1px)",
-            backgroundSize: "auto, 40px 40px, 40px 40px",
-            maskImage: "linear-gradient(to bottom, black 0%, transparent 88%)",
+            backgroundImage:
+              "linear-gradient(rgba(20,184,166,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,.035) 1px, transparent 1px)",
+            backgroundSize: "56px 56px",
+            maskImage: "linear-gradient(to bottom, black 0%, transparent 85%)",
           }}
         />
 
-        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:px-6 sm:py-20 lg:grid-cols-[0.86fr_1.14fr] lg:gap-14 lg:py-24">
+        <div className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:px-6 sm:py-20 lg:grid-cols-[1fr_1.05fr] lg:gap-16 lg:py-24">
           <div>
-            <div className="inline-flex items-center gap-2 rounded-none border border-[#ffb300]/40 bg-[#14170f] px-3 py-1.5 text-xs font-medium text-[#ffb300]">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#ffb300] opacity-60 motion-reduce:animate-none" />
-                <span className="relative inline-flex size-2 rounded-full bg-[#ffb300]" />
-              </span>
-              SYSTEM ONLINE // LIVE ON GITHUB PULL REQUESTS
-            </div>
-            <p className="mt-4 text-xs font-medium uppercase tracking-wide text-[#6b6252]">
-              // ai agents 10x&apos;d your commit volume. review capacity didn&apos;t follow.
+            <p className="font-display text-4xl font-bold tracking-tight text-[var(--mk-ink)] sm:text-5xl lg:text-6xl">
+              CodeFerret
             </p>
-            <h1
-              className="mt-6 text-balance text-4xl font-bold uppercase leading-[1.08] tracking-[-0.01em] text-[#f2ead9] sm:text-5xl"
-              style={{ textShadow: "0 0 18px rgba(255,179,0,.22)" }}
-            >
-              AI code review
-              <br />
-              your team{" "}
-              <span className="text-[#ffb300]">can trust</span>
-              <Cursor />
+            <h1 className="mt-4 max-w-lg text-balance text-2xl font-semibold leading-snug tracking-tight text-[var(--mk-ink)] sm:text-3xl">
+              AI code review your team{" "}
+              <span className="text-[var(--mk-accent)]">can trust</span>
             </h1>
-            <p className="mt-5 max-w-xl text-pretty text-sm leading-7 text-[#a39a86]">
+            <p className="mt-4 max-w-md text-pretty text-base leading-7 text-[var(--mk-muted)]">
               Every finding gets cross-examined by a second model before it ever reaches your PR. No noise. No
               made-up bugs. Just signal, verified.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 to="/signin"
-                className="ferret-shimmer group inline-flex items-center justify-center gap-2 rounded-none border-2 border-[#ffb300] bg-[#ffb300] px-5 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-[4px_4px_0_0_#3a2f1f] transition hover:-translate-y-0.5 hover:bg-[#ffcf66]"
+                className="ferret-shimmer inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--mk-accent)] px-5 py-3 text-sm font-semibold text-[var(--mk-accent-fg)] shadow-[0_8px_24px_rgba(20,184,166,0.3)] transition hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
               >
                 Run first scan <span aria-hidden="true">→</span>
               </Link>
               <a
                 href="#how-it-works"
-                className="inline-flex items-center justify-center rounded-none border-2 border-[#3a2f1f] bg-[#14170f] px-5 py-3 text-sm font-medium text-[#c9c2b3] transition hover:border-[#ffb300]/50 hover:text-[#ffb300]"
+                className="inline-flex items-center justify-center rounded-lg border border-[var(--mk-border-strong)] bg-[var(--mk-surface)]/60 px-5 py-3 text-sm font-medium text-[var(--mk-ink)] transition hover:border-[var(--mk-accent)]/40 hover:text-[var(--mk-accent)]"
               >
-                $ ./how-it-works
+                How it works
               </a>
             </div>
-            <p className="mt-3 text-xs text-[#6b6252]">// no credit card // ready in minutes</p>
+            <p className="mt-4 text-xs text-[var(--mk-faint)]">No credit card · Ready in minutes</p>
           </div>
 
           <div className="relative" style={{ animation: "ferret-fade-up 560ms cubic-bezier(.16,.8,.24,1) 80ms both" }}>
-            <div className="absolute -inset-8 -z-10 rounded-[3rem] bg-[#ffb300]/5 blur-3xl" aria-hidden="true" />
-            <div className="relative overflow-hidden rounded-none border-2 border-[#3a2f1f] bg-[#0d0f0a] shadow-[8px_8px_0_0_#3a2f1f]">
+            <div className="relative overflow-hidden rounded-2xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] shadow-[0_24px_64px_rgba(0,0,0,0.45)]">
               <CornerBrackets />
-              <div className="flex items-center justify-between border-b border-[#3a2f1f] bg-[#14170f] px-4 py-3">
+              <div className="flex items-center justify-between border-b border-[var(--mk-border)] bg-[var(--mk-surface)] px-4 py-3">
                 <div className="flex items-center gap-2.5">
                   <span className="flex gap-1.5" aria-hidden="true">
-                    <span className="size-2.5 rounded-full bg-[#c9c2b3]/25" />
-                    <span className="size-2.5 rounded-full bg-[#c9c2b3]/25" />
-                    <span className="size-2.5 rounded-full bg-[#ffb300]/70" />
+                    <span className="size-2.5 rounded-full bg-[var(--mk-faint)]/40" />
+                    <span className="size-2.5 rounded-full bg-[var(--mk-faint)]/40" />
+                    <span className="size-2.5 rounded-full bg-[var(--mk-accent)]/80" />
                   </span>
-                  <span className="text-xs font-medium text-[#a39a86]">acme/api :: PR#428</span>
+                  <span className="text-xs font-medium text-[var(--mk-muted)]">acme/api · PR #428</span>
                 </div>
-                <span className="relative flex items-center gap-1.5 rounded-none border border-[#4ade80]/40 bg-[#4ade80]/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-[#4ade80]">
-                  <span className="relative flex size-1.5" aria-hidden="true">
-                    <span className="absolute inline-flex size-full animate-ping rounded-full bg-[#4ade80] opacity-60 motion-reduce:animate-none" />
-                    <span className="relative inline-flex size-1.5 rounded-full bg-[#4ade80]" />
-                  </span>
+                <span className="inline-flex items-center gap-1.5 rounded-md border border-[var(--mk-success)]/30 bg-[var(--mk-success)]/10 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-[var(--mk-success)]">
+                  <span className="size-1.5 rounded-full bg-[var(--mk-success)]" />
                   Review complete
                 </span>
               </div>
-              <div className="px-4 py-4 font-mono text-[11px] leading-6 text-[#a39a86]">
-                <div className="mb-2 flex items-center gap-2 border-b border-[#3a2f1f] pb-2 text-[#6b6252]">
+              <div className="px-4 py-4 font-mono text-[11px] leading-6 text-[var(--mk-muted)]">
+                <div className="mb-2 flex items-center gap-2 border-b border-[var(--mk-border)] pb-2 text-[var(--mk-faint)]">
                   <Icon name="code" /> src/auth/session.ts
                 </div>
-                <p><span className="mr-3 text-[#6b6252]">42</span>const session = await db.sessions.find(id);</p>
-                <p className="bg-[#ffb300]/10"><span className="mr-3 text-[#ffb300]">43 +</span><span className="text-[#4ade80]">if</span> (!session) throw new NotFoundError();</p>
-                <p className="bg-[#ffb300]/10"><span className="mr-3 text-[#ffb300]">44 +</span><span className="text-[#4ade80]">if</span> (session.userId !== actor.id) {"{"}</p>
-                <p className="bg-[#ffb300]/10 pl-10"><span className="text-[#4ade80]">throw new</span> ForbiddenError();</p>
-                <p className="bg-[#ffb300]/10"><span className="mr-3 text-[#ffb300]">46 +</span>{"}"}</p>
+                <p>
+                  <span className="mr-3 text-[var(--mk-faint)]">42</span>const session = await db.sessions.find(id);
+                </p>
+                <p className="bg-[var(--mk-accent-soft)]">
+                  <span className="mr-3 text-[var(--mk-accent)]">43 +</span>
+                  <span className="text-[var(--mk-success)]">if</span> (!session) throw new NotFoundError();
+                </p>
+                <p className="bg-[var(--mk-accent-soft)]">
+                  <span className="mr-3 text-[var(--mk-accent)]">44 +</span>
+                  <span className="text-[var(--mk-success)]">if</span> (session.userId !== actor.id) {"{"}
+                </p>
+                <p className="bg-[var(--mk-accent-soft)] pl-10">
+                  <span className="text-[var(--mk-success)]">throw new</span> ForbiddenError();
+                </p>
+                <p className="bg-[var(--mk-accent-soft)]">
+                  <span className="mr-3 text-[var(--mk-accent)]">46 +</span>
+                  {"}"}
+                </p>
               </div>
-              <div
-                className="border-t border-[#3a2f1f] p-5"
-                style={{ animation: "ferret-fade-up 500ms cubic-bezier(.16,.8,.24,1) 340ms both" }}
-              >
+              <div className="border-t border-[var(--mk-border)] p-5">
                 <div className="flex items-center justify-between">
-                  <p className="text-xs font-semibold uppercase text-[#f2ead9]">CodeFerret finding</p>
-                  <span className="rounded-none border border-red-400/40 bg-red-400/10 px-2 py-1 text-[10px] font-semibold uppercase text-red-400">Critical</span>
+                  <p className="text-xs font-semibold text-[var(--mk-ink)]">CodeFerret finding</p>
+                  <span className="rounded-md border border-red-400/30 bg-red-400/10 px-2 py-1 text-[10px] font-semibold uppercase text-red-400">
+                    Critical
+                  </span>
                 </div>
-                <h2 className="mt-3 text-sm font-semibold text-[#f2ead9]">Session ownership is not validated</h2>
-                <p className="mt-1.5 text-xs leading-5 text-[#a39a86]">
+                <h2 className="mt-3 text-sm font-semibold text-[var(--mk-ink)]">Session ownership is not validated</h2>
+                <p className="mt-1.5 text-xs leading-5 text-[var(--mk-muted)]">
                   Any authenticated user can refresh another user&apos;s session by ID.
                 </p>
-                <div className="mt-3 flex items-center gap-2 border border-[#4ade80]/30 bg-[#4ade80]/5 p-3 text-[11px] font-medium text-[#4ade80]">
-                  <Icon name="shield" /> Exact code confirmed // independently upheld
+                <div className="mt-3 flex items-center gap-2 rounded-lg border border-[var(--mk-success)]/25 bg-[var(--mk-success)]/5 p-3 text-[11px] font-medium text-[var(--mk-success)]">
+                  <Icon name="shield" /> Exact code confirmed · independently upheld
                 </div>
               </div>
             </div>
-            <p className="mt-2 text-center text-[10px] text-[#6b6252]">// illustrative output — not live data</p>
+            <p className="mt-3 text-center text-[10px] text-[var(--mk-faint)]">Illustrative output — not live data</p>
           </div>
         </div>
       </section>
 
-      <section className="relative border-b border-[#3a2f1f] bg-[#0d0f0a]">
+      <section className="relative border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
         <GridTexture />
         <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6">
-          <p className="text-center text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// one engine, three surfaces</p>
-          <h2 className="mt-3 text-center text-2xl font-bold uppercase tracking-tight text-[#f2ead9] sm:text-3xl">
-            Review where you already work.
+          <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">
+            One engine, three surfaces
+          </p>
+          <h2 className="mt-3 text-center text-2xl font-semibold tracking-tight sm:text-3xl">
+            Review where you already work
           </h2>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-10 grid gap-4 sm:grid-cols-3">
             {surfaces.map((s) => (
               <Link
                 key={s.title}
                 to={s.to}
-                className="ferret-card group block border border-[#3a2f1f] bg-[#0a0a08] p-5 shadow-[4px_4px_0_0_#1c1810]"
+                className="ferret-card group block rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg)] p-5"
               >
-                <div className="flex size-9 items-center justify-center border border-[#ffb300]/40 bg-[#ffb300]/10 text-[#ffb300]">
+                <div className="flex size-10 items-center justify-center rounded-lg border border-[var(--mk-accent)]/25 bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
                   <Icon name={s.icon} />
                 </div>
-                <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{s.title}</h3>
-                <p className="mt-1.5 text-xs leading-5 text-[#a39a86]">{s.body}</p>
-                <span className="mt-3 inline-block text-xs font-medium text-[#ffb300] group-hover:underline">
+                <h3 className="mt-4 text-sm font-semibold text-[var(--mk-ink)]">{s.title}</h3>
+                <p className="mt-1.5 text-sm leading-6 text-[var(--mk-muted)]">{s.body}</p>
+                <span className="mt-4 inline-block text-sm font-medium text-[var(--mk-accent)] group-hover:underline">
                   Open →
                 </span>
               </Link>
             ))}
           </div>
-          <p className="mt-8 text-center text-xs text-[#6b6252]">
-            // GitHub &amp; Bitbucket · every language, genuinely · two-model verification on every finding
-          </p>
         </Reveal>
       </section>
 
-      <section id="how-it-works" className="scroll-mt-8">
+      <section id="how-it-works" className="scroll-mt-8 border-b border-[var(--mk-border)]">
         <Reveal className="mx-auto max-w-6xl px-5 py-16 sm:px-6 lg:py-20">
-          <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:gap-14">
+          <div className="grid gap-12 lg:grid-cols-[0.85fr_1.15fr] lg:gap-16">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// signal over volume</p>
-              <h2 className="mt-3 text-2xl font-bold uppercase tracking-tight text-[#f2ead9] sm:text-3xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">
+                Signal over volume
+              </p>
+              <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
                 Find broadly.
                 <br />
                 Verify ruthlessly.
               </h2>
-              <p className="mt-4 text-sm leading-6 text-[#a39a86]">
+              <p className="mt-4 text-sm leading-7 text-[var(--mk-muted)]">
                 Multiple specialists scan for risk in parallel. Independent verification decides what&apos;s worth
                 your attention.
               </p>
-              <ol className="mt-7 space-y-3 border-l border-[#3a2f1f] pl-5" style={{ borderImage: "linear-gradient(to bottom, #ffb300, #3a2f1f 60%) 1 100%" }}>
+              <ol className="mt-8 space-y-4 border-l border-[var(--mk-border)] pl-6">
                 {steps.map((step, index) => (
-                  <li key={step} className="relative text-sm text-[#c9c2b3]">
-                    <span className="absolute -left-[1.65rem] flex size-6 shrink-0 items-center justify-center border border-[#ffb300]/50 bg-[#0a0a08] font-mono text-[10px] text-[#ffb300]">
+                  <li key={step} className="relative text-sm text-[var(--mk-ink)]">
+                    <span className="absolute -left-[1.9rem] flex size-6 shrink-0 items-center justify-center rounded-md border border-[var(--mk-accent)]/40 bg-[var(--mk-bg)] font-mono text-[10px] font-semibold text-[var(--mk-accent)]">
                       {index + 1}
                     </span>
-                    <span className="text-[#6b6252]">[{index === steps.length - 1 ? "OK" : "..."}]</span> {step}
+                    {step}
                   </li>
                 ))}
               </ol>
             </div>
             <div className="grid gap-3 sm:grid-cols-2">
               {capabilities.map((feature) => (
-                <article key={feature.title} className="ferret-card border border-[#3a2f1f] bg-[#0d0f0a] p-5 shadow-[4px_4px_0_0_#1c1810]">
-                  <div className="flex size-9 items-center justify-center border border-[#ffb300]/40 bg-[#ffb300]/10 text-[#ffb300]">
+                <article
+                  key={feature.title}
+                  className="ferret-card rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-5"
+                >
+                  <div className="flex size-10 items-center justify-center rounded-lg border border-[var(--mk-accent)]/25 bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
                     <Icon name={feature.icon} />
                   </div>
-                  <h3 className="mt-4 text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{feature.title}</h3>
-                  <p className="mt-1.5 text-xs leading-5 text-[#a39a86]">{feature.body}</p>
+                  <h3 className="mt-4 text-sm font-semibold text-[var(--mk-ink)]">{feature.title}</h3>
+                  <p className="mt-1.5 text-sm leading-6 text-[var(--mk-muted)]">{feature.body}</p>
                 </article>
               ))}
             </div>
@@ -260,36 +272,36 @@ export default function Landing() {
         </Reveal>
       </section>
 
-      <section className="border-y border-[#3a2f1f] bg-[#0d0f0a]">
-        <Reveal className="mx-auto grid max-w-6xl items-center gap-10 px-5 py-16 sm:px-6 lg:grid-cols-2 lg:gap-14 lg:py-20">
-          <div className="relative order-2 border border-[#3a2f1f] bg-[#0a0a08] p-4 shadow-[6px_6px_0_0_#1c1810] sm:p-6 lg:order-1">
+      <section className="border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
+        <Reveal className="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:py-20">
+          <div className="relative order-2 overflow-hidden rounded-2xl border border-[var(--mk-border)] bg-[var(--mk-bg)] p-5 shadow-[0_16px_48px_rgba(0,0,0,0.3)] sm:p-6 lg:order-1">
             <CornerBrackets />
-            <div className="flex items-center justify-between border-b border-[#3a2f1f] pb-4">
+            <div className="flex items-center justify-between border-b border-[var(--mk-border)] pb-4">
               <div>
-                <p className="text-sm font-semibold uppercase text-[#f2ead9]">Team rulebook</p>
-                <p className="mt-1 text-xs text-[#6b6252]">acme / payments-api</p>
+                <p className="text-sm font-semibold text-[var(--mk-ink)]">Team rulebook</p>
+                <p className="mt-1 text-xs text-[var(--mk-faint)]">acme / payments-api</p>
               </div>
-              <span className="border border-[#4ade80]/40 bg-[#4ade80]/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-[#4ade80]">
+              <span className="rounded-md border border-[var(--mk-success)]/30 bg-[var(--mk-success)]/10 px-2.5 py-1 text-[10px] font-semibold uppercase text-[var(--mk-success)]">
                 3 active
               </span>
             </div>
             <div className="mt-3 space-y-2">
               {rulebookRules.map(([category, rule, evidence]) => (
-                <div key={rule} className="ferret-card border border-[#3a2f1f] bg-[#14170f] p-4">
+                <div key={rule} className="rounded-lg border border-[var(--mk-border)] bg-[var(--mk-surface)] p-4">
                   <div className="flex items-start gap-3">
-                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center border border-[#4ade80]/40 bg-[#4ade80]/10 text-[#4ade80]">
+                    <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-md border border-[var(--mk-success)]/30 bg-[var(--mk-success)]/10 text-[var(--mk-success)]">
                       <svg viewBox="0 0 16 16" fill="none" className="size-3" aria-hidden="true">
                         <path d="m4 8 2.5 2.5L12 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                       </svg>
                     </span>
                     <div className="min-w-0">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-[10px] font-semibold uppercase tracking-wide text-[#ffb300]">
-                          [{category}]
+                        <span className="text-[10px] font-semibold uppercase tracking-wide text-[var(--mk-accent)]">
+                          {category}
                         </span>
-                        <span className="text-[10px] text-[#6b6252]">{evidence}</span>
+                        <span className="text-[10px] text-[var(--mk-faint)]">{evidence}</span>
                       </div>
-                      <p className="mt-1.5 text-xs leading-5 text-[#c9c2b3]">{rule}</p>
+                      <p className="mt-1.5 text-xs leading-5 text-[var(--mk-muted)]">{rule}</p>
                     </div>
                   </div>
                 </div>
@@ -298,52 +310,52 @@ export default function Landing() {
           </div>
 
           <div className="order-1 lg:order-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// learns with your team</p>
-            <h2 className="mt-3 text-2xl font-bold uppercase tracking-tight text-[#f2ead9] sm:text-3xl">
-              Standards that survive beyond one PR.
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">
+              Learns with your team
+            </p>
+            <h2 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+              Standards that survive beyond one PR
             </h2>
-            <p className="mt-4 text-sm leading-6 text-[#a39a86]">
+            <p className="mt-4 text-sm leading-7 text-[var(--mk-muted)]">
               Repeated feedback becomes transparent, repo-aware guidance your team can review and control.
             </p>
-            <div className="mt-7 grid gap-3 sm:grid-cols-2">
+            <div className="mt-8 grid gap-3 sm:grid-cols-2">
               {rulebookFeatures.map(([title, body]) => (
-                <div key={title} className="border border-[#3a2f1f] bg-[#0a0a08] p-4">
-                  <p className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{title}</p>
-                  <p className="mt-1 text-xs leading-5 text-[#a39a86]">{body}</p>
+                <div key={title} className="rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg)] p-4">
+                  <p className="text-sm font-semibold text-[var(--mk-ink)]">{title}</p>
+                  <p className="mt-1 text-xs leading-5 text-[var(--mk-muted)]">{body}</p>
                 </div>
               ))}
             </div>
-            <Link to="/security" className="mt-6 inline-flex text-sm font-medium text-[#ffb300] hover:text-[#ffcf66]">
-              &gt; Read our security approach
+            <Link
+              to="/security"
+              className="mt-6 inline-flex text-sm font-medium text-[var(--mk-accent)] transition hover:text-[var(--mk-accent-hover)]"
+            >
+              Read our security approach →
             </Link>
           </div>
         </Reveal>
       </section>
 
-      <section className="border-b border-[#3a2f1f] bg-[#0a0a08]">
-        <Reveal className="mx-auto max-w-6xl px-5 py-10 sm:px-6">
+      <section className="border-b border-[var(--mk-border)]">
+        <Reveal className="mx-auto max-w-6xl px-5 py-12 sm:px-6">
           <div className="grid gap-8 lg:grid-cols-[1fr_2fr] lg:items-end">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// measured, not marketed</p>
-              <h2 className="mt-3 text-xl font-bold uppercase tracking-tight text-[#f2ead9]">The bar we&apos;re building toward.</h2>
-              <p className="mt-3 text-sm leading-6 text-[#a39a86]">
-                These are engineering targets — not customer results.{" "}
-                <Link to="/benchmark" className="font-medium text-[#ffb300] hover:underline">
-                  Read the published methodology →
-                </Link>
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">
+                Measured, not marketed
+              </p>
+              <h2 className="mt-3 text-xl font-semibold tracking-tight">The bar we&apos;re building toward</h2>
+              <p className="mt-3 text-sm leading-6 text-[var(--mk-muted)]">
+                These are engineering targets — not customer results.
               </p>
             </div>
-            <div className="relative grid grid-cols-2 gap-x-6 gap-y-7 border border-[#3a2f1f] bg-[#0d0f0a] p-6 sm:grid-cols-4">
-              <CornerBrackets />
+            <div className="relative grid grid-cols-2 gap-x-6 gap-y-7 rounded-2xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-6 sm:grid-cols-4">
               {targets.map((target) => (
                 <div key={target.label}>
-                  <p
-                    className="font-mono text-3xl font-bold tabular-nums text-[#ffb300] sm:text-4xl"
-                    style={{ textShadow: "0 0 14px rgba(255,179,0,.4)" }}
-                  >
+                  <p className="font-display text-3xl font-bold tabular-nums text-[var(--mk-accent)] sm:text-4xl">
                     {target.value}
                   </p>
-                  <p className="mt-1.5 text-[10px] font-medium uppercase tracking-wide text-[#6b6252]">{target.label}</p>
+                  <p className="mt-1.5 text-[11px] font-medium text-[var(--mk-faint)]">{target.label}</p>
                 </div>
               ))}
             </div>
@@ -351,11 +363,13 @@ export default function Landing() {
         </Reveal>
       </section>
 
-      <section className="relative border-b border-[#3a2f1f] bg-[#0a0a08]">
+      <section className="relative border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
         <GridTexture />
-        <Reveal className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-10 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// built to be trusted with your code</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-xs font-medium text-[#a39a86]">
+        <Reveal className="mx-auto flex max-w-6xl flex-col items-center gap-4 px-6 py-12 text-center">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">
+            Built to be trusted with your code
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-[var(--mk-muted)]">
             <span className="inline-flex items-center gap-2">
               <Icon name="lock" /> Source never persisted
             </span>
@@ -366,53 +380,38 @@ export default function Landing() {
               <Icon name="scan" /> Row-level security on every table
             </span>
           </div>
-          <Link to="/security" className="text-xs font-medium text-[#ffb300] hover:underline">
-            &gt; Full security approach
+          <Link to="/security" className="text-sm font-medium text-[var(--mk-accent)] hover:underline">
+            Full security approach →
           </Link>
         </Reveal>
       </section>
 
-      <section className="relative px-5 py-14 sm:px-6 lg:py-16">
-        <div className="relative mx-auto max-w-6xl overflow-hidden border-2 border-[#ffb300]/50 bg-[#0d0f0a] px-6 py-10 text-center shadow-[8px_8px_0_0_#3a2f1f] sm:px-12 sm:py-14">
-          <Scanlines />
-          <div
-            className="absolute inset-0 opacity-25"
-            aria-hidden="true"
-            style={{
-              backgroundImage:
-                "radial-gradient(circle at 20% 20%, rgba(255,179,0,.5) 0, transparent 25%), radial-gradient(circle at 80% 80%, rgba(74,222,128,.35) 0, transparent 30%)",
-            }}
-          />
+      <section className="px-5 py-14 sm:px-6 lg:py-16">
+        <div className="relative mx-auto max-w-6xl overflow-hidden rounded-2xl border border-[var(--mk-accent)]/30 bg-[var(--mk-bg-elevated)] px-6 py-12 text-center shadow-[0_24px_64px_rgba(0,0,0,0.35)] sm:px-12 sm:py-16">
+          <div className="mk-mesh absolute inset-0 opacity-60" aria-hidden="true" />
           <Reveal className="relative">
-            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#ffb300]">// give your team signal</p>
-            <h2
-              className="mx-auto mt-3 max-w-2xl text-2xl font-bold uppercase tracking-tight text-[#f2ead9] sm:text-3xl"
-              style={{ textShadow: "0 0 18px rgba(255,179,0,.2)" }}
-            >
+            <p className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
               Catch the risky change.
               <br />
               Skip the review theater.
-            </h2>
-            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[#a39a86]">
+            </p>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-6 text-[var(--mk-muted)]">
               Install the GitHub App and run your first verified review in minutes.
             </p>
-            <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
               <Link
                 to="/signin"
-                className="ferret-shimmer inline-flex items-center justify-center border-2 border-[#ffb300] bg-[#ffb300] px-5 py-3 text-sm font-bold uppercase tracking-wide text-black shadow-[4px_4px_0_0_#3a2f1f] transition hover:-translate-y-0.5 hover:bg-[#ffcf66] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffb300]"
+                className="ferret-shimmer inline-flex items-center justify-center rounded-lg bg-[var(--mk-accent)] px-5 py-3 text-sm font-semibold text-[var(--mk-accent-fg)] shadow-[0_8px_24px_rgba(20,184,166,0.3)] transition hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
               >
                 Run first scan
               </Link>
               <Link
                 to="/pricing"
-                className="inline-flex items-center justify-center border-2 border-[#3a2f1f] bg-transparent px-5 py-3 text-sm font-medium text-[#c9c2b3] transition hover:border-[#ffb300]/50 hover:text-[#ffb300] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffb300]"
+                className="inline-flex items-center justify-center rounded-lg border border-[var(--mk-border-strong)] bg-transparent px-5 py-3 text-sm font-medium text-[var(--mk-ink)] transition hover:border-[var(--mk-accent)]/40 hover:text-[var(--mk-accent)]"
               >
                 View plans
               </Link>
             </div>
-            <p className="mt-6 text-xs text-[#6b6252]">
-              READY<Cursor />
-            </p>
           </Reveal>
         </div>
       </section>

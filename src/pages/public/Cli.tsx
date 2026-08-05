@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { GridTexture, Icon, type IconName, Reveal, TerminalPanel } from "../../components/retro";
+import { Seo } from "../../components/Seo";
 
 const install = `npm install -g @codeferret/cli
 # or
@@ -61,18 +62,20 @@ const commands: Array<{ icon: IconName; cmd: string; blurb: string }> = [
 
 export default function Cli() {
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
+      <Seo
+        title="CLI — CodeFerret"
+        description="Run CodeFerret's same multi-pass, verified review pipeline locally, before you even open a pull request."
+        path="/cli"
+      />
       <GridTexture />
       <div className="mx-auto max-w-4xl px-6 py-16">
         <Reveal>
-          <p className="text-xs font-medium uppercase tracking-widest text-[#ffb300]">// cli</p>
-          <h1
-            className="mt-3 text-3xl font-bold uppercase tracking-tight text-[#f2ead9]"
-            style={{ textShadow: "0 0 16px rgba(255,179,0,.2)" }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">CLI</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Same CodeFerret, in your terminal
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#a39a86]">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--mk-muted)]">
             Use CodeFerret as a standalone web app, as a bot inside GitHub &amp; Bitbucket PRs, or as a local
             CLI before you open a pull request. One engine, three surfaces — verified findings
             everywhere.
@@ -85,61 +88,61 @@ export default function Cli() {
               <Link
                 key={s.title}
                 to={s.to}
-                className="ferret-card group block border border-[#3a2f1f] bg-[#0a0a08] p-4 shadow-[3px_3px_0_0_#1c1810]"
+                className="ferret-card group block rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-4 transition hover:border-[var(--mk-accent)]/40"
               >
-                <div className="flex size-8 items-center justify-center border border-[#ffb300]/40 bg-[#ffb300]/10 text-[#ffb300]">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
                   <Icon name={s.icon} />
                 </div>
-                <h2 className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{s.title}</h2>
-                <p className="mt-1 text-xs text-[#6b6252]">{s.body}</p>
-                <span className="mt-2 inline-block text-xs font-medium text-[#ffb300] group-hover:underline">Open →</span>
+                <h2 className="mt-3 text-sm font-semibold text-[var(--mk-ink)]">{s.title}</h2>
+                <p className="mt-1 text-xs text-[var(--mk-faint)]">{s.body}</p>
+                <span className="mt-2 inline-block text-xs font-medium text-[var(--mk-accent)] group-hover:underline">Open →</span>
               </Link>
             ) : (
-              <div key={s.title} className="border border-[#ffb300]/40 bg-[#0a0a08] p-4 shadow-[3px_3px_0_0_#1c1810]">
-                <div className="flex size-8 items-center justify-center border border-[#ffb300]/40 bg-[#ffb300]/10 text-[#ffb300]">
+              <div key={s.title} className="rounded-xl border border-[var(--mk-accent)]/30 bg-[var(--mk-bg-elevated)] p-4">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
                   <Icon name={s.icon} />
                 </div>
-                <h2 className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{s.title}</h2>
-                <p className="mt-1 text-xs text-[#6b6252]">{s.body}</p>
-                <span className="mt-2 inline-block text-xs font-medium text-[#6b6252]">You are here</span>
+                <h2 className="mt-3 text-sm font-semibold text-[var(--mk-ink)]">{s.title}</h2>
+                <p className="mt-1 text-xs text-[var(--mk-faint)]">{s.body}</p>
+                <span className="mt-2 inline-block text-xs font-medium text-[var(--mk-faint)]">You are here</span>
               </div>
             ),
           )}
         </Reveal>
 
         <Reveal className="mt-12">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">$ install</h2>
+          <h2 className="text-sm font-semibold text-[var(--mk-ink)]">Install</h2>
           <div className="mt-3">
             <TerminalPanel label="terminal">
-              <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-[#4ade80]">{install}</pre>
+              <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-[var(--mk-success)]">{install}</pre>
             </TerminalPanel>
           </div>
         </Reveal>
 
         <Reveal className="mt-10">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">$ local review</h2>
-          <p className="mt-1 text-xs text-[#6b6252]">
-            // runs the logic / security / contracts passes + verification. posts nothing — prints
-            findings to your terminal (or json for scripts).
+          <h2 className="text-sm font-semibold text-[var(--mk-ink)]">Local review</h2>
+          <p className="mt-1 text-xs text-[var(--mk-faint)]">
+            Runs the logic / security / contracts passes + verification. Posts nothing — prints
+            findings to your terminal (or JSON for scripts).
           </p>
           <div className="mt-3">
             <TerminalPanel label="terminal">
-              <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-[#4ade80]">{localReview}</pre>
+              <pre className="overflow-x-auto p-4 font-mono text-xs leading-relaxed text-[var(--mk-success)]">{localReview}</pre>
             </TerminalPanel>
           </div>
         </Reveal>
 
         <Reveal className="mt-10">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">// commands</h2>
+          <h2 className="text-sm font-semibold text-[var(--mk-ink)]">Commands</h2>
           <ul className="mt-4 grid gap-3 sm:grid-cols-2">
             {commands.map((c) => (
-              <li key={c.cmd} className="ferret-card flex gap-3 border border-[#3a2f1f] bg-[#0a0a08] px-4 py-3">
-                <div className="flex size-7 shrink-0 items-center justify-center border border-[#ffb300]/40 bg-[#ffb300]/10 text-[#ffb300]">
+              <li key={c.cmd} className="ferret-card flex gap-3 rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] px-4 py-3">
+                <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
                   <Icon name={c.icon} />
                 </div>
                 <div className="min-w-0">
-                  <code className="font-mono text-sm text-[#ffb300]">{c.cmd}</code>
-                  <p className="mt-1 text-xs text-[#a39a86]">{c.blurb}</p>
+                  <code className="font-mono text-sm text-[var(--mk-accent)]">{c.cmd}</code>
+                  <p className="mt-1 text-xs text-[var(--mk-muted)]">{c.blurb}</p>
                 </div>
               </li>
             ))}
@@ -147,25 +150,25 @@ export default function Cli() {
         </Reveal>
 
         <Reveal className="mt-10">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">// github actions</h2>
-          <p className="mt-1 text-xs text-[#6b6252]">
+          <h2 className="text-sm font-semibold text-[var(--mk-ink)]">GitHub Actions</h2>
+          <p className="mt-1 text-xs text-[var(--mk-faint)]">
             Prefer the GitHub App for PR comments. Use the CLI in CI when you want a gate before the
             bot runs, or in Bitbucket Pipelines the same way.
           </p>
           <div className="mt-3">
             <TerminalPanel label=".github/workflows/review.yml">
-              <pre className="overflow-x-auto p-4 font-mono text-[11px] leading-relaxed text-[#4ade80]">{ciSnippet}</pre>
+              <pre className="overflow-x-auto p-4 font-mono text-[11px] leading-relaxed text-[var(--mk-success)]">{ciSnippet}</pre>
             </TerminalPanel>
           </div>
         </Reveal>
 
-        <p className="mt-10 border-t border-[#3a2f1f] pt-6 text-xs text-[#6b6252]">
-          // cli package ships with phase A delivery. until then, install the{" "}
-          <Link to="/onboarding" className="text-[#ffb300] hover:underline">
+        <p className="mt-10 border-t border-[var(--mk-border)] pt-6 text-sm text-[var(--mk-faint)]">
+          CLI package ships with Phase A delivery. Until then, install the{" "}
+          <Link to="/onboarding" className="text-[var(--mk-accent)] hover:underline">
             GitHub App
           </Link>{" "}
           for in-PR reviews, or explore the{" "}
-          <Link to="/signin" className="text-[#ffb300] hover:underline">
+          <Link to="/signin" className="text-[var(--mk-accent)] hover:underline">
             web dashboard
           </Link>
           .

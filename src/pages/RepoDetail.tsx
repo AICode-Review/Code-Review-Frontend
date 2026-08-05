@@ -81,7 +81,7 @@ export default function RepoDetail() {
             </Link>{" "}
             /
           </p>
-          <h1 className="text-xl font-semibold">
+          <h1 className="type-title mt-0.5">
             {repo.owner ? `${repo.owner}/` : ""}
             {repo.name}
           </h1>
@@ -102,10 +102,10 @@ export default function RepoDetail() {
                   key={opt}
                   type="button"
                   onClick={() => setStrictness(opt)}
-                  className={`rounded-lg border px-3 py-1.5 text-sm capitalize ${
+                  className={`rounded-xl border px-3 py-1.5 text-sm capitalize transition ${
                     effStrictness === opt
                       ? "border-blue-500 bg-blue-50 text-blue-800"
-                      : "border-zinc-300 text-zinc-600 hover:border-zinc-400"
+                      : "border-zinc-200/90 text-zinc-600 hover:border-zinc-400"
                   }`}
                 >
                   {opt}
@@ -147,14 +147,14 @@ export default function RepoDetail() {
               onChange={(e) => setIgnored(e.target.value)}
               rows={5}
               spellCheck={false}
-              className="mt-2 w-full rounded-lg border border-zinc-300 bg-zinc-50 p-2 font-mono text-xs text-zinc-800 focus:border-zinc-500 focus:outline-none"
-              placeholder="**/*.gen.ts"
+              className="mt-2 w-full rounded-xl border border-zinc-200/90 bg-zinc-50 p-2.5 font-mono text-xs text-zinc-800 focus:border-zinc-400 focus:outline-none"
+              placeholder="e.g. **/*.gen.ts, vendor/**"
             />
             <p className="mt-3 text-xs text-zinc-600">Tier-1 (AST) languages detected:</p>
             <div className="mt-1.5 flex flex-wrap gap-1.5">
               {repo.tier1Langs.length > 0 ? (
                 repo.tier1Langs.map((lang) => (
-                  <span key={lang} className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11px] text-zinc-700">
+                  <span key={lang} className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[11px] text-zinc-700">
                     {lang}
                   </span>
                 ))
@@ -169,7 +169,7 @@ export default function RepoDetail() {
             type="button"
             onClick={() => void save()}
             disabled={saveConfig.isPending}
-            className="rounded-lg bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            className="rounded-xl bg-zinc-900 px-4 py-1.5 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:opacity-50"
           >
             {saveConfig.isPending ? "Saving…" : "Save configuration"}
           </button>
@@ -184,7 +184,7 @@ export default function RepoDetail() {
 
       <section>
         <div className="mb-3 flex items-baseline justify-between">
-          <h2 className="text-sm font-semibold">Repository health</h2>
+          <h2 className="font-display text-sm font-semibold tracking-tight text-zinc-900">Repository health</h2>
           <span className="text-xs text-zinc-500">weekly snapshots</span>
         </div>
         {healthLoading && <LoadingText>Loading health…</LoadingText>}
@@ -194,7 +194,7 @@ export default function RepoDetail() {
               <p className="text-sm font-medium text-zinc-900">Repo health reports are a Team-plan feature</p>
               <p className="mt-0.5 text-xs text-zinc-600">Upgrade to see risk accumulation, untested-change trends, and recurring finding categories.</p>
             </div>
-            <Link to="/settings" className="shrink-0 rounded-lg bg-zinc-900 px-4 py-2 text-xs font-medium text-white hover:bg-zinc-800">
+            <Link to="/settings" className="shrink-0 rounded-xl bg-zinc-900 px-4 py-2 text-xs font-medium text-white shadow-sm hover:bg-zinc-800">
               Upgrade to Team
             </Link>
           </Card>
@@ -235,12 +235,12 @@ export default function RepoDetail() {
       </section>
 
       <section>
-        <h2 className="mb-3 text-sm font-semibold">Recent runs</h2>
+        <h2 className="mb-3 font-display text-sm font-semibold tracking-tight text-zinc-900">Recent runs</h2>
         {runsLoading && <LoadingText>Loading runs…</LoadingText>}
         {runsError && <ErrorText>{(runsError as Error).message}</ErrorText>}
         {runs && runs.length === 0 && <EmptyState>No runs for this repository yet.</EmptyState>}
         {runs && runs.length > 0 && (
-          <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-zinc-50">
+          <ul className="divide-y divide-zinc-200/80 rounded-xl border border-zinc-200/80 bg-zinc-50 shadow-sm">
             {runs.map((run) => (
               <li key={run.id}>
                 <Link

@@ -84,9 +84,9 @@ export default function Onboarding() {
       <div className="flex items-end justify-between gap-4">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-blue-700">Quick setup</p>
-          <h2 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950">Get your first review in under 3 minutes</h2>
+          <h2 className="type-title mt-1">Get your first review in under 3 minutes</h2>
         </div>
-        <span className="shrink-0 rounded-full bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
+        <span className="shrink-0 rounded-md bg-blue-50 px-2.5 py-1 text-xs font-medium text-blue-700">
           Step {step} of 3
         </span>
       </div>
@@ -101,7 +101,7 @@ export default function Onboarding() {
 
       {step === 1 && (
         <Card className="mt-6 p-6">
-          <h2 className="text-sm font-semibold">1 · Install on your git host</h2>
+          <h2 className="font-display text-sm font-semibold tracking-tight text-zinc-900">1 · Install on your git host</h2>
           <p className="mt-2 text-sm text-zinc-600">
             CodeFerret needs read access to code and write access to pull requests and checks. Prefer
             the in-platform bot for automatic PR reviews; use the{" "}
@@ -115,20 +115,20 @@ export default function Onboarding() {
               href={GITHUB_INSTALL_URL}
               target="_blank"
               rel="noreferrer"
-              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+              className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
             >
               Install on GitHub ↗
             </a>
             <Link
               to="/settings/bitbucket"
-              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
+              className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 shadow-sm transition hover:border-zinc-300"
             >
               Connect Bitbucket in Settings
             </Link>
             <button
               type="button"
               onClick={() => setStep(2)}
-              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
+              className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 shadow-sm transition hover:border-zinc-300"
             >
               {DEMO_MODE ? "Continue" : "I've installed it"}
             </button>
@@ -138,7 +138,7 @@ export default function Onboarding() {
 
       {step === 2 && (
         <Card className="mt-6 p-6">
-          <h2 className="text-sm font-semibold">2 · Pick repositories to review</h2>
+          <h2 className="font-display text-sm font-semibold tracking-tight text-zinc-900">2 · Pick repositories to review</h2>
           {reposLoading && <LoadingText>Loading repositories…</LoadingText>}
           {!reposLoading && (!repos || repos.length === 0) && (
             <EmptyState>
@@ -148,7 +148,7 @@ export default function Onboarding() {
           <ul className="mt-4 space-y-2">
             {repos?.map((repo) => (
               <li key={repo.id}>
-                <label className="flex cursor-pointer items-center gap-3 rounded-lg border border-zinc-200 px-3 py-2.5 hover:border-zinc-400">
+                <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-zinc-200/90 px-3 py-2.5 transition hover:border-zinc-400">
                   <input
                     type="checkbox"
                     checked={selectedRepos.includes(repo.id)}
@@ -176,7 +176,7 @@ export default function Onboarding() {
               type="button"
               onClick={() => setStep(3)}
               disabled={selectedRepos.length === 0}
-              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
+              className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-40"
             >
               Continue ({selectedRepos.length} selected)
             </button>
@@ -186,7 +186,7 @@ export default function Onboarding() {
 
       {step === 3 && (
         <Card className="mt-6 p-6">
-          <h2 className="text-sm font-semibold">3 · Choose a strictness preset</h2>
+          <h2 className="font-display text-sm font-semibold tracking-tight text-zinc-900">3 · Choose a strictness preset</h2>
           <p className="mt-1 text-xs text-zinc-500">
             You can override per-repo later with <code>.review.yml</code> or from the repo page.
           </p>
@@ -194,10 +194,10 @@ export default function Onboarding() {
             {presets.map((p) => (
               <label
                 key={p.id}
-                className={`flex cursor-pointer items-start gap-3 rounded-lg border px-3 py-3 ${
+                className={`flex cursor-pointer items-start gap-3 rounded-xl border px-3 py-3 transition ${
                   preset === p.id
                     ? "border-blue-500 bg-blue-50"
-                    : "border-zinc-200 hover:border-zinc-400"
+                    : "border-zinc-200/90 hover:border-zinc-400"
                 }`}
               >
                 <input
@@ -227,7 +227,7 @@ export default function Onboarding() {
               type="button"
               disabled={finishing}
               onClick={() => void finish()}
-              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+              className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:opacity-50"
             >
               {finishing ? "Saving…" : "Finish — open a PR to see it work"}
             </button>

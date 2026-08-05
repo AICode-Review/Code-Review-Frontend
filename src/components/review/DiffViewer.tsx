@@ -49,7 +49,7 @@ function SplitRow({ line }: { line: DiffLine }) {
 
   return (
     <div className="grid grid-cols-2 font-mono text-[11px] leading-5">
-      <div className={`flex border-r border-zinc-200 ${oldBg || "text-zinc-700"}`}>
+      <div className={`flex border-r border-zinc-200/80 ${oldBg || "text-zinc-700"}`}>
         <LineGutter n={line.oldNo} />
         <span className="w-3 shrink-0 text-zinc-500">{oldPrefix}</span>
         <span className="min-w-0 flex-1 overflow-x-auto whitespace-pre pr-2">{oldText}</span>
@@ -86,11 +86,11 @@ function FileDiff({ file, mode }: { file: DiffFile; mode: ViewMode }) {
   const [open, setOpen] = useState(true);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-zinc-200">
+    <div className="overflow-hidden rounded-xl border border-zinc-200/80 shadow-sm">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-3 bg-zinc-50 px-3 py-2.5 text-left hover:bg-zinc-100"
+        className="flex w-full items-center justify-between gap-3 bg-zinc-50/90 px-3 py-2.5 text-left hover:bg-zinc-100"
       >
         <div className="min-w-0">
           <p className="truncate font-mono text-xs text-zinc-800">{file.path}</p>
@@ -103,11 +103,11 @@ function FileDiff({ file, mode }: { file: DiffFile; mode: ViewMode }) {
         <span className="text-xs text-zinc-500">{open ? "Hide" : "Show"}</span>
       </button>
       {open && (
-        <div className="max-h-[420px] overflow-auto border-t border-zinc-200 bg-zinc-50">
+        <div className="max-h-[420px] overflow-auto border-t border-zinc-200/80 bg-zinc-50">
           {mode === "split" ? (
             <>
-              <div className="sticky top-0 z-10 grid grid-cols-2 border-b border-zinc-200 bg-zinc-50 text-[10px] uppercase tracking-wide text-zinc-500">
-                <div className="border-r border-zinc-200 px-3 py-1.5">Previous (base)</div>
+              <div className="sticky top-0 z-10 grid grid-cols-2 border-b border-zinc-200/80 bg-zinc-50 text-[10px] uppercase tracking-wide text-zinc-500">
+                <div className="border-r border-zinc-200/80 px-3 py-1.5">Previous (base)</div>
                 <div className="px-3 py-1.5">New (PR head)</div>
               </div>
               {file.lines.map((line, i) => (
@@ -140,7 +140,7 @@ export function DiffViewer({
 
   return (
     <Card className="overflow-hidden p-0">
-      <div className="border-b border-zinc-200 px-4 py-3">
+      <div className="border-b border-zinc-200/80 px-4 py-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
             <SectionTitle hint={`${diff.stats.files} files · +${diff.stats.additions} −${diff.stats.deletions}`}>
@@ -158,7 +158,7 @@ export function DiffViewer({
             <select
               value={fileFilter}
               onChange={(e) => setFileFilter(e.target.value)}
-              className="rounded-lg border border-zinc-200 bg-zinc-50 px-2 py-1.5 text-xs text-zinc-700"
+              className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-2 py-1.5 text-xs text-zinc-700"
             >
               <option value="all">All files</option>
               {diff.files.map((f) => (
@@ -167,13 +167,13 @@ export function DiffViewer({
                 </option>
               ))}
             </select>
-            <div className="flex rounded-lg border border-zinc-200 p-0.5">
+            <div className="flex rounded-xl border border-zinc-200/90 p-0.5">
               {(["split", "unified"] as const).map((m) => (
                 <button
                   key={m}
                   type="button"
                   onClick={() => setMode(m)}
-                  className={`rounded-md px-2.5 py-1 text-[11px] capitalize ${
+                  className={`rounded-lg px-2.5 py-1 text-[11px] capitalize ${
                     mode === m ? "bg-zinc-100 text-zinc-900" : "text-zinc-500 hover:text-zinc-700"
                   }`}
                 >
@@ -185,13 +185,13 @@ export function DiffViewer({
         </div>
         {mode === "split" && (
           <div className="mt-3 hidden grid-cols-2 gap-2 sm:grid">
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2">
+            <div className="rounded-xl border border-red-200/90 bg-red-50 px-3 py-2">
               <p className="text-[10px] font-medium uppercase tracking-wide text-red-600/80">Previous</p>
               <p className="mt-0.5 text-xs text-zinc-600">
                 Base branch before this PR · {diff.baseSha.slice(0, 7)}
               </p>
             </div>
-            <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2">
+            <div className="rounded-xl border border-emerald-200/90 bg-emerald-50 px-3 py-2">
               <p className="text-[10px] font-medium uppercase tracking-wide text-emerald-700">New</p>
               <p className="mt-0.5 text-xs text-zinc-600">
                 PR head with proposed changes · {diff.headSha.slice(0, 7)}

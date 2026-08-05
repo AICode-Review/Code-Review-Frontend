@@ -23,7 +23,7 @@ function RuleRow({
           <p className="text-sm text-zinc-800">{rule.ruleText}</p>
           <p className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-zinc-500">
             <Badge kind={rule.source} />
-            <span className="rounded bg-zinc-100 px-1.5 py-0.5 text-[11px]">{rule.category}</span>
+            <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[11px]">{rule.category}</span>
             <span>{rule.repoName ?? "org-wide"}</span>
             {rule.source === "learned" && (
               <span>
@@ -39,7 +39,7 @@ function RuleRow({
               type="button"
               disabled={disabled}
               onClick={() => onSetActive(rule.id, false)}
-              className="rounded-lg border border-zinc-300 px-2.5 py-1 text-xs text-zinc-700 hover:border-zinc-400 disabled:opacity-50"
+              className="rounded-xl border border-zinc-200/90 px-2.5 py-1 text-xs text-zinc-700 hover:border-zinc-400 disabled:opacity-50"
             >
               Deactivate
             </button>
@@ -48,7 +48,7 @@ function RuleRow({
               type="button"
               disabled={disabled}
               onClick={() => onSetActive(rule.id, true)}
-              className="rounded-lg bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+              className="rounded-xl bg-zinc-900 px-2.5 py-1 text-xs font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
             >
               Approve
             </button>
@@ -57,7 +57,7 @@ function RuleRow({
             type="button"
             disabled={disabled}
             onClick={() => onRemove(rule.id)}
-            className="rounded-lg border border-zinc-200 px-2.5 py-1 text-xs text-zinc-500 hover:border-red-400 hover:text-red-600 disabled:opacity-50"
+            className="rounded-xl border border-zinc-200/90 px-2.5 py-1 text-xs text-zinc-500 hover:border-red-400 hover:text-red-600 disabled:opacity-50"
           >
             Delete
           </button>
@@ -105,10 +105,10 @@ export default function Rulebook() {
             key={scope}
             type="button"
             onClick={() => setRepoFilter(scope)}
-            className={`rounded-lg border px-2.5 py-1 text-xs ${
+            className={`rounded-xl border px-2.5 py-1 text-xs transition ${
               repoFilter === scope
                 ? "border-blue-500 bg-blue-50 text-blue-800"
-                : "border-zinc-300 text-zinc-600 hover:border-zinc-400"
+                : "border-zinc-200/90 text-zinc-600 hover:border-zinc-400"
             }`}
           >
             {scope === "all" ? "All" : scope === "org" ? "Org-wide" : scope}
@@ -123,12 +123,12 @@ export default function Rulebook() {
             value={newRule}
             onChange={(e) => setNewRule(e.target.value)}
             placeholder='e.g. "Never flag missing JSDoc on internal helpers"'
-            className="flex-1 rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-600 focus:border-zinc-500 focus:outline-none"
+            className="flex-1 rounded-xl border border-zinc-200/90 bg-zinc-50 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-600 focus:border-zinc-400 focus:outline-none"
           />
           <select
             value={newCategory}
             onChange={(e) => setNewCategory(e.target.value)}
-            className="rounded-lg border border-zinc-300 bg-zinc-50 px-2 py-2 text-sm text-zinc-700"
+            className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-2 py-2 text-sm text-zinc-700"
           >
             {["style", "logic", "security", "contracts", "errors", "tests", "concurrency", "performance"].map((c) => (
               <option key={c} value={c}>
@@ -139,7 +139,7 @@ export default function Rulebook() {
           <select
             value={newRepo}
             onChange={(e) => setNewRepo(e.target.value)}
-            className="rounded-lg border border-zinc-300 bg-zinc-50 px-2 py-2 text-sm text-zinc-700"
+            className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-2 py-2 text-sm text-zinc-700"
           >
             <option value="org">org-wide</option>
             {repos?.map((r) => (
@@ -156,7 +156,7 @@ export default function Rulebook() {
               addRule(newRule.trim(), newCategory, newRepo === "org" ? null : newRepo);
               setNewRule("");
             }}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:opacity-50"
+            className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:opacity-50"
           >
             Add rule
           </button>
@@ -168,7 +168,7 @@ export default function Rulebook() {
         {pending.length === 0 ? (
           <EmptyState>Nothing pending — new single-evidence learned rules appear here.</EmptyState>
         ) : (
-          <ul className="divide-y divide-zinc-200 rounded-xl border border-amber-200 bg-zinc-50">
+          <ul className="divide-y divide-zinc-200/80 rounded-xl border border-amber-200/90 bg-zinc-50 shadow-sm">
             {pending.map((rule) => (
               <RuleRow
                 key={rule.id}
@@ -187,7 +187,7 @@ export default function Rulebook() {
         {active.length === 0 ? (
           <EmptyState>No active rules for this scope yet.</EmptyState>
         ) : (
-          <ul className="divide-y divide-zinc-200 rounded-xl border border-zinc-200 bg-zinc-50">
+          <ul className="divide-y divide-zinc-200/80 rounded-xl border border-zinc-200/80 bg-zinc-50 shadow-sm">
             {active.map((rule) => (
               <RuleRow
                 key={rule.id}

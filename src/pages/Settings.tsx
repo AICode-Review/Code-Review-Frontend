@@ -96,8 +96,8 @@ function InviteSection() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="teammate@company.com"
-            className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+            placeholder="e.g. teammate@company.com"
+            className="w-full rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
           />
         </label>
         <label>
@@ -105,7 +105,7 @@ function InviteSection() {
           <select
             value={role}
             onChange={(e) => setRole(e.target.value as "admin" | "member")}
-            className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700"
+            className="rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-700"
           >
             <option value="member">Member</option>
             <option value="admin">Admin</option>
@@ -114,7 +114,7 @@ function InviteSection() {
         <button
           type="submit"
           disabled={createInvite.isPending}
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+          className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
         >
           {createInvite.isPending ? "Sending…" : "Send invite"}
         </button>
@@ -200,7 +200,7 @@ function BitbucketAccountsSection() {
       <div className="flex flex-wrap gap-2">
         <Link
           to="/settings/bitbucket"
-          className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800"
+          className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800"
         >
           Manage Bitbucket accounts
         </Link>
@@ -208,7 +208,7 @@ function BitbucketAccountsSection() {
           to="/docs/bitbucket"
           target="_blank"
           rel="noopener noreferrer"
-          className="rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
+          className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-100/80"
         >
           Setup guide
         </Link>
@@ -397,7 +397,7 @@ export default function Settings() {
                         disabled={DEMO_MODE || changePlan.isPending}
                         title={DEMO_MODE ? "Connect billing to enable plan changes" : undefined}
                         onClick={() => void switchPlan(otherPaidTier)}
-                        className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
+                        className="w-full rounded-xl border border-zinc-200/90 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {changePlan.isPending ? "Switching…" : `Switch to ${otherPaidTier === "team" ? "Team" : "Pro"}`}
                       </button>
@@ -407,7 +407,7 @@ export default function Settings() {
                       disabled={DEMO_MODE || cancelSub.isPending}
                       title={DEMO_MODE ? "Connect billing to enable cancellation" : undefined}
                       onClick={() => void cancelSubscription()}
-                      className="w-full rounded-lg border border-zinc-300 px-4 py-2 text-sm text-red-600 hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="w-full rounded-xl border border-zinc-200/90 px-4 py-2 text-sm text-red-600 hover:border-red-300 hover:bg-red-50 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {cancelSub.isPending ? "Cancelling…" : "Cancel subscription"}
                     </button>
@@ -419,7 +419,7 @@ export default function Settings() {
                       disabled={DEMO_MODE || checkout.isPending}
                       title={DEMO_MODE ? "Connect billing to enable checkout" : undefined}
                       onClick={() => void startCheckout("pro")}
-                      className="rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-700 hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-700 hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {checkout.isPending ? "Redirecting…" : "Upgrade to Pro"}
                     </button>
@@ -428,7 +428,7 @@ export default function Settings() {
                       disabled={DEMO_MODE || checkout.isPending}
                       title={DEMO_MODE ? "Connect billing to enable checkout" : undefined}
                       onClick={() => void startCheckout("team")}
-                      className="rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       Upgrade to Team
                     </button>
@@ -497,7 +497,7 @@ export default function Settings() {
                       disabled={DEMO_MODE || checkout.isPending}
                       title={DEMO_MODE ? "Connect billing to enable checkout" : undefined}
                       onClick={() => void startCheckout(nextTier)}
-                      className="w-full rounded-lg bg-zinc-900 px-3 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+                      className="w-full rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
                     >
                       {checkout.isPending ? "Redirecting…" : `Upgrade to ${nextTier === "pro" ? "Pro" : "Team"}`}
                     </button>

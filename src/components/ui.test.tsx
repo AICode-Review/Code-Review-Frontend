@@ -102,10 +102,14 @@ describe("PublicHeader", () => {
         <PublicHeader />
       </MemoryRouter>,
     );
-    expect(screen.getByRole("link", { name: /CodeFerret/ })).toHaveAttribute("href", "/signin");
-    // Pricing is temporarily disabled — no nav link should be rendered for it.
-    expect(screen.queryByRole("link", { name: "Pricing" })).not.toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Benchmark" })).toHaveAttribute("href", "/benchmark");
+    expect(screen.getByRole("link", { name: /CodeFerret/ })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: "Features" })).toHaveAttribute("href", "/features");
+    expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
+    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
+    // CLI and Benchmark are no longer promoted in the public nav — the pages/routes
+    // themselves still exist, just aren't linked from here anymore.
+    expect(screen.queryByRole("link", { name: "CLI" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "Benchmark" })).not.toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Start free" })).toHaveAttribute("href", "/signin");
   });
 

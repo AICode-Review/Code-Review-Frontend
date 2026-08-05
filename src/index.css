@@ -2,6 +2,7 @@
 
 @theme {
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Space Grotesk", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
 
   --text-xs: 0.75rem;
@@ -20,35 +21,31 @@
 
 :root {
   color-scheme: light;
-  --app-bg: #f4f5f7;
+  --app-bg: #f1f5f9;
   --app-surface: #ffffff;
-  --app-ink: #18181b;
-  --app-muted: #71717a;
-  --app-border: #e4e4e7;
-  --app-accent: #2563eb;
+  --app-ink: #0f172a;
+  --app-muted: #64748b;
+  --app-border: #e2e8f0;
+  --app-accent: #0d9488;
 }
 
 /*
- * Authenticated app theme — professional cool neutrals + semantic status colors.
+ * Authenticated app theme — cool neutrals + electric teal brand.
  * Light/dark toggled via data-theme on .app-shell (see AppShell.tsx).
  *
- * Rather than editing className strings across pages/components, this overrides
- * Tailwind v4's generated color tokens (--color-zinc-*, --color-blue-*, etc.)
- * scoped under .app-shell. Existing bg-zinc-100 / text-blue-600 / border-red-200
- * classes automatically repaint, including opacity modifiers.
+ * Blue Tailwind tokens are remapped to teal so existing bg-blue-* /
+ * text-blue-* / CTA remaps keep working without rewriting every page.
  *
- * Semantic roles (unchanged between themes):
+ * Semantic roles:
  *   zinc  = surfaces / ink
- *   blue  = primary brand / interactive
+ *   blue  = primary brand (teal) / interactive
  *   red   = critical / danger / deletions
  *   amber = major / warning
  *   emerald = success / verified / additions
  *   indigo = manual trigger / secondary accent
- *
- * Module accents (data-module on .app-shell) tint the workspace subtly per
- * section without changing component classNames or behavior.
  */
 .app-shell[data-theme="light"] {
+  color-scheme: light;
   --color-zinc-50: #f8fafc;
   --color-zinc-100: #f1f5f9;
   --color-zinc-200: #e2e8f0;
@@ -61,13 +58,15 @@
   --color-zinc-900: #0f172a;
   --color-zinc-950: #020617;
 
-  --color-blue-50: #eff6ff;
-  --color-blue-100: #dbeafe;
-  --color-blue-400: #60a5fa;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #2563eb;
-  --color-blue-700: #1d4ed8;
-  --color-blue-800: #1e40af;
+  --color-blue-50: #f0fdfa;
+  --color-blue-100: #ccfbf1;
+  --color-blue-200: #99f6e4;
+  --color-blue-300: #5eead4;
+  --color-blue-400: #2dd4bf;
+  --color-blue-500: #14b8a6;
+  --color-blue-600: #0d9488;
+  --color-blue-700: #0f766e;
+  --color-blue-800: #115e59;
 
   --color-red-50: #fef2f2;
   --color-red-100: #fee2e2;
@@ -94,52 +93,59 @@
   --color-amber-700: #b45309;
   --color-amber-800: #92400e;
 
-  --color-indigo-50: #eef2ff;
-  --color-indigo-700: #4338ca;
+  --color-indigo-50: #ecfeff;
+  --color-indigo-700: #0e7490;
 
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
   --radius-xl: 0.75rem;
 
-  --rt-accent-bg: #2563eb;
-  --rt-accent-bg-hover: #1d4ed8;
+  --rt-accent-bg: #0d9488;
+  --rt-accent-bg-hover: #0f766e;
   --rt-accent-fg: #ffffff;
-  --rt-focus: #2563eb;
-  --rt-btn-shadow: 0 1px 2px rgba(15, 23, 42, 0.06), 0 4px 12px rgba(37, 99, 235, 0.18);
+  --rt-focus: #0d9488;
+  --rt-btn-shadow: 0 1px 2px rgba(15, 23, 42, 0.05), 0 4px 12px rgba(13, 148, 136, 0.18);
 
-  --module-dashboard: #2563eb;
+  --module-dashboard: #0d9488;
   --module-repos: #0284c7;
-  --module-prs: #7c3aed;
-  --module-reviews: #0d9488;
-  --module-rulebook: #b45309;
+  --module-prs: #0891b2;
+  --module-reviews: #0f766e;
+  --module-rulebook: #ca8a04;
   --module-settings: #475569;
   --module-accent: var(--module-dashboard);
+
+  /* Chart fills stay saturated — do not reuse inverted text reds/greens. */
+  --chart-brand: #0d9488;
+  --chart-success: #059669;
+  --chart-warning: #f59e0b;
+  --chart-danger: #dc2626;
+  --chart-info: #0891b2;
+  --chart-muted: #94a3b8;
 }
 
 .app-shell[data-theme="dark"] {
-  /*
-   * Role-reversed scale: bg-zinc-50/100 stay "subtle surface", text-zinc-900/950
-   * stay "primary ink" — only the raw values flip for dark mode.
-   */
-  --color-zinc-50: #0b1120;
+  color-scheme: dark;
+  --color-zinc-50: #0b1220;
   --color-zinc-100: #111827;
-  --color-zinc-200: #1f2937;
-  --color-zinc-300: #374151;
-  --color-zinc-400: #4b5563;
-  --color-zinc-500: #6b7280;
-  --color-zinc-600: #9ca3af;
-  --color-zinc-700: #d1d5db;
-  --color-zinc-800: #e5e7eb;
-  --color-zinc-900: #f3f4f6;
-  --color-zinc-950: #f9fafb;
+  --color-zinc-200: #1e293b;
+  --color-zinc-300: #334155;
+  --color-zinc-400: #475569;
+  --color-zinc-500: #64748b;
+  --color-zinc-600: #94a3b8;
+  --color-zinc-700: #cbd5e1;
+  --color-zinc-800: #e2e8f0;
+  --color-zinc-900: #f1f5f9;
+  --color-zinc-950: #f8fafc;
 
-  --color-blue-50: #172554;
-  --color-blue-100: #1e3a8a;
-  --color-blue-400: #60a5fa;
-  --color-blue-500: #3b82f6;
-  --color-blue-600: #93c5fd;
-  --color-blue-700: #bfdbfe;
-  --color-blue-800: #dbeafe;
+  --color-blue-50: #042f2e;
+  --color-blue-100: #134e4a;
+  --color-blue-200: #115e59;
+  --color-blue-300: #0f766e;
+  --color-blue-400: #2dd4bf;
+  --color-blue-500: #14b8a6;
+  --color-blue-600: #5eead4;
+  --color-blue-700: #99f6e4;
+  --color-blue-800: #ccfbf1;
 
   --color-red-50: #450a0a;
   --color-red-100: #7f1d1d;
@@ -166,26 +172,33 @@
   --color-amber-700: #fcd34d;
   --color-amber-800: #fde68a;
 
-  --color-indigo-50: #1e1b4b;
-  --color-indigo-700: #a5b4fc;
+  --color-indigo-50: #083344;
+  --color-indigo-700: #67e8f9;
 
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.625rem;
   --radius-xl: 0.75rem;
 
-  --rt-accent-bg: #3b82f6;
-  --rt-accent-bg-hover: #60a5fa;
-  --rt-accent-fg: #0b1120;
-  --rt-focus: #60a5fa;
-  --rt-btn-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(59, 130, 246, 0.22);
+  --rt-accent-bg: #14b8a6;
+  --rt-accent-bg-hover: #2dd4bf;
+  --rt-accent-fg: #042f2e;
+  --rt-focus: #2dd4bf;
+  --rt-btn-shadow: 0 1px 2px rgba(0, 0, 0, 0.35), 0 6px 16px rgba(20, 184, 166, 0.22);
 
-  --module-dashboard: #60a5fa;
+  --module-dashboard: #2dd4bf;
   --module-repos: #38bdf8;
-  --module-prs: #a78bfa;
-  --module-reviews: #2dd4bf;
+  --module-prs: #22d3ee;
+  --module-reviews: #5eead4;
   --module-rulebook: #fbbf24;
   --module-settings: #94a3b8;
   --module-accent: var(--module-dashboard);
+
+  --chart-brand: #2dd4bf;
+  --chart-success: #34d399;
+  --chart-warning: #fbbf24;
+  --chart-danger: #ef4444;
+  --chart-info: #22d3ee;
+  --chart-muted: #64748b;
 }
 
 .app-shell[data-module="dashboard"] {
@@ -221,6 +234,7 @@
 }
 
 .app-shell :where(h1, h2, h3, h4) {
+  font-family: var(--font-display);
   font-weight: 600;
   color: var(--color-zinc-950);
   letter-spacing: -0.02em;
@@ -269,7 +283,6 @@
   letter-spacing: inherit;
 }
 
-/* Shared type roles — use across pages for consistent hierarchy */
 .app-shell .type-label {
   font-size: 0.6875rem;
   font-weight: 600;
@@ -296,6 +309,7 @@
 }
 
 .app-shell .type-title {
+  font-family: var(--font-display);
   font-size: 1.125rem;
   font-weight: 600;
   line-height: 1.35;
@@ -304,6 +318,7 @@
 }
 
 .app-shell .type-display {
+  font-family: var(--font-display);
   font-size: 1.375rem;
   font-weight: 600;
   line-height: 1.2;
@@ -321,7 +336,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* Primary CTAs (bg-zinc-900) use brand blue instead of near-black ink. */
 .app-shell :where(button, a).bg-zinc-900 {
   background-color: var(--rt-accent-bg);
   color: var(--rt-accent-fg);
@@ -329,6 +343,46 @@
 
 .app-shell :where(button, a).bg-zinc-900:hover:not(:disabled) {
   background-color: var(--rt-accent-bg-hover);
+}
+
+/* Marketing shell — shared public-site tokens */
+.marketing-shell {
+  --mk-bg: #0b1220;
+  --mk-bg-elevated: #111827;
+  --mk-surface: #151d2e;
+  --mk-ink: #e8eef7;
+  --mk-muted: #94a3b8;
+  --mk-faint: #64748b;
+  --mk-border: #1e293b;
+  --mk-border-strong: #334155;
+  --mk-accent: #14b8a6;
+  --mk-accent-hover: #2dd4bf;
+  --mk-accent-fg: #042f2e;
+  --mk-accent-soft: rgba(20, 184, 166, 0.12);
+  --mk-success: #34d399;
+
+  min-height: 100vh;
+  background: var(--mk-bg);
+  color: var(--mk-muted);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.marketing-shell :where(h1, h2, h3) {
+  font-family: var(--font-display);
+  color: var(--mk-ink);
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.marketing-shell ::selection {
+  background: rgba(20, 184, 166, 0.28);
+  color: var(--mk-ink);
+}
+
+.font-display {
+  font-family: var(--font-display);
 }
 
 body {
@@ -339,8 +393,8 @@ body {
   line-height: 1.55;
   letter-spacing: -0.011em;
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(37, 99, 235, 0.06), transparent 55%),
-    radial-gradient(900px 500px at 100% 0%, rgba(24, 24, 27, 0.04), transparent 50%),
+    radial-gradient(1200px 600px at 10% -10%, rgba(13, 148, 136, 0.07), transparent 55%),
+    radial-gradient(900px 500px at 100% 0%, rgba(15, 23, 42, 0.04), transparent 50%),
     var(--app-bg);
   color: var(--app-ink);
   -webkit-font-smoothing: antialiased;
@@ -356,7 +410,7 @@ pre,
 }
 
 ::selection {
-  background: rgba(37, 99, 235, 0.18);
+  background: rgba(13, 148, 136, 0.18);
 }
 
 .app-shell .app-workspace {
@@ -375,12 +429,22 @@ pre,
 }
 
 .app-shell .nav-active {
-  background: color-mix(in srgb, var(--module-accent) 12%, var(--color-zinc-50));
-  color: color-mix(in srgb, var(--module-accent) 72%, var(--color-zinc-900));
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--module-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--module-accent) 16%, var(--color-zinc-50));
+  color: color-mix(in srgb, var(--module-accent) 55%, var(--color-zinc-950));
+  box-shadow:
+    inset 3px 0 0 0 var(--module-accent),
+    inset 0 0 0 1px color-mix(in srgb, var(--module-accent) 18%, transparent);
 }
 
-/* Smooth sidebar collapse — width animates; labels fade/clip instead of remounting. */
+.app-shell .nav-item:not(.nav-active):hover {
+  background: color-mix(in srgb, var(--color-zinc-100) 90%, transparent);
+}
+
+.app-shell[data-theme="dark"] .nav-active {
+  background: color-mix(in srgb, var(--module-accent) 22%, var(--color-zinc-50));
+  color: color-mix(in srgb, var(--module-accent) 40%, var(--color-zinc-950));
+}
+
 .app-shell .app-sidebar {
   width: 15rem;
   transition: width 280ms cubic-bezier(0.4, 0, 0.2, 1);
@@ -443,7 +507,7 @@ pre,
 }
 
 .app-shell :where(button, a, input, select, textarea):focus-visible {
-  outline: 2px solid var(--rt-focus, #2563eb);
+  outline: 2px solid var(--rt-focus, #0d9488);
   outline-offset: 2px;
 }
 
@@ -453,8 +517,8 @@ pre,
     select,
     textarea
   ):focus {
-  border-color: var(--rt-focus, #60a5fa);
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rt-focus, #3b82f6) 20%, transparent);
+  border-color: var(--rt-focus, #14b8a6);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rt-focus, #0d9488) 20%, transparent);
   outline: none;
 }
 
@@ -482,11 +546,11 @@ pre,
   transition: background-color 140ms ease;
 }
 
-/* Public landing page — visual polish utilities (used only by Landing.tsx) */
+/* Marketing motion + surface polish */
 @keyframes ferret-fade-up {
   from {
     opacity: 0;
-    transform: translateY(18px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -505,11 +569,11 @@ pre,
 
 .ferret-reveal {
   opacity: 0;
-  transform: translateY(18px);
+  transform: translateY(16px);
 }
 
 .ferret-reveal.is-visible {
-  animation: ferret-fade-up 640ms cubic-bezier(0.16, 0.8, 0.24, 1) forwards;
+  animation: ferret-fade-up 600ms cubic-bezier(0.16, 0.8, 0.24, 1) forwards;
 }
 
 .ferret-shimmer {
@@ -521,7 +585,7 @@ pre,
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.4) 50%, transparent 60%);
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, 0.28) 50%, transparent 60%);
   background-size: 250% 100%;
   background-position: -150% 0;
   opacity: 0;
@@ -536,6 +600,7 @@ pre,
 
 .ferret-card {
   position: relative;
+  border-radius: 0.75rem;
   transition:
     transform 200ms ease,
     border-color 200ms ease,
@@ -545,24 +610,31 @@ pre,
 .ferret-card::before {
   content: "";
   position: absolute;
-  inset-inline: 0;
+  inset-inline: 1rem;
   top: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent, #ffb300, transparent);
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, var(--mk-accent, #14b8a6), transparent);
   opacity: 0;
   transition: opacity 200ms ease;
 }
 
 .ferret-card:hover {
-  transform: translateY(-3px);
-  border-color: rgba(255, 179, 0, 0.5);
-  box-shadow:
-    6px 6px 0 0 #1c1810,
-    0 0 26px rgba(255, 179, 0, 0.12);
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--mk-accent, #14b8a6) 45%, var(--mk-border, #1e293b));
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
 }
 
 .ferret-card:hover::before {
   opacity: 1;
+}
+
+.mk-mesh {
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(20, 184, 166, 0.18), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 20%, rgba(8, 145, 178, 0.12), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(13, 148, 136, 0.08), transparent 55%),
+    var(--mk-bg, #0b1220);
 }
 
 @media (prefers-reduced-motion: reduce) {

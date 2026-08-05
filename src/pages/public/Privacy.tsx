@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { GridTexture, Reveal } from "../../components/retro";
+import { Seo } from "../../components/Seo";
 
 const sections: Array<{ title: string; body: string[] }> = [
   {
@@ -58,26 +59,24 @@ const sections: Array<{ title: string; body: string[] }> = [
 
 export default function Privacy() {
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
+      <Seo title="Privacy Policy — CodeFerret" description="CodeFerret's Privacy Policy — what we collect and how source code is handled." path="/privacy" />
       <GridTexture />
       <div className="mx-auto max-w-3xl px-6 py-16">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// legal</p>
-          <h1
-            className="mt-3 text-3xl font-bold uppercase tracking-tight text-[#f2ead9]"
-            style={{ textShadow: "0 0 16px rgba(255,179,0,.2)" }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Legal</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Privacy Policy
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-[#a39a86]">Last updated: 2026-07-22</p>
+          <p className="mt-3 text-sm text-[var(--mk-faint)]">Last updated: 2026-07-22</p>
         </Reveal>
 
         <Reveal className="mt-10 flex flex-col gap-6">
           {sections.map((s) => (
             <div key={s.title}>
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{s.title}</h2>
+              <h2 className="text-sm font-semibold text-[var(--mk-ink)]">{s.title}</h2>
               {s.body.map((p, i) => (
-                <p key={i} className="mt-2 text-sm leading-relaxed text-[#a39a86]">
+                <p key={i} className="mt-2 text-sm leading-relaxed text-[var(--mk-muted)]">
                   {p}
                 </p>
               ))}
@@ -85,9 +84,16 @@ export default function Privacy() {
           ))}
         </Reveal>
 
-        <p className="mt-10 text-xs text-[#6b6252]">
-          See also the <Link to="/terms" className="text-[#ffb300] hover:underline">Terms of Service</Link> and{" "}
-          <Link to="/security" className="text-[#ffb300] hover:underline">Security</Link> page.
+        <p className="mt-10 text-sm text-[var(--mk-faint)]">
+          See also the{" "}
+          <Link to="/terms" className="text-[var(--mk-accent)] hover:underline">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link to="/security" className="text-[var(--mk-accent)] hover:underline">
+            Security
+          </Link>{" "}
+          page.
         </p>
       </div>
     </div>

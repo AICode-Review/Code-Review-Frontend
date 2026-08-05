@@ -16,24 +16,24 @@ function MenuIcon({ open }: { open: boolean }) {
 export function PublicHeader() {
   const [open, setOpen] = useState(false);
   const linkClass =
-    "block rounded-none py-2 font-mono text-xs uppercase tracking-wide text-[#a39a86] transition hover:text-[#ffb300] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffb300] md:py-1";
+    "block rounded-lg px-2 py-2 text-sm text-[var(--mk-muted)] transition hover:text-[var(--mk-ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mk-accent)] md:py-1.5";
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#3a2f1f] bg-[#0a0a08]/95 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 border-b border-[var(--mk-border)]/80 bg-[var(--mk-bg)]/85 backdrop-blur-xl">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5 sm:px-6">
         <Link
-          to="/signin"
-          className="inline-flex items-center gap-2.5 rounded-none font-mono text-lg font-bold uppercase tracking-tight text-[#f2ead9] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffb300]"
+          to="/"
+          className="font-display inline-flex items-center gap-2.5 text-lg font-semibold tracking-tight text-[var(--mk-ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mk-accent)]"
           onClick={() => setOpen(false)}
         >
-          <span className="flex size-8 items-center justify-center border border-[#ffb300]/50 bg-[#ffb300] text-[10px] font-bold tracking-normal text-black">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent)] text-[10px] font-bold tracking-normal text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(20,184,166,0.35)]">
             CF
           </span>
           CodeFerret
         </Link>
         <button
           type="button"
-          className="rounded-none border border-[#3a2f1f] bg-[#14170f] p-2 text-[#c9c2b3] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffb300] md:hidden"
+          className="rounded-lg border border-[var(--mk-border)] bg-[var(--mk-surface)] p-2 text-[var(--mk-muted)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mk-accent)] md:hidden"
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           onClick={() => setOpen((v) => !v)}
@@ -43,26 +43,24 @@ export function PublicHeader() {
         <nav
           className={`${
             open ? "flex" : "hidden"
-          } absolute left-0 right-0 top-[61px] z-20 flex-col gap-1 border-b border-[#3a2f1f] bg-[#0a0a08] px-5 py-3 shadow-[0_8px_0_0_#000] sm:px-6 md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0 md:shadow-none`}
+          } absolute left-0 right-0 top-[61px] z-20 flex-col gap-1 border-b border-[var(--mk-border)] bg-[var(--mk-bg)] px-5 py-3 shadow-[0_16px_40px_rgba(0,0,0,0.35)] sm:px-6 md:static md:flex md:flex-row md:items-center md:gap-1 md:border-0 md:bg-transparent md:p-0 md:shadow-none`}
         >
-          {/* Pricing is temporarily disabled — not deleted, see App.tsx's commented-out route.
+          <NavLink to="/features" className={linkClass} onClick={() => setOpen(false)}>
+            Features
+          </NavLink>
           <NavLink to="/pricing" className={linkClass} onClick={() => setOpen(false)}>
             Pricing
-          </NavLink>
-          */}
-          <NavLink to="/cli" className={linkClass} onClick={() => setOpen(false)}>
-            CLI
           </NavLink>
           <NavLink to="/security" className={linkClass} onClick={() => setOpen(false)}>
             Security
           </NavLink>
-          <NavLink to="/benchmark" className={linkClass} onClick={() => setOpen(false)}>
-            Benchmark
+          <NavLink to="/contact" className={linkClass} onClick={() => setOpen(false)}>
+            Contact
           </NavLink>
           <Link
             to="/signin"
             onClick={() => setOpen(false)}
-            className="mt-1 border-2 border-[#ffb300] bg-[#ffb300] px-3.5 py-2 text-center font-mono text-xs font-bold uppercase tracking-wide text-black shadow-[3px_3px_0_0_#3a2f1f] transition hover:-translate-y-0.5 hover:bg-[#ffcf66] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#ffb300] md:mt-0"
+            className="ferret-shimmer mt-1 rounded-lg bg-[var(--mk-accent)] px-4 py-2 text-center text-sm font-semibold text-[var(--mk-accent-fg)] shadow-[0_4px_16px_rgba(20,184,166,0.3)] transition hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mk-accent)] md:mt-0 md:ml-3"
           >
             Start free
           </Link>
@@ -75,7 +73,7 @@ export function PublicHeader() {
 export function Card({ children, className = "" }: { children: ReactNode; className?: string }) {
   return (
     <div
-      className={`rounded-xl border border-zinc-200/80 bg-zinc-50 shadow-[0_1px_2px_rgba(24,24,27,0.04),0_8px_24px_rgba(24,24,27,0.025)] ${className}`}
+      className={`rounded-xl border border-zinc-200/90 bg-zinc-50 shadow-[0_1px_2px_color-mix(in_srgb,var(--color-zinc-950)_6%,transparent),0_8px_24px_color-mix(in_srgb,var(--color-zinc-950)_6%,transparent)] ${className}`}
     >
       {children}
     </div>
@@ -183,7 +181,7 @@ export function Badge({ kind, children }: { kind: string; children?: ReactNode }
 export function EmptyState({ children }: { children: ReactNode }) {
   return (
     <div className="rounded-xl border border-dashed border-zinc-300/90 bg-linear-to-b from-zinc-50/80 to-zinc-50 p-8 text-center">
-      <span className="mx-auto mb-3 flex size-9 items-center justify-center rounded-full border border-zinc-200 bg-zinc-50 text-zinc-400 shadow-sm">
+      <span className="mx-auto mb-3 flex size-9 items-center justify-center rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-400 shadow-sm">
         <svg viewBox="0 0 20 20" fill="none" className="size-4" aria-hidden="true">
           <path d="M4 5.5h12M4 10h8M4 14.5h5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
         </svg>

@@ -1,9 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 
 /**
- * Shared visual primitives for the public/marketing site's retro-terminal aesthetic.
- * Used by Landing, Cli, Security, and Benchmark so the pages share one polish system
- * instead of drifting into inconsistent one-off styling.
+ * Shared visual primitives for the public/marketing site.
+ * Export names kept stable so pages can evolve without import churn.
  */
 
 export type IconName = "shield" | "scan" | "budget" | "rulebook" | "code" | "lock";
@@ -63,14 +62,15 @@ export function Icon({ name }: { name: IconName }) {
   );
 }
 
-/** Faint CRT scanline texture — a repeating 2px gradient, not an image. */
+/** Soft atmospheric wash — replaces CRT scanlines. */
 export function Scanlines() {
   return (
     <div
-      className="pointer-events-none absolute inset-0 z-10 opacity-[0.06]"
+      className="pointer-events-none absolute inset-0 z-10 opacity-40"
       aria-hidden="true"
       style={{
-        backgroundImage: "repeating-linear-gradient(0deg, #000 0px, #000 1px, transparent 1px, transparent 3px)",
+        background:
+          "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(20,184,166,0.08), transparent 60%)",
       }}
     />
   );
@@ -78,7 +78,7 @@ export function Scanlines() {
 
 export function Cursor() {
   return (
-    <span className="animate-pulse text-[#ffb300] [animation-duration:1s]" aria-hidden="true">
+    <span className="animate-pulse text-[var(--mk-accent)] [animation-duration:1s]" aria-hidden="true">
       _
     </span>
   );
@@ -102,9 +102,6 @@ export function Reveal({ children, className = "" }: { children: React.ReactNode
       { threshold: 0.15 },
     );
     observer.observe(el);
-    // Safety net: if IntersectionObserver never fires (unsupported, blocked, or
-    // the section is already on-screen at a viewport size the observer misses),
-    // reveal anyway rather than leave the section permanently at opacity 0.
     const fallback = window.setTimeout(() => setVisible(true), 1200);
     return () => {
       observer.disconnect();
@@ -119,37 +116,48 @@ export function Reveal({ children, className = "" }: { children: React.ReactNode
   );
 }
 
-/** Blueprint-style corner marks framing a panel. */
+/** Subtle corner accents framing a panel. */
 export function CornerBrackets() {
   return (
     <>
-      <span className="pointer-events-none absolute -left-1.5 -top-1.5 size-3 border-l-2 border-t-2 border-[#ffb300]/60" aria-hidden="true" />
-      <span className="pointer-events-none absolute -right-1.5 -top-1.5 size-3 border-r-2 border-t-2 border-[#ffb300]/60" aria-hidden="true" />
-      <span className="pointer-events-none absolute -bottom-1.5 -left-1.5 size-3 border-b-2 border-l-2 border-[#ffb300]/60" aria-hidden="true" />
-      <span className="pointer-events-none absolute -bottom-1.5 -right-1.5 size-3 border-b-2 border-r-2 border-[#ffb300]/60" aria-hidden="true" />
+      <span
+        className="pointer-events-none absolute left-3 top-3 size-2.5 rounded-tl border-l border-t border-[var(--mk-accent)]/50"
+        aria-hidden="true"
+      />
+      <span
+        className="pointer-events-none absolute right-3 top-3 size-2.5 rounded-tr border-r border-t border-[var(--mk-accent)]/50"
+        aria-hidden="true"
+      />
+      <span
+        className="pointer-events-none absolute bottom-3 left-3 size-2.5 rounded-bl border-b border-l border-[var(--mk-accent)]/50"
+        aria-hidden="true"
+      />
+      <span
+        className="pointer-events-none absolute bottom-3 right-3 size-2.5 rounded-br border-b border-r border-[var(--mk-accent)]/50"
+        aria-hidden="true"
+      />
     </>
   );
 }
 
-/** A bordered panel with fake window chrome (traffic-light dots + label) framing terminal output. */
+/** Polished code panel for CLI / install snippets. */
 export function TerminalPanel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="relative overflow-hidden border-2 border-[#3a2f1f] bg-[#0d0f0a] shadow-[6px_6px_0_0_#1c1810]">
-      <CornerBrackets />
-      <div className="flex items-center gap-2.5 border-b border-[#3a2f1f] bg-[#14170f] px-4 py-2.5">
+    <div className="relative overflow-hidden rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+      <div className="flex items-center gap-2.5 border-b border-[var(--mk-border)] bg-[var(--mk-surface)] px-4 py-2.5">
         <span className="flex gap-1.5" aria-hidden="true">
-          <span className="size-2.5 rounded-full bg-[#c9c2b3]/25" />
-          <span className="size-2.5 rounded-full bg-[#c9c2b3]/25" />
-          <span className="size-2.5 rounded-full bg-[#ffb300]/70" />
+          <span className="size-2.5 rounded-full bg-[var(--mk-faint)]/40" />
+          <span className="size-2.5 rounded-full bg-[var(--mk-faint)]/40" />
+          <span className="size-2.5 rounded-full bg-[var(--mk-accent)]/80" />
         </span>
-        <span className="text-xs font-medium text-[#a39a86]">{label}</span>
+        <span className="text-xs font-medium text-[var(--mk-muted)]">{label}</span>
       </div>
       {children}
     </div>
   );
 }
 
-/** Very faint graph-paper texture for section backgrounds, masked to fade at the edges. */
+/** Soft mesh / grid atmosphere for section backgrounds. */
 export function GridTexture() {
   return (
     <div
@@ -157,8 +165,8 @@ export function GridTexture() {
       aria-hidden="true"
       style={{
         backgroundImage:
-          "linear-gradient(rgba(255,179,0,.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,179,0,.035) 1px, transparent 1px)",
-        backgroundSize: "40px 40px",
+          "linear-gradient(rgba(20,184,166,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,.04) 1px, transparent 1px)",
+        backgroundSize: "48px 48px",
         maskImage: "radial-gradient(ellipse 75% 65% at 50% 50%, black 30%, transparent 100%)",
       }}
     />

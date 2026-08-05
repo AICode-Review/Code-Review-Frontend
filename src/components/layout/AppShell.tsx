@@ -51,6 +51,26 @@ function pageModule(pathname: string): string {
   return "dashboard";
 }
 
+/** Which sidebar item should light up for a given path (covers nested routes like /runs/:id). */
+function isNavActive(pathname: string, to: string): boolean {
+  if (to === "/dashboard") return pathname === "/dashboard" || pathname === "/";
+  if (to === "/repos") return pathname === "/repos" || pathname.startsWith("/repos/");
+  if (to === "/prs") return pathname === "/prs" || pathname.startsWith("/prs/");
+  if (to === "/reviews") {
+    return pathname === "/reviews" || pathname.startsWith("/reviews/") || pathname.startsWith("/runs/");
+  }
+  if (to === "/rulebook") return pathname === "/rulebook" || pathname.startsWith("/rulebook/");
+  if (to === "/settings") {
+    return (
+      pathname === "/settings" ||
+      pathname.startsWith("/settings/") ||
+      pathname.startsWith("/profile") ||
+      pathname.startsWith("/onboarding")
+    );
+  }
+  return pathname === to || pathname.startsWith(`${to}/`);
+}
+
 function readCollapsed(): boolean {
   try {
     return localStorage.getItem(SIDEBAR_KEY) === "1";
@@ -185,28 +205,32 @@ function SidebarNav({
   collapsed?: boolean;
   onNavigate?: () => void;
 }) {
+  const { pathname } = useLocation();
+
   return (
-    <nav className="flex flex-1 flex-col gap-0.5 px-2 py-3">
+    <nav className="flex flex-1 flex-col gap-0.5 px-2 py-3" aria-label="Main">
       <p className="sidebar-section-label type-label px-2.5">Workspace</p>
-      {nav.map((item) => (
-        <NavLink
-          key={item.to}
-          to={item.to}
-          end={"end" in item ? item.end : false}
-          onClick={onNavigate}
-          title={collapsed ? item.label : undefined}
-          className={({ isActive }) =>
-            `relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-[background-color,color,box-shadow] ${
-              isActive
-                ? "nav-active font-medium"
+      {nav.map((item) => {
+        const active = isNavActive(pathname, item.to);
+        return (
+          <NavLink
+            key={item.to}
+            to={item.to}
+            end={"end" in item ? item.end : false}
+            onClick={onNavigate}
+            title={collapsed ? item.label : undefined}
+            aria-current={active ? "page" : undefined}
+            className={`nav-item relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-[background-color,color,box-shadow] ${
+              active
+                ? "nav-active font-semibold"
                 : "text-zinc-600 hover:bg-zinc-100/80 hover:text-zinc-950"
-            }`
-          }
-        >
-          <item.icon className="size-[18px] shrink-0 opacity-80" />
-          <span className="sidebar-label tracking-wide">{item.label}</span>
-        </NavLink>
-      ))}
+            }`}
+          >
+            <item.icon className={`size-[18px] shrink-0 ${active ? "opacity-100" : "opacity-70"}`} />
+            <span className="sidebar-label tracking-wide">{item.label}</span>
+          </NavLink>
+        );
+      })}
     </nav>
   );
 }
@@ -236,7 +260,7 @@ function ProfileMenu() {
         aria-expanded={open}
         aria-haspopup="menu"
       >
-        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-50 text-xs font-semibold text-blue-700">
+        <span className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-50 text-xs font-semibold text-blue-700 ring-1 ring-blue-100">
           {initials}
         </span>
         <span className="hidden min-w-0 sm:block">
@@ -247,7 +271,7 @@ function ProfileMenu() {
       {open && (
         <div
           role="menu"
-          className="absolute right-0 z-40 mt-2 w-56 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 py-1 shadow-lg shadow-zinc-300/50"
+          className="absolute right-0 z-40 mt-2 w-56 overflow-hidden rounded-xl border border-zinc-200 bg-zinc-50 py-1 shadow-[0_12px_32px_color-mix(in_srgb,var(--color-zinc-950)_14%,transparent)]"
         >
           <div className="border-b border-zinc-200 px-3 py-2.5">
             <p className="truncate text-sm font-medium text-zinc-900">{name}</p>
@@ -301,55 +325,143 @@ function platformLabel(platform: Org["platform"] | undefined): string {
   return "";
 }
 
+function orgInitials(name: string | undefined): string {
+  const n = (name || "Or").trim();
+  const parts = n.split(/[\s._-]+/).filter(Boolean);
+  if (parts.length >= 2) return (parts[0]![0]! + parts[1]![0]!).toUpperCase();
+  return n.slice(0, 2).toUpperCase();
+}
+
 function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
   const { data: org } = useOrg();
   const { data: orgs, selectedOrgId, selectOrg } = useOrgs();
-  const kindLabel = org?.kind === "individual" ? "Personal account" : (org?.plan ?? "Free") + " plan";
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const multi = orgs.length > 1;
+  const kindLabel = org?.kind === "individual" ? "Personal" : (org?.plan ?? "Free");
   const platform = platformLabel(org?.platform);
-  const subLabel = platform ? `${platform} · ${kindLabel}` : kindLabel;
-  const initials = (org?.name || "Or").slice(0, 2);
+  const fullTitle = [org?.name, platform, kindLabel].filter(Boolean).join(" · ");
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (!ref.current?.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  useEffect(() => {
+    setOpen(false);
+  }, [selectedOrgId, collapsed]);
+
+  if (collapsed) {
+    return (
+      <div className="flex justify-center p-1" title={fullTitle}>
+        <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-[11px] font-bold uppercase text-blue-800 ring-1 ring-blue-100">
+          {orgInitials(org?.name)}
+        </span>
+      </div>
+    );
+  }
 
   return (
-    <div
-      className={`flex overflow-hidden rounded-lg border border-zinc-200 bg-zinc-50 p-2 ${
-        collapsed ? "justify-center" : "items-center gap-2.5"
-      }`}
-      title={collapsed ? `${org?.name || "Organization"} · ${subLabel}` : undefined}
-    >
-      <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-zinc-100 text-[11px] font-semibold uppercase text-zinc-700">
-        {initials}
-      </span>
-      <div className="sidebar-label flex min-w-0 flex-1 flex-col gap-0.5">
-        {orgs.length <= 1 ? (
-          <>
-            <p className="text-[10px] uppercase leading-none tracking-wider text-zinc-500">
-              {org?.kind === "individual" ? "Personal" : "Organization"}
-            </p>
-            <p className="truncate text-sm font-medium leading-snug text-zinc-800">{org?.name || "—"}</p>
-            <p className="truncate text-[11px] leading-snug text-zinc-500">{subLabel}</p>
-          </>
-        ) : (
-          <>
-            <p className="text-[10px] uppercase leading-none tracking-wider text-zinc-500">Workspace</p>
-            <select
-              value={selectedOrgId ?? ""}
-              onChange={(e) => selectOrg(e.target.value)}
-              className="w-full min-w-0 truncate rounded-md border border-zinc-200 bg-zinc-50 py-1 pl-1.5 pr-6 text-sm font-medium leading-snug text-zinc-800"
-              tabIndex={collapsed ? -1 : 0}
-              aria-hidden={collapsed}
-            >
-              {orgs.map((o) => (
-                <option key={o.id} value={o.id}>
-                  {o.name}
-                  {o.kind === "individual" ? " (personal)" : ""}
-                  {o.platform === "bitbucket" ? " · Bitbucket" : o.platform === "github" ? " · GitHub" : ""}
-                </option>
-              ))}
-            </select>
-            <p className="truncate text-[11px] leading-snug text-zinc-500">{subLabel}</p>
-          </>
+    <div className="relative" ref={ref}>
+      <button
+        type="button"
+        onClick={() => multi && setOpen((v) => !v)}
+        disabled={!multi}
+        aria-expanded={multi ? open : undefined}
+        aria-haspopup={multi ? "listbox" : undefined}
+        className={`flex w-full items-center gap-3 rounded-xl border border-zinc-200/90 bg-zinc-50 px-2.5 py-2.5 text-left transition ${
+          multi
+            ? "cursor-pointer hover:border-blue-400/70 hover:bg-zinc-100 hover:shadow-sm"
+            : "cursor-default"
+        }`}
+        title={org?.name}
+      >
+        <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[11px] font-bold uppercase text-blue-800 ring-1 ring-blue-100">
+          {orgInitials(org?.name)}
+        </span>
+        <span className="min-w-0 flex-1">
+          <span className="block truncate text-sm font-semibold leading-snug text-zinc-900">
+            {org?.name || "Workspace"}
+          </span>
+          <span className="mt-0.5 flex flex-wrap items-center gap-1.5">
+            {platform && (
+              <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-600">
+                {platform}
+              </span>
+            )}
+            <span className="rounded-md bg-zinc-100 px-1.5 py-0.5 text-[10px] font-medium text-zinc-600">
+              {kindLabel}
+            </span>
+          </span>
+        </span>
+        {multi && (
+          <svg
+            className={`size-4 shrink-0 text-zinc-400 transition ${open ? "rotate-180" : ""}`}
+            viewBox="0 0 16 16"
+            fill="none"
+            aria-hidden
+          >
+            <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
         )}
-      </div>
+      </button>
+
+      {multi && open && (
+        <div
+          role="listbox"
+          aria-label="Switch workspace"
+          className="absolute bottom-full left-0 right-0 z-50 mb-2 max-h-64 overflow-y-auto rounded-xl border border-zinc-200 bg-zinc-50 py-1.5 shadow-[0_12px_40px_color-mix(in_srgb,var(--color-zinc-950)_18%,transparent)]"
+        >
+          <p className="px-3 pb-1.5 pt-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-400">
+            Switch workspace
+          </p>
+          {orgs.map((o) => {
+            const active = o.id === selectedOrgId;
+            const oPlatform = platformLabel(o.platform);
+            const oKind = o.kind === "individual" ? "Personal" : (o.plan ?? "Free");
+            return (
+              <button
+                key={o.id}
+                type="button"
+                role="option"
+                aria-selected={active}
+                onClick={() => {
+                  selectOrg(o.id);
+                  setOpen(false);
+                }}
+                className={`flex w-full items-center gap-2.5 px-3 py-2.5 text-left transition ${
+                  active ? "bg-blue-50/80" : "hover:bg-zinc-100"
+                }`}
+              >
+                <span
+                  className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-[10px] font-bold uppercase ${
+                    active
+                      ? "bg-[var(--rt-accent-bg)] text-[var(--rt-accent-fg)]"
+                      : "bg-zinc-100 text-zinc-700"
+                  }`}
+                >
+                  {orgInitials(o.name)}
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-medium text-zinc-900">{o.name}</span>
+                  <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
+                    {[oPlatform, oKind].filter(Boolean).join(" · ")}
+                  </span>
+                </span>
+                {active && (
+                  <svg className="size-4 shrink-0 text-blue-600" viewBox="0 0 16 16" fill="none" aria-hidden>
+                    <path d="m3.5 8.5 3 3 6-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                )}
+              </button>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
@@ -375,11 +487,11 @@ function SidebarBrand({
         </button>
       )}
       <Link to="/dashboard" className="sidebar-label flex min-w-0 items-center gap-2.5" title="CodeFerret">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[var(--rt-accent-bg)]/50 bg-[var(--rt-accent-bg)] text-[10px] font-bold text-[var(--rt-accent-fg)]">
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--rt-accent-bg)] text-[10px] font-bold text-[var(--rt-accent-fg)] shadow-[0_4px_12px_color-mix(in_srgb,var(--rt-accent-bg)_35%,transparent)]">
           CF
         </span>
         <span className="min-w-0">
-          <span className="block text-sm font-semibold tracking-[-0.02em] text-zinc-950">CodeFerret</span>
+          <span className="font-display block text-sm font-semibold tracking-[-0.02em] text-zinc-950">CodeFerret</span>
           <span className="type-meta mt-0.5 block">AI code review</span>
         </span>
       </Link>
@@ -437,7 +549,7 @@ export function AppShell() {
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain overflow-x-hidden">
             <SidebarNav collapsed={collapsed} />
           </div>
-          <div className="shrink-0 border-t border-zinc-200 p-2">
+          <div className="shrink-0 border-t border-zinc-200/80 p-2.5">
             <OrgSwitcher collapsed={collapsed} />
           </div>
         </aside>
@@ -473,7 +585,7 @@ export function AppShell() {
         )}
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-          <header className="z-30 shrink-0 border-b border-zinc-200/80 bg-zinc-50/90 shadow-[0_1px_0_rgba(15,23,42,0.03)] backdrop-blur-xl">
+          <header className="z-30 shrink-0 border-b border-zinc-200/80 bg-zinc-50/92 shadow-[0_1px_0_color-mix(in_srgb,var(--color-zinc-950)_6%,transparent)] backdrop-blur-xl">
             <div className="app-module-bar h-0.5 w-full" aria-hidden="true" />
             <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
               <button
@@ -488,7 +600,7 @@ export function AppShell() {
               </button>
 
               <div className="min-w-0 flex-1">
-                <h1 className="truncate text-base font-semibold tracking-[-0.02em] text-zinc-950">{meta.title}</h1>
+                <h1 className="font-display truncate text-base font-semibold tracking-[-0.02em] text-zinc-950">{meta.title}</h1>
                 {meta.subtitle && (
                   <p className="type-meta mt-0.5 hidden truncate sm:block">{meta.subtitle}</p>
                 )}
@@ -496,7 +608,7 @@ export function AppShell() {
 
               <Link
                 to="/reviews"
-                className="hidden rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs text-zinc-600 hover:border-zinc-400 hover:text-zinc-800 sm:inline"
+                className="hidden rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs font-medium text-zinc-600 hover:border-blue-300 hover:text-blue-700 sm:inline"
               >
                 View reviews
               </Link>
@@ -536,7 +648,7 @@ export function PageIntro({
 }) {
   if (!title && !description && !actions) return null;
   return (
-    <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-zinc-200/70 pb-4">
+    <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-zinc-200/80 pb-4">
       <div>
         {title && <h2 className="type-title">{title}</h2>}
         {description && (

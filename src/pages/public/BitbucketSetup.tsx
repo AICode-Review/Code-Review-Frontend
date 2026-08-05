@@ -26,18 +26,15 @@ const steps: Array<{ icon: IconName; title: string; body: string }> = [
 
 export default function BitbucketSetup() {
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
       <GridTexture />
       <div className="mx-auto max-w-4xl px-6 py-16">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// setup guide</p>
-          <h1
-            className="mt-3 text-3xl font-bold uppercase tracking-tight text-[#f2ead9]"
-            style={{ textShadow: "0 0 16px rgba(255,179,0,.2)" }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Setup guide</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Connecting a Bitbucket workspace
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#a39a86]">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--mk-muted)]">
             PR review automation for Bitbucket currently uses a manual token + webhook setup, done once per
             workspace and once per repo. This is separate from Bitbucket <em>sign-in</em>, which already works
             without any of the steps below.
@@ -46,37 +43,39 @@ export default function BitbucketSetup() {
 
         <Reveal className="mt-10 flex flex-col gap-4">
           {steps.map((step, i) => (
-            <div key={step.title} className="ferret-card border border-[#3a2f1f] bg-[#0d0f0a] p-5 shadow-[3px_3px_0_0_#1c1810]">
+            <div key={step.title} className="ferret-card rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-5">
               <div className="flex items-start gap-4">
-                <div className="flex size-9 shrink-0 items-center justify-center border border-[#ffb300]/40 bg-[#ffb300]/10 text-[#ffb300]">
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
                   <Icon name={step.icon} />
                 </div>
-                <div>
-                  <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{step.title}</h2>
-                  <p className="mt-2 text-sm leading-relaxed text-[#a39a86]">{step.body}</p>
+                <div className="min-w-0 flex-1">
+                  <h2 className="text-sm font-semibold text-[var(--mk-ink)]">{step.title}</h2>
+                  <p className="mt-2 text-sm leading-relaxed text-[var(--mk-muted)]">{step.body}</p>
                 </div>
               </div>
-              <span className="mt-3 block text-right font-mono text-[10px] text-[#6b6252]">[{String(i + 1).padStart(2, "0")}/04]</span>
+              <span className="mt-3 block text-right font-mono text-[10px] text-[var(--mk-faint)]">
+                {String(i + 1).padStart(2, "0")}/04
+              </span>
             </div>
           ))}
         </Reveal>
 
-        <Reveal className="mt-8 border border-[#3a2f1f] bg-[#0d0f0a] p-5">
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">A note on Workspace Access Tokens</h2>
-          <p className="mt-2 text-sm leading-relaxed text-[#a39a86]">
+        <Reveal className="mt-8 rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-5">
+          <h2 className="text-sm font-semibold text-[var(--mk-ink)]">A note on Workspace Access Tokens</h2>
+          <p className="mt-2 text-sm leading-relaxed text-[var(--mk-muted)]">
             Bitbucket also offers workspace-level Access Tokens as an alternative to the API token in step 1 — same
             scopes needed (repository read, pull requests read + write) — but they require a{" "}
-            <strong className="text-[#c9c2b3]">Bitbucket Premium</strong> plan. The API token path above works on
+            <strong className="text-[var(--mk-ink)]">Bitbucket Premium</strong> plan. The API token path above works on
             any Bitbucket Cloud plan.
           </p>
         </Reveal>
 
-        <Reveal className="relative mt-10 border-2 border-[#ffb300]/40 bg-[#14170f] p-6 text-center shadow-[4px_4px_0_0_#3a2f1f]">
+        <Reveal className="relative mt-10 rounded-2xl border border-[var(--mk-accent)]/30 bg-[var(--mk-bg-elevated)] p-6 text-center">
           <CornerBrackets />
-          <p className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">Questions about this setup?</p>
-          <p className="mt-1.5 text-sm text-[#a39a86]">Reach out and we'll walk you through it.</p>
-          <Link to="/security" className="mt-4 inline-flex text-xs font-medium text-[#ffb300] hover:underline">
-            &gt; See how we handle your code
+          <p className="text-sm font-semibold text-[var(--mk-ink)]">Questions about this setup?</p>
+          <p className="mt-1.5 text-sm text-[var(--mk-muted)]">Reach out and we'll walk you through it.</p>
+          <Link to="/security" className="mt-4 inline-flex text-sm font-medium text-[var(--mk-accent)] hover:underline">
+            See how we handle your code →
           </Link>
         </Reveal>
       </div>

@@ -15,13 +15,13 @@ export default function Profile() {
       <PageIntro description="Your identity in this workspace." />
 
       <div className="grid items-start gap-4 lg:grid-cols-[minmax(280px,0.8fr)_minmax(0,1.2fr)]">
-      <Card className="bg-linear-to-br from-zinc-50 to-blue-50/40 p-6 lg:row-span-2">
+      <Card className="bg-linear-to-br from-zinc-50 to-blue-50/40 p-6 shadow-sm lg:row-span-2">
         <div className="flex items-center gap-4 lg:flex-col lg:items-start">
           <span className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-600 text-lg font-semibold text-white shadow-lg shadow-blue-600/15">
             {user?.initials ?? "?"}
           </span>
           <div className="min-w-0">
-            <h2 className="truncate text-lg font-semibold text-zinc-900">{user?.name}</h2>
+            <h2 className="font-display truncate text-lg font-semibold tracking-tight text-zinc-900">{user?.name}</h2>
             <p className="truncate text-sm text-zinc-600">{user?.email}</p>
             <p className="mt-1 text-xs capitalize text-zinc-500">Signed in via {user?.provider}</p>
           </div>
@@ -74,14 +74,14 @@ export default function Profile() {
       <div className="flex flex-wrap gap-3">
         <Link
           to="/settings"
-          className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
+          className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-100/80"
         >
           Open settings
         </Link>
         <button
           type="button"
           onClick={() => void signOut()}
-          className="rounded-lg border border-zinc-200 px-4 py-2 text-sm text-zinc-500 hover:border-red-400 hover:text-red-600"
+          className="rounded-xl border border-zinc-200/90 px-4 py-2 text-sm text-zinc-500 transition hover:border-red-400 hover:text-red-600"
         >
           Sign out
         </button>

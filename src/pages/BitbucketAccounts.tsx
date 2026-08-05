@@ -49,8 +49,8 @@ function WorkspaceCard({
 }) {
   return (
     <div
-      className={`rounded-xl border p-4 ${
-        selected ? "border-blue-300 bg-blue-50/60" : "border-zinc-200 bg-zinc-50"
+      className={`rounded-xl border p-4 shadow-sm ${
+        selected ? "border-blue-300/90 bg-blue-50/60" : "border-zinc-200/80 bg-zinc-50"
       }`}
     >
       <div className="flex flex-wrap items-start justify-between gap-3">
@@ -86,7 +86,7 @@ function WorkspaceCard({
             <button
               type="button"
               onClick={onSelect}
-              className="rounded-lg border border-zinc-300 bg-zinc-50 px-3 py-1.5 text-xs font-medium text-zinc-700 hover:border-zinc-400"
+              className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-3 py-1.5 text-xs font-medium text-zinc-700 shadow-sm transition hover:border-zinc-300"
             >
               Switch to this workspace
             </button>
@@ -94,7 +94,7 @@ function WorkspaceCard({
           <button
             type="button"
             onClick={onLoadIntoForm}
-            className="rounded-lg bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white hover:bg-zinc-800"
+            className="rounded-xl bg-zinc-900 px-3 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-zinc-800"
           >
             Update connection
           </button>
@@ -194,7 +194,7 @@ export default function BitbucketAccounts() {
           <Link to="/settings" className="text-xs font-medium text-blue-600 hover:underline">
             ← Back to Settings
           </Link>
-          <h1 className="mt-1 text-lg font-semibold text-zinc-900">Bitbucket accounts</h1>
+          <h1 className="type-title mt-1">Bitbucket accounts</h1>
           <p className="mt-1 max-w-2xl text-sm text-zinc-600">
             Connect and manage Bitbucket workspaces. Connection details are kept after save so you can
             update a token without retyping everything.{" "}
@@ -244,8 +244,8 @@ export default function BitbucketAccounts() {
               required
               value={draft.workspaceSlug}
               onChange={(e) => updateDraft({ workspaceSlug: e.target.value })}
-              placeholder="aicode_review93"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+              placeholder="e.g. my-team-workspace"
+              className="w-full rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
             />
           </label>
           <label>
@@ -254,8 +254,8 @@ export default function BitbucketAccounts() {
               required
               value={draft.workspaceName}
               onChange={(e) => updateDraft({ workspaceName: e.target.value })}
-              placeholder="AI Code Review"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+              placeholder="e.g. My Team"
+              className="w-full rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
             />
           </label>
           <label className="sm:col-span-2">
@@ -265,9 +265,9 @@ export default function BitbucketAccounts() {
               type="email"
               value={draft.accountEmail}
               onChange={(e) => updateDraft({ accountEmail: e.target.value })}
-              placeholder="e.g. name@gmail.com"
+              placeholder="e.g. you@company.com"
               autoComplete="email"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+              className="w-full rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
             />
             <span className="mt-1 block text-[11px] text-zinc-500">
               Must be the email you use to sign in to Bitbucket. Grey placeholder text means this field
@@ -281,8 +281,8 @@ export default function BitbucketAccounts() {
               type="password"
               value={accessToken}
               onChange={(e) => setAccessToken(e.target.value)}
-              placeholder="Paste token (cleared after save)"
-              className="w-full rounded-lg border border-zinc-300 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-500 focus:outline-none"
+              placeholder="e.g. ATATT3x… (paste your Bitbucket API token)"
+              className="w-full rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-800 placeholder:text-zinc-400 focus:border-zinc-400 focus:outline-none"
             />
           </label>
           <div className="sm:col-span-2">
@@ -290,7 +290,7 @@ export default function BitbucketAccounts() {
               type="submit"
               disabled={DEMO_MODE || connect.isPending}
               title={DEMO_MODE ? "Connecting Bitbucket is unavailable in demo mode" : undefined}
-              className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
             >
               {connect.isPending ? "Saving…" : "Save Bitbucket connection"}
             </button>

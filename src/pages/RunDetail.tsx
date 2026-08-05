@@ -85,22 +85,22 @@ function CollapsibleSection({
 }) {
   const [open, setOpen] = useState(defaultOpen ?? false);
   return (
-    <section className="rounded-xl border border-zinc-200 bg-zinc-50">
+    <section className="rounded-xl border border-zinc-200/80 bg-zinc-50 shadow-sm">
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left"
       >
         <div>
-          <p className="text-sm font-semibold text-zinc-900">
+          <p className="font-display text-sm font-semibold tracking-tight text-zinc-900">
             {title}
-            <span className="ml-2 font-normal text-zinc-500">({count})</span>
+            <span className="ml-2 font-sans font-normal text-zinc-500">({count})</span>
           </p>
           <p className="mt-0.5 text-xs text-zinc-500">{hint}</p>
         </div>
         <span className="text-xs text-zinc-500">{open ? "Hide" : "Show"}</span>
       </button>
-      {open && <div className="space-y-3 border-t border-zinc-200 p-4">{children}</div>}
+      {open && <div className="space-y-3 border-t border-zinc-200/80 p-4">{children}</div>}
     </section>
   );
 }
@@ -196,13 +196,13 @@ export default function RunDetail() {
                 ? "Wait for the current run to finish before starting a manual run"
                 : "Start a new review run for this PR (appears as trigger: manual)"
             }
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-xl bg-zinc-900 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {rerun.isPending ? "Starting…" : "Manual run"}
           </button>
           <Link
             to="/reviews"
-            className="rounded-lg border border-zinc-300 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400"
+            className="rounded-xl border border-zinc-200/90 bg-zinc-50 px-4 py-2 text-sm text-zinc-700 shadow-sm transition hover:border-zinc-300 hover:bg-zinc-100/80"
           >
             All reviews
           </Link>
@@ -212,8 +212,8 @@ export default function RunDetail() {
       {rerun.isError && <ErrorText>{(rerun.error as Error).message}</ErrorText>}
 
       {/* Plain-language guide */}
-      <Card className="border-blue-200 bg-linear-to-br from-blue-50 to-zinc-50 p-4">
-        <p className="text-sm font-semibold text-blue-800">How to use this review</p>
+      <Card className="border-blue-200/80 bg-linear-to-br from-blue-50 to-zinc-50 p-4 shadow-sm">
+        <p className="font-display text-sm font-semibold tracking-tight text-blue-800">How to use this review</p>
         <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm text-zinc-600">
           <li>
             Check <span className="text-zinc-800">What changed</span> (the PR diff).
@@ -297,7 +297,7 @@ export default function RunDetail() {
 
             <div className="min-w-0 space-y-4">
               <div>
-                <h3 className="text-base font-semibold text-zinc-900">Issues to fix</h3>
+                <h3 className="font-display text-base font-semibold tracking-tight text-zinc-900">Issues to fix</h3>
                 <p className="mt-1 text-sm text-zinc-500">
                   These comments are also posted on the pull request. Start at #1.
                 </p>

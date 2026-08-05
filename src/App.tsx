@@ -8,10 +8,12 @@ import { AppShell } from "./components/layout/AppShell";
 
 // Route-level code splitting — each page becomes its own chunk, fetched on
 // navigation instead of all bundled into one ~1.1MB entry file.
-// Landing and Pricing are temporarily disabled (routes commented out below) —
-// not deleted, just not reachable anywhere in the frontend right now.
-// const Landing = lazy(() => import("./pages/public/Landing"));
-// const Pricing = lazy(() => import("./pages/public/Pricing"));
+const Landing = lazy(() => import("./pages/public/Landing"));
+const Pricing = lazy(() => import("./pages/public/Pricing"));
+const Features = lazy(() => import("./pages/public/Features"));
+const Contact = lazy(() => import("./pages/public/Contact"));
+// CLI and Benchmark aren't promoted from the public nav/Landing anymore, but the pages
+// and routes stay reachable directly — nothing here was deleted.
 const Security = lazy(() => import("./pages/public/Security"));
 const Benchmark = lazy(() => import("./pages/public/Benchmark"));
 const Cli = lazy(() => import("./pages/public/Cli"));
@@ -44,17 +46,19 @@ const queryClient = new QueryClient({
 
 function PublicLayout() {
   return (
-    <div className="min-h-screen bg-[#0a0a08] font-mono text-[#c9c2b3]">
+    <div className="marketing-shell">
       <PublicHeader />
       <Outlet />
-      <footer className="border-t border-[#3a2f1f] bg-[#0a0a08]">
-        <div className="mx-auto flex max-w-5xl flex-col gap-3 px-6 py-6 text-xs uppercase tracking-wide text-[#6b6252] sm:flex-row sm:items-center sm:justify-between">
-          <span>© 2026 CodeFerret // EOF</span>
-          <span>Web app · PR bot · CLI · GitHub · Bitbucket</span>
-          <nav className="flex gap-4">
-            <Link to="/terms" className="hover:text-[#ffb300]">Terms</Link>
-            <Link to="/privacy" className="hover:text-[#ffb300]">Privacy</Link>
-            <Link to="/security" className="hover:text-[#ffb300]">Security</Link>
+      <footer className="border-t border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-8 text-sm text-[var(--mk-faint)] sm:flex-row sm:items-center sm:justify-between">
+          <div>
+            <p className="font-display text-base font-semibold text-[var(--mk-ink)]">CodeFerret</p>
+            <p className="mt-1 text-xs">© 2026 · Web app · PR bot · CLI · GitHub · Bitbucket</p>
+          </div>
+          <nav className="flex flex-wrap gap-5 text-sm">
+            <Link to="/terms" className="transition hover:text-[var(--mk-accent)]">Terms</Link>
+            <Link to="/privacy" className="transition hover:text-[var(--mk-accent)]">Privacy</Link>
+            <Link to="/security" className="transition hover:text-[var(--mk-accent)]">Security</Link>
           </nav>
         </div>
       </footer>
@@ -80,9 +84,6 @@ function ProtectedShell() {
 
 function NotFound() {
   const { authenticated } = useAuth();
-  // "/" itself has no matching route while Landing is disabled (see the commented-out
-  // routes below), so it falls through to here too — send unauthenticated visitors to
-  // /signin instead of "/", which would otherwise just bounce back to this same component.
   return <Navigate to={authenticated ? "/dashboard" : "/signin"} replace />;
 }
 
@@ -98,8 +99,10 @@ export default function App() {
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route element={<PublicLayout />}>
-              {/* <Route path="/" element={<Landing />} /> */}
-              {/* <Route path="/pricing" element={<Pricing />} /> */}
+              <Route path="/" element={<Landing />} />
+              <Route path="/features" element={<Features />} />
+              <Route path="/pricing" element={<Pricing />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/cli" element={<Cli />} />
               <Route path="/security" element={<Security />} />
               <Route path="/benchmark" element={<Benchmark />} />

@@ -8,11 +8,16 @@ type Status = "idle" | "accepting" | "done" | "error";
 
 function Centered({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 px-6 text-center">
-      <Link to="/" className="text-2xl font-semibold tracking-tight text-zinc-900">
+    <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-slate-50 px-6 text-center">
+      <Link to="/" className="font-display inline-flex items-center gap-2.5 text-2xl font-semibold tracking-tight text-slate-900">
+        <span className="flex size-9 items-center justify-center rounded-lg bg-teal-600 text-[10px] font-bold text-white shadow-[0_4px_14px_rgba(13,148,136,0.3)]">
+          CF
+        </span>
         CodeFerret
       </Link>
-      {children}
+      <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
+        {children}
+      </div>
     </div>
   );
 }
@@ -58,7 +63,7 @@ export default function AcceptInvite() {
   if (!token) {
     return (
       <Centered>
-        <p className="text-sm text-zinc-600">This invite link is missing its token.</p>
+        <p className="text-sm text-slate-600">This invite link is missing its token.</p>
       </Centered>
     );
   }
@@ -66,7 +71,10 @@ export default function AcceptInvite() {
   if (loading) {
     return (
       <Centered>
-        <p className="text-sm text-zinc-500">Loading…</p>
+        <p className="inline-flex items-center gap-2 text-sm text-slate-500">
+          <span className="size-3.5 animate-spin rounded-full border-2 border-slate-200 border-t-teal-600" />
+          Loading…
+        </p>
       </Centered>
     );
   }
@@ -74,14 +82,14 @@ export default function AcceptInvite() {
   if (!authenticated) {
     return (
       <Centered>
-        <p className="max-w-sm text-sm text-zinc-600">
+        <p className="max-w-sm text-sm leading-6 text-slate-600">
           Sign in with the email address this invite was sent to, and you'll join the organization
           automatically.
         </p>
         <button
           type="button"
           onClick={() => void signInWithGitHub(`/invite/${token}`)}
-          className="rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-800"
+          className="mt-6 rounded-lg bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(13,148,136,0.3)] transition hover:-translate-y-0.5 hover:bg-teal-700"
         >
           Continue with GitHub
         </button>
@@ -92,7 +100,10 @@ export default function AcceptInvite() {
   if (status === "idle" || status === "accepting") {
     return (
       <Centered>
-        <p className="text-sm text-zinc-500">Joining organization…</p>
+        <p className="inline-flex items-center gap-2 text-sm text-slate-500">
+          <span className="size-3.5 animate-spin rounded-full border-2 border-slate-200 border-t-teal-600" />
+          Joining organization…
+        </p>
       </Centered>
     );
   }
@@ -101,7 +112,7 @@ export default function AcceptInvite() {
     return (
       <Centered>
         <p className="max-w-sm text-sm text-red-600">{error}</p>
-        <Link to="/dashboard" className="text-sm text-blue-600 hover:underline">
+        <Link to="/dashboard" className="mt-4 inline-block text-sm font-medium text-teal-700 hover:underline">
           Go to dashboard
         </Link>
       </Centered>
@@ -110,11 +121,11 @@ export default function AcceptInvite() {
 
   return (
     <Centered>
-      <p className="text-sm text-zinc-700">You're in — welcome to the team.</p>
+      <p className="text-sm font-medium text-slate-800">You're in — welcome to the team.</p>
       <button
         type="button"
         onClick={() => navigate("/dashboard")}
-        className="rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-800"
+        className="mt-6 rounded-lg bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(13,148,136,0.3)] transition hover:-translate-y-0.5 hover:bg-teal-700"
       >
         Go to dashboard
       </button>

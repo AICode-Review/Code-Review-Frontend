@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { GridTexture, Reveal } from "../../components/retro";
+import { Seo } from "../../components/Seo";
 
 const sections: Array<{ title: string; body: string[] }> = [
   {
@@ -70,26 +71,24 @@ const sections: Array<{ title: string; body: string[] }> = [
 
 export default function Terms() {
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
+      <Seo title="Terms of Service — CodeFerret" description="CodeFerret's Terms of Service." path="/terms" />
       <GridTexture />
       <div className="mx-auto max-w-3xl px-6 py-16">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// legal</p>
-          <h1
-            className="mt-3 text-3xl font-bold uppercase tracking-tight text-[#f2ead9]"
-            style={{ textShadow: "0 0 16px rgba(255,179,0,.2)" }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Legal</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Terms of Service
           </h1>
-          <p className="mt-3 text-sm leading-relaxed text-[#a39a86]">Last updated: 2026-07-22</p>
+          <p className="mt-3 text-sm text-[var(--mk-faint)]">Last updated: 2026-07-22</p>
         </Reveal>
 
         <Reveal className="mt-10 flex flex-col gap-6">
           {sections.map((s) => (
             <div key={s.title}>
-              <h2 className="text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{s.title}</h2>
+              <h2 className="text-sm font-semibold text-[var(--mk-ink)]">{s.title}</h2>
               {s.body.map((p, i) => (
-                <p key={i} className="mt-2 text-sm leading-relaxed text-[#a39a86]">
+                <p key={i} className="mt-2 text-sm leading-relaxed text-[var(--mk-muted)]">
                   {p}
                 </p>
               ))}
@@ -97,8 +96,12 @@ export default function Terms() {
           ))}
         </Reveal>
 
-        <p className="mt-10 text-xs text-[#6b6252]">
-          See also the <Link to="/privacy" className="text-[#ffb300] hover:underline">Privacy Policy</Link>.
+        <p className="mt-10 text-sm text-[var(--mk-faint)]">
+          See also the{" "}
+          <Link to="/privacy" className="text-[var(--mk-accent)] hover:underline">
+            Privacy Policy
+          </Link>
+          .
         </p>
       </div>
     </div>

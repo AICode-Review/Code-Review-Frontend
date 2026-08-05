@@ -1,11 +1,12 @@
 import { Link } from "react-router-dom";
 import { CornerBrackets, GridTexture, Icon, type IconName, Reveal } from "../../components/retro";
+import { Seo } from "../../components/Seo";
 
 const targets = [
-  { value: "> 70%", label: "VERIFIED CATCH RATE" },
-  { value: "< 2", label: "FALSE POS. / RUN" },
-  { value: "< 5%", label: "NOISE DISMISSAL" },
-  { value: "< 5m", label: "MEDIAN LATENCY" },
+  { value: "> 70%", label: "Verified catch rate" },
+  { value: "< 2", label: "False pos. / run" },
+  { value: "< 5%", label: "Noise dismissal" },
+  { value: "< 5m", label: "Median latency" },
 ];
 
 const methodology: Array<{ icon: IconName; title: string; body: string }> = [
@@ -33,18 +34,20 @@ const methodology: Array<{ icon: IconName; title: string; body: string }> = [
 
 export default function Benchmark() {
   return (
-    <div className="relative">
+    <div className="relative overflow-hidden">
+      <Seo
+        title="Benchmark methodology — CodeFerret"
+        description="How CodeFerret measures catch rate and false positives, and the engineering targets we publish instead of unverified customer claims."
+        path="/benchmark"
+      />
       <GridTexture />
       <div className="mx-auto max-w-4xl px-6 py-16">
         <Reveal>
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-[#ffb300]">// methodology</p>
-          <h1
-            className="mt-3 text-3xl font-bold uppercase tracking-tight text-[#f2ead9]"
-            style={{ textShadow: "0 0 16px rgba(255,179,0,.2)" }}
-          >
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Methodology</p>
+          <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Benchmark methodology
           </h1>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-[#a39a86]">
+          <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--mk-muted)]">
             How we plan to measure whether CodeFerret actually catches real bugs without drowning
             you in noise — published before the results are, so the methodology can be judged on
             its own.
@@ -52,22 +55,19 @@ export default function Benchmark() {
         </Reveal>
 
         <Reveal>
-          <div className="relative mt-8 grid grid-cols-2 gap-x-6 gap-y-6 border border-[#3a2f1f] bg-[#0d0f0a] p-6 sm:grid-cols-4">
+          <div className="relative mt-8 grid grid-cols-2 gap-x-6 gap-y-6 rounded-2xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-6 sm:grid-cols-4">
             <CornerBrackets />
             {targets.map((t) => (
               <div key={t.label}>
-                <p
-                  className="font-mono text-2xl font-bold tabular-nums text-[#ffb300] sm:text-3xl"
-                  style={{ textShadow: "0 0 12px rgba(255,179,0,.35)" }}
-                >
+                <p className="font-display text-2xl font-bold tabular-nums text-[var(--mk-accent)] sm:text-3xl">
                   {t.value}
                 </p>
-                <p className="mt-1 text-[10px] font-medium uppercase tracking-wide text-[#6b6252]">{t.label}</p>
+                <p className="mt-1 text-xs font-medium text-[var(--mk-faint)]">{t.label}</p>
               </div>
             ))}
           </div>
-          <p className="mt-2 text-xs text-[#6b6252]">
-            // engineering targets, not customer results. this page will carry real measured numbers
+          <p className="mt-2 text-xs text-[var(--mk-faint)]">
+            Engineering targets, not customer results. This page will carry real measured numbers
             once a full benchmark pass has been run and published — see the status below for
             exactly where that stands today.
           </p>
@@ -75,31 +75,31 @@ export default function Benchmark() {
 
         <Reveal className="mt-8 grid gap-4 sm:grid-cols-2">
           {methodology.map((item) => (
-            <div key={item.title} className="ferret-card border border-[#3a2f1f] bg-[#0d0f0a] p-5 shadow-[3px_3px_0_0_#1c1810]">
-              <div className="flex size-9 items-center justify-center border border-[#ffb300]/40 bg-[#ffb300]/10 text-[#ffb300]">
+            <div key={item.title} className="ferret-card rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-5">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
                 <Icon name={item.icon} />
               </div>
-              <h2 className="mt-3 text-xs font-semibold uppercase tracking-wide text-[#f2ead9]">{item.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-[#a39a86]">{item.body}</p>
+              <h2 className="mt-3 text-sm font-semibold text-[var(--mk-ink)]">{item.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--mk-muted)]">{item.body}</p>
             </div>
           ))}
         </Reveal>
 
-        <Reveal className="relative mt-8 border-2 border-[#ffb300]/50 bg-[#14170f] p-5 shadow-[4px_4px_0_0_#3a2f1f]">
+        <Reveal className="relative mt-8 rounded-2xl border border-[var(--mk-accent)]/30 bg-[var(--mk-bg-elevated)] p-5">
           <CornerBrackets />
-          <h2 className="text-xs font-semibold uppercase tracking-wide text-[#ffb300]">// current status</h2>
-          <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-[#c9c2b3]">
+          <h2 className="text-sm font-semibold text-[var(--mk-accent)]">Current status</h2>
+          <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-[var(--mk-muted)]">
             <li>
-              <span className="font-medium text-[#f2ead9]">Scoring harness:</span> built and unit-tested — computes catch rate and
+              <span className="font-medium text-[var(--mk-ink)]">Scoring harness:</span> built and unit-tested — computes catch rate and
               false-positive rate exactly as described above, no API keys required to verify the logic itself.
             </li>
             <li>
-              <span className="font-medium text-[#f2ead9]">Dataset:</span> 8 seed cases across 6 categories (logic, security,
+              <span className="font-medium text-[var(--mk-ink)]">Dataset:</span> 8 seed cases across 6 categories (logic, security,
               concurrency, errors, contracts, tests) — small, hand-authored, and clearly labeled as synthetic rather
               than mined from real pull requests.
             </li>
             <li>
-              <span className="font-medium text-[#f2ead9]">Live run:</span> not yet performed. Running the full pipeline against
+              <span className="font-medium text-[var(--mk-ink)]">Live run:</span> not yet performed. Running the full pipeline against
               even a small dataset costs real Anthropic/OpenAI API spend, so that's a deliberate step to take when
               there's a larger, real-PR-backed dataset to run it against — not something to fake a result for in
               the meantime.
@@ -107,9 +107,9 @@ export default function Benchmark() {
           </ul>
         </Reveal>
 
-        <p className="mt-8 border-t border-[#3a2f1f] pt-6 text-xs text-[#6b6252]">
-          // questions about the methodology, or want to contribute real mined cases?{" "}
-          <Link to="/security" className="text-[#ffb300] hover:underline">
+        <p className="mt-8 border-t border-[var(--mk-border)] pt-6 text-sm text-[var(--mk-faint)]">
+          Questions about the methodology, or want to contribute real mined cases?{" "}
+          <Link to="/security" className="text-[var(--mk-accent)] hover:underline">
             See our security approach
           </Link>{" "}
           or reach out at benchmarks@codeferret.dev.

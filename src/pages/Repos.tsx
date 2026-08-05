@@ -201,7 +201,7 @@ export default function Repos() {
         <div>
           <Link
             to="/onboarding"
-            className="inline-flex items-center gap-2 rounded-lg bg-zinc-900 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+            className="inline-flex items-center gap-2 rounded-xl bg-zinc-900 px-3.5 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-zinc-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
           >
             <span className="text-base leading-none" aria-hidden="true">+</span>
             Add repositories
@@ -227,7 +227,7 @@ export default function Repos() {
 
       {!isLoading && !error && repos && repos.length > 0 && (
         <Card className="flex min-h-0 flex-1 flex-col overflow-hidden">
-            <div className="shrink-0 border-b border-zinc-200 bg-zinc-50 p-2.5 sm:px-3">
+            <div className="shrink-0 border-b border-zinc-200/80 bg-zinc-50/80 p-2.5 sm:px-3">
               <div className="flex flex-col gap-2 xl:flex-row xl:items-center">
                 <label className="relative min-w-0 flex-1 xl:max-w-md">
                   <span className="sr-only">Search repositories</span>
@@ -239,7 +239,7 @@ export default function Repos() {
                     value={query}
                     onChange={(event) => setQuery(event.target.value)}
                     placeholder="Search repository, owner, branch, or language…"
-                    className="h-8 w-full rounded-lg border border-zinc-200 bg-zinc-50 pl-9 pr-3 text-xs text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-blue-400 focus:bg-zinc-50 focus:ring-3 focus:ring-blue-100"
+                    className="h-8 w-full rounded-xl border border-zinc-200/90 bg-zinc-50 pl-9 pr-3 text-xs text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-blue-400 focus:bg-zinc-50 focus:ring-3 focus:ring-blue-100"
                   />
                 </label>
                 <div className="flex flex-col gap-2 sm:flex-row">
@@ -248,7 +248,7 @@ export default function Repos() {
                     <select
                       value={indexFilter}
                       onChange={(event) => setIndexFilter(event.target.value)}
-                      className="h-8 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-xs text-zinc-700 outline-none focus:border-blue-400 focus:ring-3 focus:ring-blue-100 sm:w-auto"
+                      className="h-8 w-full rounded-xl border border-zinc-200/90 bg-zinc-50 px-3 text-xs text-zinc-700 outline-none focus:border-blue-400 focus:ring-3 focus:ring-blue-100 sm:w-auto"
                     >
                       <option value="all">All index statuses</option>
                       <option value="ready">Ready</option>
@@ -262,7 +262,7 @@ export default function Repos() {
                     <select
                       value={strictnessFilter}
                       onChange={(event) => setStrictnessFilter(event.target.value)}
-                      className="h-8 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-xs text-zinc-700 outline-none focus:border-blue-400 focus:ring-3 focus:ring-blue-100 sm:w-auto"
+                      className="h-8 w-full rounded-xl border border-zinc-200/90 bg-zinc-50 px-3 text-xs text-zinc-700 outline-none focus:border-blue-400 focus:ring-3 focus:ring-blue-100 sm:w-auto"
                     >
                       <option value="all">All review policies</option>
                       <option value="chill">Chill</option>
@@ -434,7 +434,7 @@ export default function Repos() {
               </div>
             )}
 
-            <div className="flex shrink-0 flex-col gap-2 border-t border-zinc-200 bg-zinc-50/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex shrink-0 flex-col gap-2 border-t border-zinc-200/80 bg-zinc-50/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex items-center gap-3">
                 <p className="text-xs tabular-nums text-zinc-500">
                   Showing <span className="font-medium text-zinc-700">{rangeStart}</span>–

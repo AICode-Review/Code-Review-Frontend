@@ -34,46 +34,46 @@ export default function SignIn() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       {/* Brand panel */}
-      <div className="relative hidden flex-col justify-between overflow-hidden bg-zinc-900 px-12 py-10 text-white lg:flex">
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(700px 420px at 12% 8%, rgba(37,99,235,0.35), transparent 60%), radial-gradient(600px 420px at 100% 100%, rgba(37,99,235,0.18), transparent 55%)",
-          }}
-        />
-        <Link to="/" className="relative text-lg font-semibold tracking-[-0.02em]">
+      <div className="marketing-shell relative hidden flex-col justify-between overflow-hidden px-12 py-10 lg:flex">
+        <div className="mk-mesh pointer-events-none absolute inset-0" aria-hidden="true" />
+        <Link to="/" className="font-display relative inline-flex items-center gap-2.5 text-lg font-semibold tracking-tight text-[var(--mk-ink)]">
+          <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent)] text-[10px] font-bold text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(20,184,166,0.35)]">
+            CF
+          </span>
           CodeFerret
         </Link>
         <div className="relative">
-          <p className="max-w-sm text-2xl font-semibold leading-snug tracking-[-0.025em]">
+          <p className="font-display max-w-sm text-3xl font-semibold leading-snug tracking-tight text-[var(--mk-ink)]">
             Code review comments that survive verification before they reach you.
           </p>
-          <ul className="mt-8 space-y-3 text-sm leading-6 text-zinc-300">
+          <ul className="mt-8 space-y-3 text-sm leading-6 text-[var(--mk-muted)]">
             {benefits.map((b) => (
               <li key={b} className="flex items-start gap-2.5">
-                <span className="mt-0.5 shrink-0 text-blue-400">✓</span>
+                <span className="mt-0.5 shrink-0 font-semibold text-[var(--mk-accent)]">✓</span>
                 <span>{b}</span>
               </li>
             ))}
           </ul>
         </div>
-        <Link to="/security" className="relative text-xs tracking-[-0.01em] text-zinc-500 hover:text-zinc-300">
+        <Link to="/security" className="relative text-xs text-[var(--mk-faint)] transition hover:text-[var(--mk-accent)]">
           How we handle your code →
         </Link>
       </div>
 
       {/* Auth panel */}
-      <div className="flex flex-col items-center justify-center px-6 py-16">
+      <div className="flex flex-col items-center justify-center bg-slate-50 px-6 py-16">
         <div className="w-full max-w-sm">
-          <Link to="/" className="text-lg font-semibold tracking-[-0.02em] text-zinc-900 lg:hidden">
+          <Link to="/" className="font-display inline-flex items-center gap-2 text-lg font-semibold tracking-tight text-slate-900 lg:hidden">
+            <span className="flex size-7 items-center justify-center rounded-md bg-teal-600 text-[9px] font-bold text-white">
+              CF
+            </span>
             CodeFerret
           </Link>
 
-          <h1 className="mt-6 text-2xl font-semibold tracking-[-0.025em] text-zinc-900 lg:mt-0">
+          <h1 className="font-display mt-6 text-2xl font-semibold tracking-tight text-slate-900 lg:mt-0">
             {DEMO_MODE ? "Explore the demo" : "Sign in to CodeFerret"}
           </h1>
-          <p className="mt-1.5 text-sm leading-6 text-zinc-600">
+          <p className="mt-1.5 text-sm leading-6 text-slate-600">
             {DEMO_MODE
               ? "No account needed — the dashboard is preloaded with sample data."
               : "Connect your GitHub or Bitbucket account to get started."}
@@ -89,7 +89,7 @@ export default function SignIn() {
             {DEMO_MODE ? (
               <Link
                 to="/dashboard"
-                className="flex w-full items-center justify-center rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-800"
+                className="flex w-full items-center justify-center rounded-lg bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(13,148,136,0.3)] transition hover:-translate-y-0.5 hover:bg-teal-700"
               >
                 Open the dashboard
               </Link>
@@ -98,7 +98,7 @@ export default function SignIn() {
                 <button
                   type="button"
                   onClick={() => void signInWithGitHub()}
-                  className="flex items-center justify-center gap-2.5 rounded-lg bg-zinc-900 px-5 py-2.5 text-sm font-medium text-white hover:bg-zinc-800"
+                  className="flex items-center justify-center gap-2.5 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800"
                 >
                   <GithubMark className="h-4 w-4" />
                   Continue with GitHub
@@ -106,7 +106,7 @@ export default function SignIn() {
                 <button
                   type="button"
                   onClick={() => void signInWithBitbucket()}
-                  className="flex items-center justify-center gap-2.5 rounded-lg border border-zinc-300 bg-zinc-50 px-5 py-2.5 text-sm font-medium text-zinc-700 hover:border-zinc-400"
+                  className="flex items-center justify-center gap-2.5 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400"
                 >
                   <BitbucketMark className="h-4 w-4" />
                   Continue with Bitbucket
@@ -115,27 +115,27 @@ export default function SignIn() {
             )}
           </div>
 
-          <p className="mt-6 text-xs leading-relaxed text-zinc-500">
+          <p className="mt-6 text-xs leading-relaxed text-slate-500">
             {DEMO_MODE
               ? "Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in frontend/.env to enable real sign-in."
               : "This signs you into the CodeFerret dashboard. Automatic PR reviews need the GitHub App installed separately — you'll do that next, from onboarding."}
           </p>
 
           {!DEMO_MODE && (
-            <p className="mt-3 text-xs leading-relaxed text-zinc-500">
+            <p className="mt-3 text-xs leading-relaxed text-slate-500">
               By continuing you agree to the{" "}
-              <Link to="/terms" className="underline hover:text-zinc-700">
+              <Link to="/terms" className="underline hover:text-slate-700">
                 Terms of Service
               </Link>{" "}
               and{" "}
-              <Link to="/privacy" className="underline hover:text-zinc-700">
+              <Link to="/privacy" className="underline hover:text-slate-700">
                 Privacy Policy
               </Link>
               .
             </p>
           )}
 
-          <Link to="/" className="mt-8 inline-block text-sm text-zinc-500 hover:text-zinc-700">
+          <Link to="/" className="mt-8 inline-block text-sm text-slate-500 transition hover:text-teal-700">
             ← Back to home
           </Link>
         </div>

@@ -175,7 +175,7 @@ export default function Prs() {
       )}
       {!isLoading && !error && prs && (
         <Card className="flex min-h-0 flex-1 flex-col overflow-hidden">
-          <div className="shrink-0 border-b border-zinc-200 bg-zinc-50 p-2.5 sm:px-3">
+          <div className="shrink-0 border-b border-zinc-200/80 bg-zinc-50/80 p-2.5 sm:px-3">
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
               <label className="relative min-w-0 flex-1 sm:max-w-md">
                 <span className="sr-only">Search pull requests</span>
@@ -187,7 +187,7 @@ export default function Prs() {
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search repo, PR #, author, or summary…"
-                  className="h-8 w-full rounded-lg border border-zinc-200 bg-zinc-50 pl-9 pr-3 text-xs text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-blue-400 focus:bg-zinc-50 focus:ring-3 focus:ring-blue-100"
+                  className="h-8 w-full rounded-xl border border-zinc-200/90 bg-zinc-50 pl-9 pr-3 text-xs text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:border-blue-400 focus:bg-zinc-50 focus:ring-3 focus:ring-blue-100"
                 />
               </label>
               <label>
@@ -195,7 +195,7 @@ export default function Prs() {
                 <select
                   value={statusFilter}
                   onChange={(event) => setStatusFilter(event.target.value as StatusFilter)}
-                  className="h-8 w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 text-xs text-zinc-700 outline-none focus:border-blue-400 focus:ring-3 focus:ring-blue-100 sm:w-auto"
+                  className="h-8 w-full rounded-xl border border-zinc-200/90 bg-zinc-50 px-3 text-xs text-zinc-700 outline-none focus:border-blue-400 focus:ring-3 focus:ring-blue-100 sm:w-auto"
                 >
                   <option value="all">All statuses</option>
                   <option value="in_progress">In progress</option>
@@ -307,7 +307,7 @@ export default function Prs() {
             </div>
           )}
 
-          <div className="flex shrink-0 flex-col gap-2 border-t border-zinc-200 bg-zinc-50/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex shrink-0 flex-col gap-2 border-t border-zinc-200/80 bg-zinc-50/50 px-4 py-2 sm:flex-row sm:items-center sm:justify-between">
             <div className="flex items-center gap-3">
               <p className="text-xs tabular-nums text-zinc-500">
                 Showing <span className="font-medium text-zinc-700">{rangeStart}</span>–<span className="font-medium text-zinc-700">{rangeEnd}</span> of{" "}

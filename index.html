@@ -4,16 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="color-scheme" content="light" />
-    <meta name="theme-color" content="#f7f8fa" />
+    <meta name="theme-color" content="#0B1220" />
     <meta
       name="description"
       content="CodeFerret finds high-impact bugs, verifies every claim, and keeps noisy AI comments off your pull requests."
     />
+    <meta name="robots" content="index, follow" />
     <title>CodeFerret — AI code review your team can trust</title>
+
+    <!-- Static defaults for non-JS link-unfurlers (Slack/Twitter/LinkedIn) and the first
+         paint before React mounts. src/components/Seo.tsx overrides these per route once
+         the app loads — see that file's comment for why both layers exist. -->
+    <link rel="canonical" href="https://codeferret.dev/" />
+    <meta property="og:site_name" content="CodeFerret" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://codeferret.dev/" />
+    <meta property="og:title" content="CodeFerret — AI code review your team can trust" />
+    <meta
+      property="og:description"
+      content="CodeFerret finds high-impact bugs, verifies every claim, and keeps noisy AI comments off your pull requests."
+    />
+    <meta property="og:image" content="https://codeferret.dev/og-image.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="CodeFerret — AI code review your team can trust" />
+    <meta
+      name="twitter:description"
+      content="CodeFerret finds high-impact bugs, verifies every claim, and keeps noisy AI comments off your pull requests."
+    />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "CodeFerret",
+        "url": "https://codeferret.dev/",
+        "applicationCategory": "DeveloperApplication",
+        "operatingSystem": "Web",
+        "description": "AI code review that cross-examines every finding with a second model before it reaches your pull request.",
+        "offers": [
+          { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "USD" },
+          { "@type": "Offer", "name": "Pro", "price": "15", "priceCurrency": "USD" },
+          { "@type": "Offer", "name": "Team", "price": "25", "priceCurrency": "USD" }
+        ]
+      }
+    </script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>

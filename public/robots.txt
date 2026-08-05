@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /onboarding
+Disallow: /repos
+Disallow: /prs
+Disallow: /reviews
+Disallow: /runs
+Disallow: /rulebook
+Disallow: /settings
+Disallow: /profile
+Disallow: /invite
+Disallow: /signin
+
+Sitemap: https://codeferret.dev/sitemap.xml
