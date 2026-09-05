@@ -15,6 +15,7 @@ import {
   useRemoveMember,
   useRevokeInvite,
   useUsage,
+  tierLabel,
 } from "../features/settings/useSettings";
 import { DEMO_MODE } from "../lib/demo";
 import { timeAgo } from "../lib/format";
@@ -234,7 +235,7 @@ export default function Settings() {
 
   const seatsUsed = members?.filter((m) => m.seatActive).length ?? 0;
   const hasActiveSubscription = billing?.status === "active";
-  const otherPaidTier: "pro" | "team" | null = billing?.plan === "Pro" ? "team" : billing?.plan === "Team" ? "pro" : null;
+  const otherPaidTier: "pro" | "team" | null = billing?.plan === "Individual" ? "team" : billing?.plan === "Team" ? "pro" : null;
 
   async function cancelSubscription() {
     setCancelError(null);
@@ -399,7 +400,7 @@ export default function Settings() {
                         onClick={() => void switchPlan(otherPaidTier)}
                         className="w-full rounded-xl border border-zinc-200/90 px-4 py-2 text-sm text-zinc-700 hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
                       >
-                        {changePlan.isPending ? "Switching…" : `Switch to ${otherPaidTier === "team" ? "Team" : "Pro"}`}
+                        {changePlan.isPending ? "Switching…" : `Switch to ${otherPaidTier === "team" ? "Team" : "Individual"}`}
                       </button>
                     )}
                     <button
@@ -421,7 +422,7 @@ export default function Settings() {
                       onClick={() => void startCheckout("pro")}
                       className="rounded-xl border border-zinc-200/90 px-3 py-2 text-sm text-zinc-700 hover:border-zinc-400 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      {checkout.isPending ? "Redirecting…" : "Upgrade to Pro"}
+                      {checkout.isPending ? "Redirecting…" : "Upgrade to Individual"}
                     </button>
                     <button
                       type="button"
@@ -463,8 +464,8 @@ export default function Settings() {
                         Resets {new Date(usage.periodEnd).toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                       </span>
                     </div>
-                    <p className="mt-0.5 text-xs capitalize text-zinc-500">
-                      {usage.plan} plan · {usage.seats} seat{usage.seats === 1 ? "" : "s"}
+                    <p className="mt-0.5 text-xs text-zinc-500">
+                      {tierLabel(usage.plan)} plan · {usage.seats} seat{usage.seats === 1 ? "" : "s"}
                     </p>
                     <div className="mt-2 h-2 w-full overflow-hidden rounded-full bg-zinc-100">
                       <div
@@ -499,7 +500,7 @@ export default function Settings() {
                       onClick={() => void startCheckout(nextTier)}
                       className="w-full rounded-xl bg-zinc-900 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
                     >
-                      {checkout.isPending ? "Redirecting…" : `Upgrade to ${nextTier === "pro" ? "Pro" : "Team"}`}
+                      {checkout.isPending ? "Redirecting…" : `Upgrade to ${nextTier === "pro" ? "Individual" : "Team"}`}
                     </button>
                   )}
                 </div>

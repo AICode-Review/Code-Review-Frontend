@@ -29,16 +29,16 @@ export interface BillingInfo {
   status: string;
 }
 
-function tierLabel(tier: string): string {
-  if (tier === "pro") return "Pro";
+export function tierLabel(tier: string): string {
+  if (tier === "pro") return "Individual";
   if (tier === "team") return "Team";
   if (tier === "enterprise") return "Enterprise";
   return "Free";
 }
 
 function priceForTier(tier: string): number {
-  if (tier === "pro") return 15;
-  if (tier === "team") return 25;
+  if (tier === "pro") return 19;
+  if (tier === "team") return 35;
   return 0;
 }
 

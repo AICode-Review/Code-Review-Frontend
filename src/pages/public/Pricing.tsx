@@ -44,10 +44,10 @@ const tiers: Tier[] = [
     highlight: false,
   },
   {
-    name: "Pro",
-    priceUsd: 15,
+    name: "Individual",
+    priceUsd: 19,
     unit: "per seat / month",
-    quota: "40 AI reviews / seat / month",
+    quota: "50 AI reviews / seat / month",
     features: [
       "Everything in Free, plus:",
       "Private repositories",
@@ -55,20 +55,22 @@ const tiers: Tier[] = [
       "Runs dashboard with realtime status",
       "Manual review triggers & reruns",
       "Execution-sandbox verification (Node, Python, JVM) — reproduces bugs before flagging them",
+      "Auto-apply suggested fixes & auto-generated test files",
+      "Full-codebase chat — ask anything about your repo",
       "Comment budget controls (critical/major inline, rest digested)",
       "Email support",
     ],
-    cta: "Start Pro",
+    cta: "Start Individual",
     ctaTo: "/signin",
     highlight: true,
   },
   {
     name: "Team",
-    priceUsd: 25,
+    priceUsd: 35,
     unit: "per seat / month",
-    quota: "65 AI reviews / seat / month",
+    quota: "90 AI reviews / seat / month",
     features: [
-      "Everything in Pro, plus:",
+      "Everything in Individual, plus:",
       "Analytics dashboards & weekly repo health reports",
       "Roles (owner/admin/member) & teammate invites",
       "Full audit log",
@@ -113,7 +115,7 @@ export default function Pricing() {
     <div className="mx-auto max-w-5xl px-6 py-16">
       <Seo
         title="Pricing — CodeFerret"
-        description="Seat-based pricing for AI code review: Free for public repos, Pro and Team for private repos with rulebook learning, sandbox verification, and analytics."
+        description="Seat-based pricing for AI code review: Free for public repos, Individual and Team for private repos with rulebook learning, sandbox verification, and analytics."
         path="/pricing"
       />
       <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Pick your tier</p>
@@ -135,7 +137,7 @@ export default function Pricing() {
             key={tier.name}
             className={`flex flex-col rounded-2xl border bg-[var(--mk-bg-elevated)] p-5 ${
               tier.highlight
-                ? "border-[var(--mk-accent)] shadow-[0_0_0_1px_var(--mk-accent),0_8px_32px_rgba(20,184,166,0.15)]"
+                ? "border-[var(--mk-accent)] shadow-[0_0_0_1px_var(--mk-accent),0_8px_32px_rgba(57,86,221,0.15)]"
                 : "border-[var(--mk-border)]"
             }`}
           >
@@ -170,7 +172,7 @@ export default function Pricing() {
               to={tier.ctaTo}
               className={`mt-5 rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition ${
                 tier.highlight
-                  ? "bg-[var(--mk-accent)] text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(20,184,166,0.3)] hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
+                  ? "bg-[var(--mk-accent)] text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(57,86,221,0.3)] hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
                   : "border border-[var(--mk-border-strong)] text-[var(--mk-ink)] hover:border-[var(--mk-accent)]/40 hover:text-[var(--mk-accent)]"
               }`}
             >
