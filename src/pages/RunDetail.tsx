@@ -107,7 +107,7 @@ function CollapsibleSection({
 
 export default function RunDetail() {
   const { id } = useParams<{ id: string }>();
-  const { data, isLoading, error, setFeedback } = useRun(id);
+  const { data, isLoading, error, setFeedback, applyFix, generateTest, commitTest } = useRun(id);
   const { data: repos } = useRepos();
   const rerun = useRerunFromRun(data?.run);
   const { data: diff, isLoading: diffLoading, error: diffError } = useRunDiff(data?.run);
@@ -315,6 +315,9 @@ export default function RunDetail() {
                     finding={f}
                     index={i + 1}
                     onFeedback={setFeedback}
+                    onApplyFix={applyFix}
+                    onGenerateTest={generateTest}
+                    onCommitTest={commitTest}
                   />
                 ))
               )}
@@ -328,7 +331,15 @@ export default function RunDetail() {
                   <p className="text-sm text-zinc-500">Nothing in this list.</p>
                 ) : (
                   digest.map((f) => (
-                    <ReviewComment key={f.id} finding={f} onFeedback={setFeedback} compact />
+                    <ReviewComment
+                      key={f.id}
+                      finding={f}
+                      onFeedback={setFeedback}
+                      onApplyFix={applyFix}
+                      onGenerateTest={generateTest}
+                      onCommitTest={commitTest}
+                      compact
+                    />
                   ))
                 )}
               </CollapsibleSection>
