@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useOrg, useOrgs, type Org } from "../../hooks/useOrg";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 const SIDEBAR_KEY = "codeferret.sidebar.collapsed";
 const THEME_KEY = "codeferret.theme";
@@ -627,7 +628,11 @@ export function AppShell() {
 
           <main className="app-workspace min-h-0 flex-1 overflow-y-auto overscroll-contain">
             <div className="w-full px-3 py-3 sm:px-4 sm:py-4">
-              <Outlet />
+              {/* Keyed by pathname so a crash on one page doesn't leave every later
+                  navigation stuck on the fallback UI — the sidebar/header stay alive either way. */}
+              <ErrorBoundary key={location.pathname} scope="page">
+                <Outlet />
+              </ErrorBoundary>
             </div>
           </main>
         </div>
