@@ -104,4 +104,160 @@ describe("ReviewComment", () => {
     expect(screen.getByRole("button", { name: "Yes, helpful" })).toHaveClass("border-blue-500");
     expect(screen.getByRole("button", { name: "Wrong / not useful" })).not.toHaveClass("border-blue-500");
   });
+
+  describe("apply fix", () => {
+    async function revealDetails(user: ReturnType<typeof userEvent.setup>) {
+      await user.click(screen.getByRole("button", { name: /Show code/ }));
+    }
+
+    it("does not show an apply-fix control when onApplyFix is not given", async () => {
+      const user = userEvent.setup();
+      render(<ReviewComment finding={BASE_FINDING} compact />);
+      await revealDetails(user);
+      expect(screen.queryByRole("button", { name: /Apply fix/ })).not.toBeInTheDocument();
+    });
+
+    it("does not show an apply-fix control for a rejected finding even with onApplyFix given", async () => {
+      const user = userEvent.setup();
+      render(<ReviewComment finding={{ ...BASE_FINDING, verificationStatus: "rejected" }} onApplyFix={vi.fn()} compact />);
+      await revealDetails(user);
+      expect(screen.queryByRole("button", { name: /Apply fix/ })).not.toBeInTheDocument();
+    });
+
+    it("shows the apply-fix button for a verified finding with a suggested fix", async () => {
+      const user = userEvent.setup();
+      render(<ReviewComment finding={BASE_FINDING} onApplyFix={vi.fn()} compact />);
+      await revealDetails(user);
+      expect(screen.getByRole("button", { name: "Apply fix to PR branch" })).toBeInTheDocument();
+    });
+
+    it("asks for confirmation before applying, and Cancel backs out without calling onApplyFix", async () => {
+      const user = userEvent.setup();
+      const onApplyFix = vi.fn();
+      render(<ReviewComment finding={BASE_FINDING} onApplyFix={onApplyFix} compact />);
+      await revealDetails(user);
+
+      await user.click(screen.getByRole("button", { name: "Apply fix to PR branch" }));
+      expect(screen.getByText(/Commit this fix directly to the PR branch/)).toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: "Cancel" }));
+      expect(screen.queryByText(/Commit this fix directly to the PR branch/)).not.toBeInTheDocument();
+      expect(onApplyFix).not.toHaveBeenCalled();
+    });
+
+    it("calls onApplyFix with the finding id after confirming", async () => {
+      const user = userEvent.setup();
+      const onApplyFix = vi.fn().mockResolvedValue({ ok: true, commitSha: "abc1234def" });
+      render(<ReviewComment finding={BASE_FINDING} onApplyFix={onApplyFix} compact />);
+      await revealDetails(user);
+
+      await user.click(screen.getByRole("button", { name: "Apply fix to PR branch" }));
+      await user.click(screen.getByRole("button", { name: "Yes, apply it" }));
+      expect(onApplyFix).toHaveBeenCalledWith("finding-1");
+    });
+
+    it("shows an inline error message when onApplyFix reports failure", async () => {
+      const user = userEvent.setup();
+      const onApplyFix = vi.fn().mockResolvedValue({ ok: false, message: "the file has changed since this finding was posted" });
+      render(<ReviewComment finding={BASE_FINDING} onApplyFix={onApplyFix} compact />);
+      await revealDetails(user);
+
+      await user.click(screen.getByRole("button", { name: "Apply fix to PR branch" }));
+      await user.click(screen.getByRole("button", { name: "Yes, apply it" }));
+      expect(await screen.findByText("the file has changed since this finding was posted")).toBeInTheDocument();
+    });
+
+    it("shows an 'Applied' badge with the short commit sha instead of a button once applied", async () => {
+      const user = userEvent.setup();
+      render(
+        <ReviewComment
+          finding={{ ...BASE_FINDING, appliedCommitSha: "abc1234def5678" }}
+          onApplyFix={vi.fn()}
+          compact
+        />,
+      );
+      await revealDetails(user);
+      expect(screen.getByText("abc1234")).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: /Apply fix/ })).not.toBeInTheDocument();
+    });
+  });
+
+  describe("generate test", () => {
+    const TESTS_FINDING: Finding = {
+      ...BASE_FINDING,
+      category: "tests",
+      suggestedFix: undefined,
+      codeSnippet: undefined,
+      title: "Discount logic changed but tests were not updated",
+    };
+
+    it("does not show a generate-test control when onGenerateTest/onCommitTest are not given", () => {
+      render(<ReviewComment finding={TESTS_FINDING} />);
+      expect(screen.queryByRole("button", { name: "Generate test file" })).not.toBeInTheDocument();
+    });
+
+    it("does not show a generate-test control for a non-tests category even with the handlers given", () => {
+      render(<ReviewComment finding={BASE_FINDING} onGenerateTest={vi.fn()} onCommitTest={vi.fn()} />);
+      expect(screen.queryByRole("button", { name: "Generate test file" })).not.toBeInTheDocument();
+    });
+
+    it("shows the generate-test control for a verified tests-category finding with no suggestedFix/codeSnippet at all", () => {
+      render(<ReviewComment finding={TESTS_FINDING} onGenerateTest={vi.fn()} onCommitTest={vi.fn()} />);
+      expect(screen.getByRole("button", { name: "Generate test file" })).toBeInTheDocument();
+    });
+
+    it("generates a preview, then commits it after confirmation", async () => {
+      const user = userEvent.setup();
+      const onGenerateTest = vi.fn().mockResolvedValue({ ok: true, testFilePath: "src/auth.test.ts", fileContent: "test('works', () => {});" });
+      const onCommitTest = vi.fn().mockResolvedValue({ ok: true, commitSha: "abc1234def", testFilePath: "src/auth.test.ts" });
+      render(<ReviewComment finding={TESTS_FINDING} onGenerateTest={onGenerateTest} onCommitTest={onCommitTest} />);
+
+      await user.click(screen.getByRole("button", { name: "Generate test file" }));
+      expect(onGenerateTest).toHaveBeenCalledWith("finding-1");
+      expect(await screen.findByText("src/auth.test.ts")).toBeInTheDocument();
+      expect(screen.getByText("test('works', () => {});")).toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: "Commit test file to PR branch" }));
+      expect(screen.getByText(/Commit this file directly to the PR branch/)).toBeInTheDocument();
+
+      await user.click(screen.getByRole("button", { name: "Yes, commit it" }));
+      expect(onCommitTest).toHaveBeenCalledWith("finding-1");
+    });
+
+    it("lets the user discard a preview or regenerate it", async () => {
+      const user = userEvent.setup();
+      const onGenerateTest = vi.fn().mockResolvedValue({ ok: true, testFilePath: "src/auth.test.ts", fileContent: "v1" });
+      render(<ReviewComment finding={TESTS_FINDING} onGenerateTest={onGenerateTest} onCommitTest={vi.fn()} />);
+
+      await user.click(screen.getByRole("button", { name: "Generate test file" }));
+      await screen.findByText("v1");
+
+      await user.click(screen.getByRole("button", { name: "Discard" }));
+      expect(screen.queryByText("v1")).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Generate test file" })).toBeInTheDocument();
+    });
+
+    it("shows an inline error and lets the user try again when generation fails", async () => {
+      const user = userEvent.setup();
+      const onGenerateTest = vi.fn().mockResolvedValue({ ok: false, message: "Couldn't generate a test — try again." });
+      render(<ReviewComment finding={TESTS_FINDING} onGenerateTest={onGenerateTest} onCommitTest={vi.fn()} />);
+
+      await user.click(screen.getByRole("button", { name: "Generate test file" }));
+      expect(await screen.findByText("Couldn't generate a test — try again.")).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
+    });
+
+    it("shows a 'Test added' badge with the short commit sha instead of controls once committed", () => {
+      render(
+        <ReviewComment
+          finding={{ ...TESTS_FINDING, appliedCommitSha: "abc1234def5678" }}
+          onGenerateTest={vi.fn()}
+          onCommitTest={vi.fn()}
+        />,
+      );
+      expect(screen.getByText("abc1234")).toBeInTheDocument();
+      expect(screen.getByText(/Test added as commit/)).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: "Generate test file" })).not.toBeInTheDocument();
+    });
+  });
 });

@@ -2,8 +2,15 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "../../lib/supabase";
 import { DEMO_MODE, type DemoFinding } from "../../lib/demo";
-import { getDemoRun, setDemoFindingFeedback, subscribeDemoStore } from "../../lib/demoStore";
-import { api } from "../../lib/api";
+import {
+  applyDemoFindingFix,
+  commitDemoTest,
+  generateDemoTest,
+  getDemoRun,
+  setDemoFindingFeedback,
+  subscribeDemoStore,
+} from "../../lib/demoStore";
+import { api, ApiError } from "../../lib/api";
 import type { RunRow } from "./useRuns";
 
 export type Finding = DemoFinding;
@@ -72,7 +79,7 @@ export function useRun(id: string | undefined) {
 
       const { data: findings, error: findErr } = await supabase
         .from("findings")
-        .select("id, run_id, pass, category, severity, confidence, path, start_line, end_line, title, body_md, why_it_matters, impact, fix_steps, suggested_fix, code_snippet, verified_how, verification_method, verification_status, posted, in_digest, feedback")
+        .select("id, run_id, pass, category, severity, confidence, path, start_line, end_line, title, body_md, why_it_matters, impact, fix_steps, suggested_fix, code_snippet, verified_how, verification_method, verification_status, posted, in_digest, feedback, applied_at, applied_commit_sha")
         .eq("run_id", id)
         .order("confidence", { ascending: false });
       if (findErr) throw new Error(findErr.message);
@@ -113,6 +120,8 @@ export function useRun(id: string | undefined) {
           posted: Boolean(f["posted"]),
           inDigest: Boolean(f["in_digest"]),
           feedback: (f["feedback"] as Finding["feedback"]) ?? null,
+          appliedAt: f["applied_at"] ? String(f["applied_at"]) : undefined,
+          appliedCommitSha: f["applied_commit_sha"] ? String(f["applied_commit_sha"]) : undefined,
         })),
       };
     },
@@ -142,5 +151,82 @@ export function useRun(id: string | undefined) {
     );
   }
 
-  return { ...query, setFeedback };
+  /**
+   * Unlike setFeedback this is never optimistic — it's a real commit to the customer's repo,
+   * so the caller needs to show the actual outcome (a stale-content 409, a plan/role gate, a
+   * platform error) rather than assuming success. Returns a result instead of throwing so the
+   * UI can render an inline message either way without a try/catch at the call site.
+   */
+  async function applyFix(findingId: string): Promise<{ ok: true; commitSha: string } | { ok: false; message: string }> {
+    if (DEMO_MODE) {
+      const result = applyDemoFindingFix(findingId);
+      return result.ok ? { ok: true, commitSha: result.commitSha } : { ok: false, message: result.message };
+    }
+    try {
+      const res = await api<{ ok: true; commitSha: string }>(`/api/findings/${findingId}/apply-fix`, { method: "POST" });
+      queryClient.setQueryData(
+        ["run", id, bump],
+        (prev: { run: RunRow; findings: Finding[] } | null | undefined) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            findings: prev.findings.map((f) =>
+              f.id === findingId
+                ? { ...f, feedback: "fixed" as const, appliedAt: new Date().toISOString(), appliedCommitSha: res.commitSha }
+                : f,
+            ),
+          };
+        },
+      );
+      return res;
+    } catch (err) {
+      return { ok: false, message: err instanceof ApiError ? err.message : "Failed to apply the fix." };
+    }
+  }
+
+  /**
+   * Preview step for a "tests"-category finding — never commits anything, just generates
+   * (or regenerates) the candidate file content for the caller to show before the separate
+   * commitTest call. No cache update needed: nothing about the finding itself changes yet.
+   */
+  async function generateTest(
+    findingId: string,
+  ): Promise<{ ok: true; testFilePath: string; fileContent: string } | { ok: false; message: string }> {
+    if (DEMO_MODE) return generateDemoTest(findingId);
+    try {
+      const res = await api<{ testFilePath: string; fileContent: string }>(`/api/findings/${findingId}/generate-test`, { method: "POST" });
+      return { ok: true, ...res };
+    } catch (err) {
+      return { ok: false, message: err instanceof ApiError ? err.message : "Failed to generate a test." };
+    }
+  }
+
+  /** Commits the last generateTest preview for this finding — the backend re-reads what it generated rather than trusting a client-supplied file, so this call takes no arguments beyond the finding id. */
+  async function commitTest(
+    findingId: string,
+  ): Promise<{ ok: true; commitSha: string; testFilePath: string } | { ok: false; message: string }> {
+    if (DEMO_MODE) return commitDemoTest(findingId);
+    try {
+      const res = await api<{ ok: true; commitSha: string; testFilePath: string }>(`/api/findings/${findingId}/commit-test`, { method: "POST" });
+      queryClient.setQueryData(
+        ["run", id, bump],
+        (prev: { run: RunRow; findings: Finding[] } | null | undefined) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            findings: prev.findings.map((f) =>
+              f.id === findingId
+                ? { ...f, feedback: "fixed" as const, appliedAt: new Date().toISOString(), appliedCommitSha: res.commitSha }
+                : f,
+            ),
+          };
+        },
+      );
+      return res;
+    } catch (err) {
+      return { ok: false, message: err instanceof ApiError ? err.message : "Failed to commit the test file." };
+    }
+  }
+
+  return { ...query, setFeedback, applyFix, generateTest, commitTest };
 }

@@ -176,6 +176,8 @@ export interface DemoFinding {
   posted: boolean;
   inDigest: boolean;
   feedback: FindingFeedback;
+  appliedAt?: string;
+  appliedCommitSha?: string;
 }
 
 const findingSeeds: Omit<DemoFinding, "id">[] = [
@@ -723,7 +725,7 @@ export interface DemoOrg {
  * live backend — mirrors the real shape returned by GET /api/orgs.
  */
 export const demoOrgs: DemoOrg[] = [
-  { id: "org-acme", name: "acme", kind: "team", plan: "Pro", role: "owner", platform: "demo" },
+  { id: "org-acme", name: "acme", kind: "team", plan: "Individual", role: "owner", platform: "demo" },
   { id: "org-personal", name: "dinesh-t", kind: "individual", plan: "Free", role: "owner", platform: "demo" },
 ];
 
@@ -784,8 +786,8 @@ export const demoAudit: DemoAuditEntry[] = [
 ];
 
 export const demoBilling = {
-  plan: "Pro",
-  pricePerSeat: 15,
+  plan: "Individual",
+  pricePerSeat: 19,
   seats: 5,
   seatsUsed: 3,
   renewsOn: new Date(now + 19 * day).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" }),
@@ -796,8 +798,8 @@ export const demoUsage = {
   plan: "pro" as const,
   seats: 5,
   used: 118,
-  quota: 200, // 40/seat default * 5 seats
-  remaining: 82,
+  quota: 250, // 50/seat default * 5 seats
+  remaining: 132,
   periodStart: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1)).toISOString(),
   periodEnd: new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth() + 1, 1)).toISOString(),
   blocked: false,

@@ -7,6 +7,7 @@ import { DEMO_MODE } from "../lib/demo";
 import { timeAgo } from "../lib/format";
 import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
 import { AreaTrendChart, CategoryBarChart, TrendChart } from "../components/charts";
+import { RepoChat } from "../components/repo/RepoChat";
 
 const strictnessOptions = ["chill", "standard", "strict"] as const;
 
@@ -181,6 +182,8 @@ export default function RepoDetail() {
           {saveError && <span className="text-xs text-red-600">{saveError}</span>}
         </div>
       </Card>
+
+      <RepoChat repoId={repo.id} />
 
       <section>
         <div className="mb-3 flex items-baseline justify-between">
