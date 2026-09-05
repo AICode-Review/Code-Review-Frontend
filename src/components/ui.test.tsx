@@ -103,14 +103,15 @@ describe("PublicHeader", () => {
       </MemoryRouter>,
     );
     expect(screen.getByRole("link", { name: /CodeFerret/ })).toHaveAttribute("href", "/");
-    expect(screen.getByRole("link", { name: "Features" })).toHaveAttribute("href", "/features");
+    expect(screen.getByRole("button", { name: "Features" })).toHaveAttribute("aria-expanded", "false");
     expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
-    expect(screen.getByRole("link", { name: "Contact" })).toHaveAttribute("href", "/contact");
-    // CLI and Benchmark are no longer promoted in the public nav — the pages/routes
-    // themselves still exist, just aren't linked from here anymore.
-    expect(screen.queryByRole("link", { name: "CLI" })).not.toBeInTheDocument();
-    expect(screen.queryByRole("link", { name: "Benchmark" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "Security" })).toHaveAttribute("href", "/security");
+    expect(screen.getByRole("link", { name: "Benchmark" })).toHaveAttribute("href", "/benchmark");
+    expect(screen.getByRole("link", { name: "Contact Us" })).toHaveAttribute("href", "/contact");
     expect(screen.getByRole("link", { name: "Start free" })).toHaveAttribute("href", "/signin");
+    // CLI is a real, live page (still directly reachable at /cli) but isn't promoted
+    // in the top nav — kept intentionally minimal alongside Features/Pricing/Security/Benchmark.
+    expect(screen.queryByRole("link", { name: "CLI" })).not.toBeInTheDocument();
   });
 
   it("toggles the mobile menu open state via the menu button", async () => {
@@ -124,5 +125,27 @@ describe("PublicHeader", () => {
     expect(menuButton).toHaveAttribute("aria-expanded", "false");
     await user.click(menuButton);
     expect(screen.getByRole("button", { name: "Close menu" })).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("opens the Features mega-menu on click, revealing grouped links, and closes on Escape", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter>
+        <PublicHeader />
+      </MemoryRouter>,
+    );
+    const trigger = screen.getByRole("button", { name: "Features" });
+    expect(screen.queryByRole("link", { name: /Specialist passes/ })).not.toBeInTheDocument();
+
+    await user.click(trigger);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(screen.getByRole("link", { name: /Specialist passes/ })).toHaveAttribute("href", "/features#pipeline");
+    expect(screen.getByRole("link", { name: /Team rulebook/ })).toHaveAttribute("href", "/features#rulebook");
+    expect(screen.getByRole("link", { name: /Security approach/ })).toHaveAttribute("href", "/security");
+    expect(screen.getByRole("link", { name: "Explore all features →" })).toHaveAttribute("href", "/features");
+
+    await user.keyboard("{Escape}");
+    expect(trigger).toHaveAttribute("aria-expanded", "false");
+    expect(screen.queryByRole("link", { name: /Specialist passes/ })).not.toBeInTheDocument();
   });
 });

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 
 /**
  * Shared visual primitives for the public/marketing site.
@@ -70,7 +70,7 @@ export function Scanlines() {
       aria-hidden="true"
       style={{
         background:
-          "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(20,184,166,0.08), transparent 60%)",
+          "radial-gradient(ellipse 70% 50% at 50% 0%, rgba(77,110,240,0.08), transparent 60%)",
       }}
     />
   );
@@ -99,7 +99,7 @@ export function Reveal({ children, className = "" }: { children: React.ReactNode
           observer.disconnect();
         }
       },
-      { threshold: 0.15 },
+      { threshold: 0.12 },
     );
     observer.observe(el);
     const fallback = window.setTimeout(() => setVisible(true), 1200);
@@ -111,6 +111,93 @@ export function Reveal({ children, className = "" }: { children: React.ReactNode
 
   return (
     <div ref={ref} className={`ferret-reveal ${visible ? "is-visible" : ""} ${className}`}>
+      {children}
+    </div>
+  );
+}
+
+/**
+ * Interactive 3D perspective tilt that follows the pointer.
+ * Disabled automatically when the user prefers reduced motion.
+ */
+export function Tilt3D({
+  children,
+  className = "",
+  maxTilt = 10,
+  scale = 1.02,
+}: {
+  children: React.ReactNode;
+  className?: string;
+  maxTilt?: number;
+  scale?: number;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+  const raf = useRef(0);
+  const target = useRef({ x: 0, y: 0 });
+  const current = useRef({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    const apply = () => {
+      const { x, y } = current.current;
+      el.style.setProperty("--rx", `${(-y * maxTilt).toFixed(2)}deg`);
+      el.style.setProperty("--ry", `${(x * maxTilt).toFixed(2)}deg`);
+      el.style.setProperty("--mx", `${((x + 1) * 50).toFixed(1)}%`);
+      el.style.setProperty("--my", `${((y + 1) * 50).toFixed(1)}%`);
+      const nearRest = Math.abs(x) < 0.002 && Math.abs(y) < 0.002;
+      el.dataset.active = nearRest ? "false" : "true";
+    };
+
+    const tick = () => {
+      current.current.x += (target.current.x - current.current.x) * 0.12;
+      current.current.y += (target.current.y - current.current.y) * 0.12;
+      apply();
+      const stillMoving =
+        Math.abs(target.current.x - current.current.x) > 0.001 ||
+        Math.abs(target.current.y - current.current.y) > 0.001;
+      if (stillMoving || el.dataset.active === "true") {
+        raf.current = requestAnimationFrame(tick);
+      } else {
+        raf.current = 0;
+      }
+    };
+
+    const kick = () => {
+      if (!raf.current) raf.current = requestAnimationFrame(tick);
+    };
+
+    const onMove = (e: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      target.current.x = ((e.clientX - r.left) / r.width) * 2 - 1;
+      target.current.y = ((e.clientY - r.top) / r.height) * 2 - 1;
+      kick();
+    };
+    const onLeave = () => {
+      target.current.x = 0;
+      target.current.y = 0;
+      kick();
+    };
+
+    el.addEventListener("pointermove", onMove);
+    el.addEventListener("pointerleave", onLeave);
+    return () => {
+      cancelAnimationFrame(raf.current);
+      el.removeEventListener("pointermove", onMove);
+      el.removeEventListener("pointerleave", onLeave);
+    };
+  }, [maxTilt]);
+
+  return (
+    <div
+      ref={ref}
+      className={`landing-tilt3d ${className}`}
+      data-active="false"
+      style={{ ["--tilt-scale" as string]: scale }}
+    >
       {children}
     </div>
   );
@@ -143,7 +230,7 @@ export function CornerBrackets() {
 /** Polished code panel for CLI / install snippets. */
 export function TerminalPanel({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="relative overflow-hidden rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] shadow-[0_12px_40px_rgba(0,0,0,0.35)]">
+    <div className="relative overflow-hidden rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] shadow-[var(--mk-shadow-lg,0_12px_40px_rgba(15,23,42,0.1))]">
       <div className="flex items-center gap-2.5 border-b border-[var(--mk-border)] bg-[var(--mk-surface)] px-4 py-2.5">
         <span className="flex gap-1.5" aria-hidden="true">
           <span className="size-2.5 rounded-full bg-[var(--mk-faint)]/40" />
@@ -165,7 +252,7 @@ export function GridTexture() {
       aria-hidden="true"
       style={{
         backgroundImage:
-          "linear-gradient(rgba(20,184,166,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(20,184,166,.04) 1px, transparent 1px)",
+          "linear-gradient(rgba(57,86,221,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(57,86,221,.06) 1px, transparent 1px)",
         backgroundSize: "48px 48px",
         maskImage: "radial-gradient(ellipse 75% 65% at 50% 50%, black 30%, transparent 100%)",
       }}

@@ -1,9 +1,12 @@
-@import "tailwindcss";
+﻿@import "tailwindcss";
 
 @theme {
+  /* App shell keeps Plex. Marketing site uses one humanist sans (Inter) for both body
+     and headlines — matching a single-family approach rather than a code-mono display face. */
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-display: "Space Grotesk", "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-marketing: "Inter", ui-sans-serif, system-ui, sans-serif;
 
   --text-xs: 0.75rem;
   --text-xs--line-height: 1.4;
@@ -30,7 +33,7 @@
 }
 
 /*
- * Authenticated app theme — cool neutrals + electric teal brand.
+ * Authenticated app theme â€” cool neutrals + electric teal brand.
  * Light/dark toggled via data-theme on .app-shell (see AppShell.tsx).
  *
  * Blue Tailwind tokens are remapped to teal so existing bg-blue-* /
@@ -114,7 +117,7 @@
   --module-settings: #475569;
   --module-accent: var(--module-dashboard);
 
-  /* Chart fills stay saturated — do not reuse inverted text reds/greens. */
+  /* Chart fills stay saturated â€” do not reuse inverted text reds/greens. */
   --chart-brand: #0d9488;
   --chart-success: #059669;
   --chart-warning: #f59e0b;
@@ -345,44 +348,135 @@
   background-color: var(--rt-accent-bg-hover);
 }
 
-/* Marketing shell — shared public-site tokens */
+/* Black text + blue accent + white surfaces — closely matching mirrorfly.com's actual
+ * look (per explicit direction), not a reinterpretation of it. One humanist sans
+ * (Inter) carries both body and headlines, same as MirrorFly's single-family approach. */
 .marketing-shell {
-  --mk-bg: #0b1220;
-  --mk-bg-elevated: #111827;
-  --mk-surface: #151d2e;
-  --mk-ink: #e8eef7;
-  --mk-muted: #94a3b8;
-  --mk-faint: #64748b;
-  --mk-border: #1e293b;
-  --mk-border-strong: #334155;
-  --mk-accent: #14b8a6;
-  --mk-accent-hover: #2dd4bf;
-  --mk-accent-fg: #042f2e;
-  --mk-accent-soft: rgba(20, 184, 166, 0.12);
-  --mk-success: #34d399;
+  color-scheme: light;
+  --mk-bg: #f4f7ff;
+  --mk-bg-elevated: #ffffff;
+  --mk-surface: #e8eefc;
+  --mk-ink: #0a1226;
+  --mk-ink-soft: #1a2744;
+  --mk-body: #263444;
+  --mk-muted: #525252;
+  --mk-faint: #6b7280;
+  --mk-border: #d5e0f5;
+  --mk-border-strong: #b8c8e8;
+  --mk-accent: #3956dd;
+  --mk-accent-bright: #4d6ef0;
+  --mk-accent-hot: #1e3a8a;
+  --mk-accent-hover: #2a41b8;
+  --mk-accent-fg: #ffffff;
+  --mk-accent-soft: rgba(57, 86, 221, 0.12);
+  --mk-success: #1a7a00;
+  --mk-danger: #b91c1c;
+  --mk-shadow: 0 1px 2px rgba(10, 18, 38, 0.05), 0 10px 28px rgba(57, 86, 221, 0.1);
+  --mk-shadow-lg: 0 4px 10px rgba(10, 18, 38, 0.06), 0 28px 60px rgba(57, 86, 221, 0.14);
 
   min-height: 100vh;
-  background: var(--mk-bg);
-  color: var(--mk-muted);
-  font-family: var(--font-sans);
+  /* Page-wide atmosphere — not flat white */
+  background:
+    radial-gradient(ellipse 90% 50% at 50% -8%, rgba(129, 151, 255, 0.28), transparent 55%),
+    radial-gradient(ellipse 45% 40% at 100% 12%, rgba(57, 86, 221, 0.1), transparent 50%),
+    radial-gradient(ellipse 40% 35% at 0% 40%, rgba(77, 110, 240, 0.08), transparent 55%),
+    linear-gradient(180deg, #eaf0ff 0%, #f4f7ff 28%, #f8faff 60%, #ffffff 100%);
+  color: var(--mk-body);
+  font-family: var(--font-marketing), ui-sans-serif, system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-.marketing-shell :where(h1, h2, h3) {
-  font-family: var(--font-display);
+.marketing-shell :where(h1, h2, h3),
+.marketing-shell .font-display {
+  font-family: var(--font-marketing), ui-sans-serif, system-ui, sans-serif;
   color: var(--mk-ink);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
   text-wrap: balance;
 }
 
 .marketing-shell ::selection {
-  background: rgba(20, 184, 166, 0.28);
+  background: rgba(57, 86, 221, 0.2);
   color: var(--mk-ink);
 }
 
+/* Type roles */
+.mk-text-brand {
+  background: linear-gradient(120deg, #0a0a0a 0%, #3956dd 55%, #4d6ef0 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mk-text-headline {
+  color: var(--mk-ink);
+}
+
+.mk-text-lead {
+  color: var(--mk-body);
+}
+
+.mk-text-support {
+  color: var(--mk-muted);
+}
+
+.mk-text-meta {
+  color: var(--mk-faint);
+}
+
+.mk-text-accent {
+  color: var(--mk-accent-hot);
+}
+
+.mk-text-highlight {
+  color: var(--mk-accent);
+}
+
+.mk-text-stat {
+  background: linear-gradient(160deg, #3956dd 0%, #1e3a8a 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mk-text-eyebrow {
+  color: var(--mk-accent);
+}
+
+
 .font-display {
   font-family: var(--font-display);
+}
+
+/* Pins the whole layout to exactly one viewport height with scrolling disabled —
+   toggled on <html> by individual pages (e.g. Contact) that want everything visible
+   at a glance instead of requiring a scroll. Hides the footer to make room; header
+   and page content split the viewport via flex instead of stacking + overflowing. */
+.no-scroll-page,
+.no-scroll-page body {
+  height: 100%;
+  overflow: hidden;
+}
+
+.no-scroll-page .marketing-shell {
+  display: flex;
+  height: 100vh;
+  height: 100dvh;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.no-scroll-page .marketing-shell > header {
+  flex: 0 0 auto;
+}
+
+.no-scroll-page .marketing-shell > main {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.no-scroll-page .marketing-shell > footer {
+  display: none;
 }
 
 body {
@@ -393,7 +487,7 @@ body {
   line-height: 1.55;
   letter-spacing: -0.011em;
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(13, 148, 136, 0.07), transparent 55%),
+    radial-gradient(1200px 600px at 10% -10%, rgba(57, 86, 221, 0.07), transparent 55%),
     radial-gradient(900px 500px at 100% 0%, rgba(15, 23, 42, 0.04), transparent 50%),
     var(--app-bg);
   color: var(--app-ink);
@@ -410,7 +504,7 @@ pre,
 }
 
 ::selection {
-  background: rgba(13, 148, 136, 0.18);
+  background: rgba(57, 86, 221, 0.18);
 }
 
 .app-shell .app-workspace {
@@ -614,15 +708,15 @@ pre,
   top: 0;
   height: 2px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, var(--mk-accent, #14b8a6), transparent);
+  background: linear-gradient(90deg, transparent, var(--mk-accent, #3956dd), transparent);
   opacity: 0;
   transition: opacity 200ms ease;
 }
 
 .ferret-card:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--mk-accent, #14b8a6) 45%, var(--mk-border, #1e293b));
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.28);
+  border-color: color-mix(in srgb, var(--mk-accent, #3956dd) 40%, var(--mk-border, #dce5ec));
+  box-shadow: var(--mk-shadow, 0 12px 32px rgba(15, 23, 42, 0.08));
 }
 
 .ferret-card:hover::before {
@@ -631,22 +725,939 @@ pre,
 
 .mk-mesh {
   background:
-    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(20, 184, 166, 0.18), transparent 55%),
-    radial-gradient(ellipse 70% 50% at 85% 20%, rgba(8, 145, 178, 0.12), transparent 50%),
-    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(13, 148, 136, 0.08), transparent 55%),
-    var(--mk-bg, #0b1220);
+    radial-gradient(ellipse 80% 60% at 20% 10%, rgba(57, 86, 221, 0.12), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 85% 20%, rgba(77, 110, 240, 0.08), transparent 50%),
+    radial-gradient(ellipse 60% 40% at 50% 100%, rgba(57, 86, 221, 0.06), transparent 55%),
+    var(--mk-bg, #ffffff);
+}
+
+/* ─── Landing — 3D stage, tilt, layered motion ─── */
+@keyframes landing-brand-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-copy-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-stage-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes landing-glow-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(1.5%, -1%, 0) scale(1.04);
+  }
+}
+
+@keyframes landing-orb-float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(18px, -22px, 0) scale(1.08);
+  }
+}
+
+@keyframes landing-code-hit {
+  from {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  to {
+    background-color: rgba(57, 86, 221, 0.08);
+    box-shadow: inset 3px 0 0 0 var(--mk-accent, #3956dd);
+  }
+}
+
+@keyframes landing-float-3d {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes landing-orbit-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes landing-shadow-breathe {
+  0%,
+  100% {
+    transform: translateX(-50%) scale(1);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateX(-50%) scale(0.94);
+    opacity: 0.28;
+  }
+}
+
+@keyframes landing-chip-pop {
+  0% {
+    transform: scale(0.92);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes landing-stat-pop {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.landing-hero {
+  perspective: none;
+  transform-style: flat;
+  background: transparent;
+  overflow: hidden;
+  position: relative;
+}
+
+/* Layered mesh + soft color planes (no filter on content) */
+.landing-hero-glow {
+  background:
+    radial-gradient(ellipse 70% 55% at 12% 18%, rgba(77, 110, 240, 0.35), transparent 58%),
+    radial-gradient(ellipse 55% 50% at 88% 22%, rgba(0, 45, 255, 0.14), transparent 55%),
+    radial-gradient(ellipse 60% 45% at 55% 90%, rgba(57, 86, 221, 0.12), transparent 60%),
+    radial-gradient(ellipse 40% 30% at 70% 55%, rgba(129, 151, 255, 0.18), transparent 55%),
+    linear-gradient(165deg, #dfe8ff 0%, #eef3ff 32%, #f7f9ff 68%, #ffffff 100%);
+  animation: landing-glow-drift 22s ease-in-out infinite;
+}
+
+/* Code-editor grid: crisp lines, fadeyes at edges so type stays readable */
+.landing-hero-grid {
+  background-image:
+    linear-gradient(rgba(57, 86, 221, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(57, 86, 221, 0.07) 1px, transparent 1px);
+  background-size: 48px 48px;
+  background-position: center top;
+  mask-image: radial-gradient(ellipse 85% 70% at 55% 40%, black 15%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse 85% 70% at 55% 40%, black 15%, transparent 72%);
+  opacity: 0.9;
+}
+
+.landing-hero-dots {
+  background-image: radial-gradient(rgba(30, 58, 138, 0.18) 1.1px, transparent 1.1px);
+  background-size: 18px 18px;
+  mask-image: radial-gradient(ellipse 75% 60% at 40% 30%, black 5%, transparent 70%);
+  -webkit-mask-image: radial-gradient(ellipse 75% 60% at 40% 30%, black 5%, transparent 70%);
+  opacity: 0.55;
+}
+
+/* Diagonal “scan” stripe band — product vibe without glass blur on UI */
+.landing-hero-beams {
+  background:
+    repeating-linear-gradient(
+      -18deg,
+      transparent 0,
+      transparent 36px,
+      rgba(57, 86, 221, 0.035) 36px,
+      rgba(57, 86, 221, 0.035) 37px
+    );
+  mask-image: linear-gradient(100deg, transparent 0%, black 25%, black 70%, transparent 100%);
+  -webkit-mask-image: linear-gradient(100deg, transparent 0%, black 25%, black 70%, transparent 100%);
+  opacity: 0.85;
+  animation: landing-beams-drift 28s linear infinite;
+}
+
+@keyframes landing-beams-drift {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-48px);
+  }
+}
+
+/* Soft color orbs: far behind content, large + low opacity (no text frost) */
+.landing-orb {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  z-index: 0;
+  /* Avoid filter: blur — use soft radial fills instead so compositing stays sharp */
+  background: radial-gradient(circle at 40% 40%, var(--orb-a), transparent 68%);
+  animation: landing-orb-float 14s ease-in-out infinite;
+  opacity: 0.95;
+}
+
+.landing-orb-a {
+  --orb-a: rgba(77, 110, 240, 0.45);
+  top: -6%;
+  left: -8%;
+  width: min(42vw, 380px);
+  height: min(42vw, 380px);
+}
+
+.landing-orb-b {
+  --orb-a: rgba(0, 45, 255, 0.28);
+  top: 8%;
+  right: -10%;
+  width: min(48vw, 440px);
+  height: min(48vw, 440px);
+  animation-delay: -5s;
+  animation-duration: 18s;
+}
+
+.landing-orb-c {
+  --orb-a: rgba(57, 86, 221, 0.22);
+  bottom: -12%;
+  left: 28%;
+  width: min(50vw, 420px);
+  height: min(36vw, 280px);
+  animation-delay: -9s;
+  animation-duration: 16s;
+}
+
+/* Floating accent frames (decorative, not cards) */
+.landing-hero-frame {
+  position: absolute;
+  pointer-events: none;
+  z-index: 0;
+  border: 1px solid rgba(57, 86, 221, 0.16);
+  border-radius: 1.25rem;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.45), rgba(255, 255, 255, 0.08));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+}
+
+.landing-hero-frame-a {
+  width: 140px;
+  height: 100px;
+  top: 12%;
+  left: 4%;
+  transform: rotate(-8deg);
+  animation: landing-frame-float 12s ease-in-out infinite;
+}
+
+.landing-hero-frame-b {
+  width: 100px;
+  height: 72px;
+  bottom: 18%;
+  right: 6%;
+  transform: rotate(10deg);
+  animation: landing-frame-float 15s ease-in-out -3s infinite reverse;
+}
+
+@keyframes landing-frame-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--r, -8deg));
+  }
+  50% {
+    transform: translateY(-10px) rotate(var(--r, -8deg));
+  }
+}
+
+.landing-hero-frame-a {
+  --r: -8deg;
+}
+.landing-hero-frame-b {
+  --r: 10deg;
+}
+
+/* Section bands — page rhythm so intermediate sections aren’t flat white */
+.landing-section-pipeline {
+  position: relative;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(244, 247, 255, 0.9) 40%, #eef3ff 100%);
+  overflow: hidden;
+}
+
+.landing-section-pipeline::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(rgba(57, 86, 221, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+  mask-image: linear-gradient(180deg, transparent, black 15%, black 85%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, transparent, black 15%, black 85%, transparent);
+  opacity: 0.55;
+}
+
+.landing-section-rulebook {
+  position: relative;
+  background:
+    radial-gradient(ellipse 70% 80% at 0% 50%, rgba(57, 86, 221, 0.1), transparent 55%),
+    radial-gradient(ellipse 50% 60% at 100% 30%, rgba(129, 151, 255, 0.14), transparent 50%),
+    linear-gradient(180deg, #f8faff 0%, #eef3ff 50%, #f4f7ff 100%);
+  overflow: hidden;
+}
+
+.landing-section-rulebook::after {
+  content: "";
+  position: absolute;
+  right: -8%;
+  top: 10%;
+  width: 42%;
+  height: 80%;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      -12deg,
+      transparent,
+      transparent 22px,
+      rgba(57, 86, 221, 0.04) 22px,
+      rgba(57, 86, 221, 0.04) 23px
+    );
+  mask-image: linear-gradient(90deg, transparent, black 30%, black 80%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, black 30%, black 80%, transparent);
+}
+
+.landing-section-cta {
+  position: relative;
+  background:
+    radial-gradient(ellipse 80% 70% at 50% 100%, rgba(57, 86, 221, 0.16), transparent 55%),
+    linear-gradient(180deg, #f4f7ff 0%, #e8efff 55%, #dfe8ff 100%);
+  overflow: hidden;
+}
+
+.landing-section-cta::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 80%, rgba(77, 110, 240, 0.2), transparent 40%),
+    radial-gradient(circle at 90% 40%, rgba(0, 45, 255, 0.1), transparent 38%);
+}
+
+/* Zigzag rows sit on softer glass tiles so the band shows through */
+.landing-section-pipeline .landing-zigzag {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: none;
+  box-shadow: 0 8px 28px rgba(10, 18, 38, 0.04);
+}
+
+.landing-hero-copy {
+  perspective: none;
+  transform-style: flat;
+}
+
+.landing-hero-copy > .landing-brand {
+  animation: landing-brand-in 900ms cubic-bezier(0.16, 0.8, 0.24, 1) both;
+  transform-style: flat;
+}
+
+.landing-hero-copy > :not(.landing-brand) {
+  animation: landing-copy-in 680ms cubic-bezier(0.16, 0.8, 0.24, 1) both;
+}
+
+.landing-hero-copy > h1 {
+  animation-delay: 110ms;
+}
+
+.landing-hero-copy > p {
+  animation-delay: 180ms;
+}
+
+.landing-hero-copy > div {
+  animation-delay: 260ms;
+}
+
+.landing-hero-copy > p:last-child {
+  animation-delay: 340ms;
+}
+
+.landing-brand {
+  background: linear-gradient(120deg, #0a0a0a 0%, #3956dd 55%, #1e3a8a 110%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.landing-hero-stage {
+  perspective: none;
+  transform-style: flat;
+  animation: landing-stage-in 1000ms cubic-bezier(0.16, 0.8, 0.24, 1) 220ms both;
+  /* Soft spotlight under product so it lifts off the mesh */
+  position: relative;
+}
+
+.landing-hero-stage::before {
+  content: "";
+  position: absolute;
+  inset: 8% -4% -6%;
+  z-index: 0;
+  pointer-events: none;
+  border-radius: 2rem;
+  background:
+    radial-gradient(ellipse 70% 55% at 50% 45%, rgba(255, 255, 255, 0.85), transparent 72%),
+    radial-gradient(ellipse 60% 50% at 50% 60%, rgba(57, 86, 221, 0.12), transparent 70%);
+}
+
+.landing-hero-stage > * {
+  position: relative;
+  z-index: 1;
+}
+
+.landing-product-scene {
+  position: relative;
+  /* Perspective only while tilting — idle 3D layers soft-blur chrome text */
+  perspective: none;
+  transform-style: flat;
+  padding-bottom: 0.75rem;
+}
+
+.landing-product-scene:has(.landing-tilt3d[data-active="true"]) {
+  perspective: 1000px;
+}
+
+.landing-product-orbit {
+  pointer-events: none;
+  position: absolute;
+  inset: -8% -4% auto;
+  height: 120%;
+  border: 1px dashed rgba(57, 86, 221, 0.18);
+  border-radius: 50%;
+  transform: rotateX(68deg) scale(1.05);
+  animation: landing-orbit-spin 40s linear infinite;
+}
+
+.landing-product-orbit-b {
+  inset: -2% 8% auto;
+  height: 100%;
+  border-color: rgba(154, 52, 18, 0.12);
+  animation-duration: 55s;
+  animation-direction: reverse;
+}
+
+.landing-tilt3d {
+  --rx: 0deg;
+  --ry: 0deg;
+  --mx: 50%;
+  --my: 30%;
+  --tilt-scale: 1;
+  position: relative;
+  /* No idle transform — rotateX(0deg) alone was soft-blurring the mock UI */
+  transform: none;
+  transform-style: flat;
+  transition: transform 180ms ease-out;
+}
+
+.landing-tilt3d[data-active="true"] {
+  transition: none;
+  will-change: transform;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--rx)) rotateY(var(--ry));
+}
+
+.landing-product-tilt.landing-tilt3d {
+  animation: none;
+}
+
+.landing-tilt3d[data-active="true"].landing-product-tilt {
+  animation: none;
+}
+
+.landing-product-shadow {
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  width: 72%;
+  height: 24px;
+  border-radius: 999px;
+  background: radial-gradient(ellipse at center, rgba(10, 18, 38, 0.16), transparent 70%);
+  filter: blur(6px);
+  z-index: -1;
+  animation: landing-shadow-breathe 7s ease-in-out 1.1s infinite;
+}
+
+/* Hero terminal demo — a real dark terminal, not a fake browser/PR screenshot */
+.term-shell {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: 1rem;
+  background: #0b0f17;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  box-shadow:
+    0 0 0 1px rgba(10, 18, 38, 0.4),
+    0 12px 32px rgba(10, 18, 38, 0.35),
+    0 24px 64px rgba(57, 86, 221, 0.18);
+}
+
+.term-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+  background: rgba(255, 255, 255, 0.02);
+  padding: 0.65rem 0.9rem;
+}
+
+.term-live-dot {
+  animation: term-live-pulse 1s ease-in-out infinite;
+}
+
+@keyframes term-live-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.4);
+  }
+  50% {
+    opacity: 0.6;
+    box-shadow: 0 0 0 3px rgba(251, 191, 36, 0);
+  }
+}
+
+.term-body {
+  padding: 1rem 1.1rem 1.25rem;
+  font-variant-ligatures: none;
+}
+
+.term-line {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+
+.term-line-in {
+  animation: term-line-in 320ms ease-out both;
+}
+
+@keyframes term-line-in {
+  from {
+    opacity: 0;
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.term-cursor {
+  display: inline-block;
+  width: 0.5rem;
+  height: 1em;
+  margin-left: 1px;
+  vertical-align: -0.15em;
+  background: #8ea0f2;
+  animation: term-blink 1s steps(1) infinite;
+}
+
+@keyframes term-blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+.landing-chip {
+  animation: landing-chip-pop 560ms cubic-bezier(0.16, 0.8, 0.24, 1) 480ms both;
+  box-shadow: 0 2px 8px rgba(10, 18, 38, 0.06);
+}
+
+.landing-code-hit {
+  animation: landing-code-hit 650ms ease 500ms both;
+  padding-inline: 0.25rem;
+}
+
+.landing-code-hit-d1 {
+  animation-delay: 680ms;
+}
+
+.landing-code-hit-d2 {
+  animation-delay: 860ms;
+}
+
+.landing-pipeline-scene {
+  perspective: 1200px;
+  transform-style: preserve-3d;
+}
+
+.landing-pipeline-step {
+  opacity: 0;
+  transform: translate3d(0, 24px, -30px);
+  transform-style: preserve-3d;
+}
+
+.ferret-reveal.is-visible .landing-pipeline-step {
+  animation: landing-stat-pop 620ms cubic-bezier(0.16, 0.8, 0.24, 1) forwards;
+}
+
+.landing-card-3d {
+  perspective: 900px;
+}
+
+.landing-card-3d-face {
+  transform-style: preserve-3d;
+  transition:
+    transform 280ms cubic-bezier(0.16, 0.8, 0.24, 1),
+    box-shadow 280ms ease,
+    border-color 280ms ease;
+  box-shadow:
+    0 1px 2px rgba(10, 18, 38, 0.04),
+    0 12px 28px rgba(10, 18, 38, 0.06);
+}
+
+.landing-card-3d:hover .landing-card-3d-face {
+  transform: translateY(-8px) rotateX(6deg) rotateY(-4deg) translateZ(12px);
+  border-color: color-mix(in srgb, var(--mk-accent) 40%, var(--mk-border));
+  box-shadow:
+    0 8px 16px rgba(10, 18, 38, 0.06),
+    0 28px 48px rgba(57, 86, 221, 0.16);
+}
+
+.landing-rulebook-3d {
+  position: relative;
+  transform-style: flat;
+  box-shadow:
+    0 2px 4px rgba(10, 18, 38, 0.04),
+    0 16px 40px rgba(57, 86, 221, 0.08);
+}
+
+.landing-rule-row {
+  transition:
+    background-color 180ms ease,
+    transform 220ms ease;
+}
+
+.landing-rule-row:hover {
+  background: #eef3ff;
+  transform: translateX(4px);
+}
+
+.landing-list-item {
+  transition: transform 200ms ease;
+}
+
+.landing-list-item:hover {
+  transform: translateX(4px);
+}
+
+.landing-stat-cell {
+  transition: background-color 200ms ease;
+}
+
+.landing-stat-cell:hover {
+  background: color-mix(in srgb, var(--mk-accent-soft) 55%, white);
+}
+
+.landing-stat-value {
+  display: inline-block;
+  transition: transform 220ms cubic-bezier(0.16, 0.8, 0.24, 1);
+}
+
+.landing-stat-cell:hover .landing-stat-value {
+  transform: translateY(-3px) scale(1.06);
+}
+
+.landing-cta-band {
+  background:
+    radial-gradient(ellipse 80% 90% at 50% 0%, rgba(57, 86, 221, 0.12), transparent 55%),
+    radial-gradient(ellipse 50% 60% at 100% 80%, rgba(77, 110, 240, 0.1), transparent 50%),
+    linear-gradient(145deg, #ffffff 0%, #f0f4ff 55%, #e8efff 100%);
+}
+
+.landing-cta-3d {
+  transform-style: preserve-3d;
+  box-shadow:
+    0 1px 2px rgba(10, 18, 38, 0.04),
+    0 18px 40px rgba(57, 86, 221, 0.1),
+    0 40px 80px rgba(10, 18, 38, 0.06);
+  transition:
+    transform 300ms ease,
+    box-shadow 300ms ease;
+}
+
+.landing-cta-3d:hover {
+  transform: translateY(-4px) rotateX(2deg);
+  box-shadow:
+    0 8px 16px rgba(10, 18, 38, 0.05),
+    0 28px 56px rgba(57, 86, 221, 0.16);
+}
+
+.landing-cta-glow {
+  background:
+    radial-gradient(ellipse 55% 70% at 30% 40%, rgba(57, 86, 221, 0.08), transparent 60%),
+    radial-gradient(ellipse 40% 50% at 80% 60%, rgba(77, 110, 240, 0.06), transparent 55%);
+}
+
+.marketing-shell .mk-btn-3d {
+  position: relative;
+  isolation: isolate;
+  /* Hard edge only — large soft blue shadows made the CTA look frosted */
+  transform: none;
+  box-shadow: 0 4px 0 #1e3299;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    transform 140ms cubic-bezier(0.16, 0.8, 0.24, 1),
+    box-shadow 140ms ease,
+    background-color 140ms ease;
+}
+
+.marketing-shell .mk-btn-3d:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 0 #1e3299;
+  background-color: var(--mk-accent-hover, #2a41b8);
+}
+
+.marketing-shell .mk-btn-3d:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #1e3299;
+}
+
+.marketing-shell .mk-btn-3d-soft {
+  position: relative;
+  isolation: isolate;
+  transform: none;
+  box-shadow: 0 3px 0 #c5d4ef;
+  -webkit-font-smoothing: antialiased;
+  transition:
+    transform 140ms cubic-bezier(0.16, 0.8, 0.24, 1),
+    box-shadow 140ms ease,
+    border-color 140ms ease,
+    color 140ms ease,
+    background-color 140ms ease;
+}
+
+.marketing-shell .mk-btn-3d-soft:hover {
+  transform: translateY(-2px);
+  color: var(--mk-accent-hot);
+  border-color: color-mix(in srgb, var(--mk-accent) 45%, var(--mk-border-strong));
+  box-shadow: 0 5px 0 #b4c6e8;
+}
+
+.marketing-shell .mk-btn-3d-soft:active {
+  transform: translateY(1px);
+  box-shadow: 0 2px 0 #c5d4ef;
+}
+
+/* Scroll reveal — 3D lift (overrides earlier ferret-reveal) */
+.marketing-shell .ferret-reveal {
+  opacity: 0;
+  transform: translateY(14px);
+  transform-style: flat;
+}
+
+.marketing-shell .ferret-reveal.is-visible {
+  animation: landing-stat-pop 600ms cubic-bezier(0.16, 0.8, 0.24, 1) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ferret-reveal {
+  .marketing-shell .ferret-reveal {
     opacity: 1;
     transform: none;
     animation: none !important;
   }
 
   .ferret-card,
-  .ferret-shimmer::after {
+  .ferret-shimmer::after,
+  .landing-hero-glow,
+  .landing-hero-stage,
+  .landing-hero-copy > *,
+  .landing-hero-beams,
+  .landing-hero-frame,
+  .landing-product-tilt,
+  .landing-product-orbit,
+  .landing-product-shadow,
+  .landing-orb,
+  .landing-code-hit,
+  .landing-pipeline-step,
+  .landing-chip,
+  .landing-tilt3d {
     transition: none !important;
     animation: none !important;
+  }
+
+  .landing-tilt3d {
+    transform: none !important;
+  }
+
+  .landing-hero-copy > *,
+  .landing-pipeline-step,
+  .landing-chip {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
+  .marketing-shell .mk-btn-3d,
+  .marketing-shell .mk-btn-3d-soft {
+    box-shadow: 0 2px 8px rgba(57, 86, 221, 0.2);
+  }
+
+  .marketing-shell .mk-btn-3d:hover,
+  .marketing-shell .mk-btn-3d:active,
+  .marketing-shell .mk-btn-3d-soft:hover,
+  .marketing-shell .mk-btn-3d-soft:active,
+  .landing-card-3d:hover .landing-card-3d-face,
+  .landing-cta-3d:hover {
+    transform: none;
+  }
+}
+
+/* ─── Code-review themed animations ─── */
+@keyframes review-card-scan {
+  0% {
+    transform: translateX(-120%);
+  }
+  100% {
+    transform: translateX(220%);
+  }
+}
+
+/* Pipeline cards get a soft scan on hover */
+.landing-card-scan {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgba(57, 86, 221, 0.08), transparent);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+
+@keyframes review-file-underline {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-card-scan,
+  .term-line-in,
+  .term-cursor {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .landing-card-3d:hover .landing-card-scan {
+    opacity: 0;
+  }
+}
+
+/* Compact product stage when hero is side-by-side */
+.landing-product-scene-compact {
+  padding-bottom: 0.75rem;
+}
+
+.landing-hero .landing-hero-stage {
+  animation: landing-stage-in 900ms cubic-bezier(0.16, 0.8, 0.24, 1) 180ms both;
+}
+
+.landing-hero .landing-hero-copy {
+  text-align: left;
+}
+
+.landing-hero .landing-hero-copy > .landing-brand,
+.landing-hero .landing-hero-copy > h1,
+.landing-hero .landing-hero-copy > p,
+.landing-hero .landing-hero-copy > div {
+  margin-left: 0;
+  margin-right: 0;
+}
+
+/* Zigzag pipeline rows */
+.landing-zigzag {
+  transition:
+    border-color 200ms ease,
+    box-shadow 200ms ease,
+    transform 200ms ease;
+}
+
+.landing-zigzag:hover {
+  border-color: color-mix(in srgb, var(--mk-accent) 35%, var(--mk-border));
+  box-shadow: 0 10px 28px rgba(10, 18, 38, 0.06);
+  transform: translateY(-2px);
+}
+
+.landing-zigzag-visual {
+  min-height: 5.5rem;
+}
+
+.landing-zigzag-bar {
+  animation: review-file-underline 0.8s cubic-bezier(0.16, 0.8, 0.24, 1) both;
+}
+
+.landing-zigzag:hover .landing-card-scan {
+  opacity: 1;
+  animation: review-card-scan 1.1s ease-in-out infinite;
+}
+
+@media (max-width: 1023px) {
+  .landing-hero .landing-hero-copy {
+    text-align: center;
+  }
+
+  .landing-hero .landing-hero-copy > .landing-brand,
+  .landing-hero .landing-hero-copy h1,
+  .landing-hero .landing-hero-copy p {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .landing-hero .landing-hero-copy .mt-6,
+  .landing-hero .landing-hero-copy .mt-8 {
+    justify-content: center;
+  }
+
+  .landing-hero .landing-hero-copy .mt-6 {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-zigzag:hover {
+    transform: none;
   }
 }

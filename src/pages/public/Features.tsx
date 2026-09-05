@@ -1,4 +1,5 @@
-import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { CornerBrackets, GridTexture, Icon, Reveal, type IconName } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
@@ -60,6 +61,21 @@ const trust: Array<[IconName, string]> = [
 ];
 
 export default function Features() {
+  const location = useLocation();
+
+  // Nav dropdown links point here as /features#section — React Router doesn't
+  // auto-scroll to a hash on route change the way a full page load would, so this
+  // does it manually once the page (and its sections) have mounted.
+  useEffect(() => {
+    if (!location.hash) return;
+    const el = document.getElementById(location.hash.slice(1));
+    // "smooth" here is unreliable — a second call to scrollIntoView while the first is
+    // still animating (which React 18 StrictMode's dev-only double-effect-invoke does
+    // in practice) cancels the scroll partway, landing back at the top. Instant jump
+    // avoids the race entirely and is a perfectly normal UX for a nav deep-link anyway.
+    el?.scrollIntoView({ behavior: "instant", block: "start" });
+  }, [location.hash]);
+
   return (
     <main className="overflow-hidden">
       <Seo
@@ -81,7 +97,7 @@ export default function Features() {
         </Reveal>
       </section>
 
-      <section className="border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
+      <section id="pipeline" className="scroll-mt-20 border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
         <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Find broadly, verify ruthlessly</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-3">
@@ -98,7 +114,7 @@ export default function Features() {
         </Reveal>
       </section>
 
-      <section className="border-b border-[var(--mk-border)]">
+      <section id="delivery" className="scroll-mt-20 border-b border-[var(--mk-border)]">
         <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Signal over volume</p>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
@@ -115,7 +131,7 @@ export default function Features() {
         </Reveal>
       </section>
 
-      <section className="border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
+      <section id="rulebook" className="scroll-mt-20 border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
         <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Learns with your team</p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--mk-ink)]">The rulebook</h2>
@@ -130,7 +146,7 @@ export default function Features() {
         </Reveal>
       </section>
 
-      <section className="border-b border-[var(--mk-border)]">
+      <section id="languages" className="scroll-mt-20 border-b border-[var(--mk-border)]">
         <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Every language, genuinely</p>
           <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--mk-muted)]">
@@ -142,7 +158,7 @@ export default function Features() {
         </Reveal>
       </section>
 
-      <section className="relative border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
+      <section id="platform" className="relative scroll-mt-20 border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
         <GridTexture />
         <Reveal className="relative mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">One engine, everywhere you work</p>
@@ -185,7 +201,7 @@ export default function Features() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               to="/signin"
-              className="ferret-shimmer inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--mk-accent)] px-5 py-3 text-sm font-semibold text-[var(--mk-accent-fg)] shadow-[0_8px_24px_rgba(20,184,166,0.3)] transition hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
+              className="ferret-shimmer inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--mk-accent)] px-5 py-3 text-sm font-semibold text-[var(--mk-accent-fg)] shadow-[0_8px_24px_rgba(57,86,221,0.3)] transition hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
             >
               Run first scan
             </Link>
