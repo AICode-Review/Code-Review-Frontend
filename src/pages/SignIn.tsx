@@ -1,6 +1,7 @@
 import { Link, Navigate, useSearchParams } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { DEMO_MODE } from "../lib/demo";
+import { LogoMark } from "../components/LogoMark";
 
 function GithubMark({ className = "" }: { className?: string }) {
   return (
@@ -18,6 +19,17 @@ function BitbucketMark({ className = "" }: { className?: string }) {
   );
 }
 
+function GoogleMark({ className = "" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" aria-hidden>
+      <path fill="#4285F4" d="M23.52 12.27c0-.79-.07-1.54-.19-2.27H12v4.51h6.44c-.28 1.48-1.13 2.73-2.4 3.58v2.84h3.86c2.26-2.08 3.62-5.52 3.62-9.66z" />
+      <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3.09c-1.08.72-2.45 1.15-4.07 1.15-3.13 0-5.78-2.11-6.73-4.96H1.29v3.15C3.26 21.3 7.31 24 12 24z" />
+      <path fill="#FBBC05" d="M5.27 14.19c-.24-.72-.38-1.49-.38-2.19s.14-1.47.38-2.19V6.66H1.29A11.87 11.87 0 0 0 0 12c0 1.93.46 3.75 1.29 5.34l3.98-3.15z" />
+      <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.66l3.98 3.15C6.22 6.86 8.87 4.75 12 4.75z" />
+    </svg>
+  );
+}
+
 const benefits = [
   "Automatic reviews on every pull request",
   "Only verified findings reach your team — no noise",
@@ -25,7 +37,7 @@ const benefits = [
 ];
 
 export default function SignIn() {
-  const { authenticated, loading, signInWithGitHub, signInWithBitbucket } = useAuth();
+  const { authenticated, loading, signInWithGitHub, signInWithBitbucket, signInWithGoogle } = useAuth();
   const [searchParams] = useSearchParams();
   const authError = searchParams.get("error_description") ?? searchParams.get("error");
 
@@ -37,8 +49,8 @@ export default function SignIn() {
       <div className="marketing-shell relative hidden flex-col justify-between overflow-hidden px-12 py-10 lg:flex">
         <div className="mk-mesh pointer-events-none absolute inset-0" aria-hidden="true" />
         <Link to="/" className="font-display relative inline-flex items-center gap-2.5 text-lg font-semibold tracking-tight text-[var(--mk-ink)]">
-          <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent)] text-[10px] font-bold text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(20,184,166,0.35)]">
-            CF
+          <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent)] text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(57,86,221,0.35)]">
+            <LogoMark className="size-4" />
           </span>
           Scrutinye
         </Link>
@@ -64,8 +76,8 @@ export default function SignIn() {
       <div className="flex flex-col items-center justify-center bg-slate-50 px-6 py-16">
         <div className="w-full max-w-sm">
           <Link to="/" className="font-display inline-flex items-center gap-2 text-lg font-semibold tracking-tight text-slate-900 lg:hidden">
-            <span className="flex size-7 items-center justify-center rounded-md bg-teal-600 text-[9px] font-bold text-white">
-              CF
+            <span className="flex size-7 items-center justify-center rounded-md bg-[var(--mk-accent)] text-white">
+              <LogoMark className="size-3.5" />
             </span>
             Scrutinye
           </Link>
@@ -76,7 +88,7 @@ export default function SignIn() {
           <p className="mt-1.5 text-sm leading-6 text-slate-600">
             {DEMO_MODE
               ? "No account needed — the dashboard is preloaded with sample data."
-              : "Connect your GitHub or Bitbucket account to get started."}
+              : "Connect your GitHub or Bitbucket account to get started, or sign in with Google if you're joining an existing team."}
           </p>
 
           {authError && (
@@ -110,6 +122,14 @@ export default function SignIn() {
                 >
                   <BitbucketMark className="h-4 w-4" />
                   Continue with Bitbucket
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void signInWithGoogle()}
+                  className="flex items-center justify-center gap-2.5 rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-medium text-slate-700 transition hover:border-slate-400"
+                >
+                  <GoogleMark className="h-4 w-4" />
+                  Continue with Google
                 </button>
               </div>
             )}

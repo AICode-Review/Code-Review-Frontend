@@ -81,6 +81,17 @@ export function useAuth() {
             options: { redirectTo: `${window.location.origin}${redirectPath}` },
           })
         : Promise.resolve(),
+    // Identity-only — unlike GitHub/Bitbucket this never grants repo access, so a
+    // Google-signed-in user still needs to install the GitHub App or connect Bitbucket
+    // (or be added via org invite) before they see any repos. Useful for a teammate who
+    // only needs dashboard/billing access.
+    signInWithGoogle: (redirectPath = "/dashboard") =>
+      supabase
+        ? supabase.auth.signInWithOAuth({
+            provider: "google",
+            options: { redirectTo: `${window.location.origin}${redirectPath}` },
+          })
+        : Promise.resolve(),
     signOut: () => (supabase ? supabase.auth.signOut() : Promise.resolve()),
   };
 }
