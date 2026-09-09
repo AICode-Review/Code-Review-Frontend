@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Seo } from "../../components/Seo";
+import { setPostSigninRedirect } from "../../lib/postSigninRedirect";
 
 type Currency = "USD" | "INR";
 
@@ -23,6 +24,10 @@ interface Tier {
   cta: string;
   ctaTo: string;
   highlight: boolean;
+  /** Paid tiers send the user to Settings → Billing right after sign-in instead of the
+   * plain Dashboard, so clicking "Start Individual" here actually leads somewhere close
+   * to checkout instead of losing that intent in the sign-in detour. */
+  paid: boolean;
 }
 
 const tiers: Tier[] = [
@@ -42,6 +47,7 @@ const tiers: Tier[] = [
     cta: "Start free",
     ctaTo: "/signin",
     highlight: false,
+    paid: false,
   },
   {
     name: "Individual",
@@ -63,6 +69,7 @@ const tiers: Tier[] = [
     cta: "Start Individual",
     ctaTo: "/signin",
     highlight: true,
+    paid: true,
   },
   {
     name: "Team",
@@ -79,6 +86,7 @@ const tiers: Tier[] = [
     cta: "Start Team",
     ctaTo: "/signin",
     highlight: false,
+    paid: true,
   },
 ];
 
@@ -170,6 +178,9 @@ export default function Pricing() {
             </ul>
             <Link
               to={tier.ctaTo}
+              onClick={() => {
+                if (tier.paid) setPostSigninRedirect("/settings");
+              }}
               className={`mt-5 rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition ${
                 tier.highlight
                   ? "bg-[var(--mk-accent)] text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(57,86,221,0.3)] hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"

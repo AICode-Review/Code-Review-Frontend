@@ -1,12 +1,13 @@
 import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
+import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { OrgProvider } from "./hooks/useOrg";
 import { PublicHeader } from "./components/ui";
 import { AppShell } from "./components/layout/AppShell";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { trackVisit } from "./lib/tracking";
+import { consumePostSigninRedirect } from "./lib/postSigninRedirect";
 
 // Route-level code splitting — each page becomes its own chunk, fetched on
 // navigation instead of all bundled into one ~1.1MB entry file.
@@ -78,6 +79,18 @@ function PublicLayout() {
 
 function ProtectedShell() {
   const { authenticated, loading } = useAuth();
+  const navigate = useNavigate();
+
+  // Carries a pricing-page click's intent (e.g. "Start Individual") through the sign-in
+  // detour — set as a localStorage flag before leaving for /signin since a fresh OAuth
+  // redirect wipes any in-memory state. Runs once per sign-in: consumePostSigninRedirect
+  // clears the flag itself, so it's a no-op on every subsequent authenticated render.
+  useEffect(() => {
+    if (!authenticated) return;
+    const redirect = consumePostSigninRedirect();
+    if (redirect) navigate(redirect, { replace: true });
+  }, [authenticated, navigate]);
+
   if (loading) {
     return <div className="flex min-h-screen items-center justify-center text-zinc-500">Loading…</div>;
   }
