@@ -10,7 +10,7 @@ import { Card, EmptyState, LoadingText } from "../components/ui";
 
 const GITHUB_INSTALL_URL =
   (import.meta.env.VITE_GITHUB_APP_INSTALL_URL as string | undefined) ??
-  "https://github.com/apps/scrutinye-dev/installations/new";
+  "https://github.com/apps/scrutinye/installations/new";
 
 const presets = [
   {
