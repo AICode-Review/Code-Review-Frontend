@@ -20,6 +20,7 @@ const Cli = lazy(() => import("./pages/public/Cli"));
 const BitbucketSetup = lazy(() => import("./pages/public/BitbucketSetup"));
 const Terms = lazy(() => import("./pages/public/Terms"));
 const Privacy = lazy(() => import("./pages/public/Privacy"));
+const Refunds = lazy(() => import("./pages/public/Refunds"));
 const SignIn = lazy(() => import("./pages/SignIn"));
 const AcceptInvite = lazy(() => import("./pages/AcceptInvite"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -66,6 +67,7 @@ function PublicLayout() {
           <nav className="flex flex-wrap gap-5 text-sm font-medium">
             <Link to="/terms" className="transition hover:text-[var(--mk-accent)]">Terms</Link>
             <Link to="/privacy" className="transition hover:text-[var(--mk-accent)]">Privacy</Link>
+            <Link to="/refunds" className="transition hover:text-[var(--mk-accent)]">Refunds</Link>
             <Link to="/security" className="transition hover:text-[var(--mk-accent)]">Security</Link>
           </nav>
         </div>
@@ -117,6 +119,7 @@ export default function App() {
               <Route path="/docs/bitbucket" element={<BitbucketSetup />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/privacy" element={<Privacy />} />
+              <Route path="/refunds" element={<Refunds />} />
             </Route>
 
             <Route path="/signin" element={<SignIn />} />
