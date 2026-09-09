@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 
-const SITE_URL = ((import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://codeferret.dev").replace(/\/+$/, "");
+const SITE_URL = ((import.meta.env.VITE_SITE_URL as string | undefined) ?? "https://scrutinye.dev").replace(/\/+$/, "");
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.png`;
 
 function upsertMeta(attr: "name" | "property", key: string, content: string) {

@@ -18,7 +18,7 @@ const sections: Array<{ title: string; body: string[] }> = [
   {
     title: "3. Third-party processors",
     body: [
-      "Diffs and file contents are sent to Anthropic (Claude) and OpenAI to generate and cross-verify findings, subject to their own data-handling terms. Account data lives in Supabase (Postgres). Billing is processed by Razorpay — CodeFerret never sees or stores your card details directly. Self-hosted deployments send code only to the LLM providers the operator configures, never to CodeFerret's own infrastructure.",
+      "Diffs and file contents are sent to Anthropic (Claude) and OpenAI to generate and cross-verify findings, subject to their own data-handling terms. Account data lives in Supabase (Postgres). Billing is processed by Razorpay — Scrutinye never sees or stores your card details directly. Self-hosted deployments send code only to the LLM providers the operator configures, never to Scrutinye's own infrastructure.",
     ],
   },
   {
@@ -30,7 +30,7 @@ const sections: Array<{ title: string; body: string[] }> = [
   {
     title: "5. Your rights",
     body: [
-      "You can access, export, or request deletion of your personal data at any time by contacting privacy@codeferret.dev. Uninstalling the GitHub App or disconnecting Bitbucket stops all further code processing immediately.",
+      "You can access, export, or request deletion of your personal data at any time by contacting privacy@scrutinye.dev. Uninstalling the GitHub App or disconnecting Bitbucket stops all further code processing immediately.",
     ],
   },
   {
@@ -53,14 +53,14 @@ const sections: Array<{ title: string; body: string[] }> = [
   },
   {
     title: "9. Contact",
-    body: ["Questions about this policy: privacy@codeferret.dev"],
+    body: ["Questions about this policy: privacy@scrutinye.dev"],
   },
 ];
 
 export default function Privacy() {
   return (
     <div className="relative overflow-hidden">
-      <Seo title="Privacy Policy — CodeFerret" description="CodeFerret's Privacy Policy — what we collect and how source code is handled." path="/privacy" />
+      <Seo title="Privacy Policy — Scrutinye" description="Scrutinye's Privacy Policy — what we collect and how source code is handled." path="/privacy" />
       <GridTexture />
       <div className="mx-auto max-w-3xl px-6 py-16">
         <Reveal>

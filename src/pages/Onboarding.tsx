@@ -10,7 +10,7 @@ import { Card, EmptyState, LoadingText } from "../components/ui";
 
 const GITHUB_INSTALL_URL =
   (import.meta.env.VITE_GITHUB_APP_INSTALL_URL as string | undefined) ??
-  "https://github.com/apps/codeferret-dev/installations/new";
+  "https://github.com/apps/scrutinye-dev/installations/new";
 
 const presets = [
   {
@@ -103,7 +103,7 @@ export default function Onboarding() {
         <Card className="mt-6 p-6">
           <h2 className="font-display text-sm font-semibold tracking-tight text-zinc-900">1 · Install on your git host</h2>
           <p className="mt-2 text-sm text-zinc-600">
-            CodeFerret needs read access to code and write access to pull requests and checks. Prefer
+            Scrutinye needs read access to code and write access to pull requests and checks. Prefer
             the in-platform bot for automatic PR reviews; use the{" "}
             <Link to="/cli" className="text-blue-600 hover:underline">
               CLI

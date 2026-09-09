@@ -5,7 +5,7 @@ import { useBitbucketConnect, useBitbucketWorkspaces, type BitbucketWorkspaceRow
 import { DEMO_MODE } from "../lib/demo";
 import { Badge, Card, EmptyState, ErrorText, LoadingText, SectionTitle } from "../components/ui";
 
-const FORM_DRAFT_KEY = "codeferret.bitbucketConnectDraft";
+const FORM_DRAFT_KEY = "scrutinye.bitbucketConnectDraft";
 
 interface ConnectDraft {
   workspaceSlug: string;

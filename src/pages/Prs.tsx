@@ -158,7 +158,7 @@ export default function Prs() {
     <div className="flex h-[calc(100dvh-5.5rem)] min-h-0 flex-col gap-3">
       <div className="shrink-0">
         <p className="text-sm text-zinc-600">
-          Every pull request CodeFerret has reviewed, one row per PR, with an advisory 0-100 score from its latest run —
+          Every pull request Scrutinye has reviewed, one row per PR, with an advisory 0-100 score from its latest run —
           not a merge gate, just a quick signal.
         </p>
       </div>

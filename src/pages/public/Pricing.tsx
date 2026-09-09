@@ -114,7 +114,7 @@ export default function Pricing() {
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
       <Seo
-        title="Pricing — CodeFerret"
+        title="Pricing — Scrutinye"
         description="Seat-based pricing for AI code review: Free for public repos, Individual and Team for private repos with rulebook learning, sandbox verification, and analytics."
         path="/pricing"
       />

@@ -61,7 +61,7 @@ function demoPrList(): PrListItem[] {
   });
 }
 
-/** Every pull request CodeFerret has ever seen for the current org, one row each, with the latest run's status and an advisory 0-100 score. */
+/** Every pull request Scrutinye has ever seen for the current org, one row each, with the latest run's status and an advisory 0-100 score. */
 export function usePrs() {
   const { data: org } = useOrg();
   const orgId = org?.id;

@@ -22,8 +22,8 @@ describe("usd", () => {
 });
 
 describe("summaryPreview", () => {
-  it("strips the codeferret:summary HTML comment marker", () => {
-    expect(summaryPreview("<!-- codeferret:summary -->\n### Title\nBody text")).not.toContain("<!--");
+  it("strips the scrutinye:summary HTML comment marker", () => {
+    expect(summaryPreview("<!-- scrutinye:summary -->\n### Title\nBody text")).not.toContain("<!--");
   });
 
   it("strips markdown heading/bold/code syntax", () => {

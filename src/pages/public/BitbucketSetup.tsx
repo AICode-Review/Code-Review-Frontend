@@ -10,12 +10,12 @@ const steps: Array<{ icon: IconName; title: string; body: string }> = [
   {
     icon: "code",
     title: "2. Connect the workspace",
-    body: "In CodeFerret: Settings → Bitbucket accounts (/settings/bitbucket). Enter the workspace slug (from the Bitbucket URL, e.g. aicode_review93), a display name, your Atlassian account email (required for personal API tokens), and paste the token. Slug, name, and email stay filled after save so you can update the token later. Repositories are imported on connect — including private ones.",
+    body: "In Scrutinye: Settings → Bitbucket accounts (/settings/bitbucket). Enter the workspace slug (from the Bitbucket URL, e.g. aicode_review93), a display name, your Atlassian account email (required for personal API tokens), and paste the token. Slug, name, and email stay filled after save so you can update the token later. Repositories are imported on connect — including private ones.",
   },
   {
     icon: "shield",
     title: "3. Add a webhook, per repo",
-    body: "For every repo you want reviewed: that repo's Settings → Webhooks → Add webhook. URL: your CodeFerret backend's public address + /webhooks/bitbucket. Secret: provided by your CodeFerret administrator — this is a shared, app-wide value, not something Bitbucket generates for you. Triggers: Pull Request — Created, Updated, and Comment created.",
+    body: "For every repo you want reviewed: that repo's Settings → Webhooks → Add webhook. URL: your Scrutinye backend's public address + /webhooks/bitbucket. Secret: provided by your Scrutinye administrator — this is a shared, app-wide value, not something Bitbucket generates for you. Triggers: Pull Request — Created, Updated, and Comment created.",
   },
   {
     icon: "scan",

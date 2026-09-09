@@ -13,7 +13,7 @@ function Centered({ children }: { children: ReactNode }) {
         <span className="flex size-9 items-center justify-center rounded-lg bg-teal-600 text-[10px] font-bold text-white shadow-[0_4px_14px_rgba(13,148,136,0.3)]">
           CF
         </span>
-        CodeFerret
+        Scrutinye
       </Link>
       <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-[0_12px_40px_rgba(15,23,42,0.06)]">
         {children}

@@ -17,7 +17,7 @@ const pipeline: Array<{ icon: IconName; title: string; body: string }> = [
   {
     icon: "code",
     title: "Some bugs get reproduced, not just argued about",
-    body: "For findings that claim a concrete runtime failure (Node, Python, JVM), CodeFerret attempts to reproduce the defect in an isolated, no-network sandbox before it ever counts as verified — a real repro beats a confident-sounding argument.",
+    body: "For findings that claim a concrete runtime failure (Node, Python, JVM), Scrutinye attempts to reproduce the defect in an isolated, no-network sandbox before it ever counts as verified — a real repro beats a confident-sounding argument.",
   },
 ];
 
@@ -79,8 +79,8 @@ export default function Features() {
   return (
     <main className="overflow-hidden">
       <Seo
-        title="Features — CodeFerret"
-        description="Specialist review passes, cross-model verification, execution-sandbox repro, a learning rulebook, and budgeted delivery — how CodeFerret turns AI review into signal instead of noise."
+        title="Features — Scrutinye"
+        description="Specialist review passes, cross-model verification, execution-sandbox repro, a learning rulebook, and budgeted delivery — how Scrutinye turns AI review into signal instead of noise."
         path="/features"
       />
 

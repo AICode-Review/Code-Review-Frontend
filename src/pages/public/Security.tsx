@@ -39,8 +39,8 @@ export default function Security() {
   return (
     <div className="relative overflow-hidden">
       <Seo
-        title="Security — CodeFerret"
-        description="How CodeFerret handles your source code: nothing persisted beyond the review, encrypted tokens, and row-level security on every table."
+        title="Security — Scrutinye"
+        description="How Scrutinye handles your source code: nothing persisted beyond the review, encrypted tokens, and row-level security on every table."
         path="/security"
       />
       <GridTexture />
@@ -75,7 +75,7 @@ export default function Security() {
           <p className="text-sm font-semibold text-[var(--mk-ink)]">
             Questions, or a security disclosure?
           </p>
-          <p className="mt-1.5 text-sm text-[var(--mk-muted)]">security@codeferret.dev</p>
+          <p className="mt-1.5 text-sm text-[var(--mk-muted)]">security@scrutinye.dev</p>
           {/* Pricing is temporarily disabled — not deleted, see App.tsx's commented-out route.
           <Link to="/pricing" className="mt-4 inline-flex text-sm font-medium text-[var(--mk-accent)] hover:underline">
             See plans that fit your team →

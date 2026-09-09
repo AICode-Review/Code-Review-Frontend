@@ -40,7 +40,7 @@ export default function SignIn() {
           <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent)] text-[10px] font-bold text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(20,184,166,0.35)]">
             CF
           </span>
-          CodeFerret
+          Scrutinye
         </Link>
         <div className="relative">
           <p className="font-display max-w-sm text-3xl font-semibold leading-snug tracking-tight text-[var(--mk-ink)]">
@@ -67,11 +67,11 @@ export default function SignIn() {
             <span className="flex size-7 items-center justify-center rounded-md bg-teal-600 text-[9px] font-bold text-white">
               CF
             </span>
-            CodeFerret
+            Scrutinye
           </Link>
 
           <h1 className="font-display mt-6 text-2xl font-semibold tracking-tight text-slate-900 lg:mt-0">
-            {DEMO_MODE ? "Explore the demo" : "Sign in to CodeFerret"}
+            {DEMO_MODE ? "Explore the demo" : "Sign in to Scrutinye"}
           </h1>
           <p className="mt-1.5 text-sm leading-6 text-slate-600">
             {DEMO_MODE
@@ -118,7 +118,7 @@ export default function SignIn() {
           <p className="mt-6 text-xs leading-relaxed text-slate-500">
             {DEMO_MODE
               ? "Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in frontend/.env to enable real sign-in."
-              : "This signs you into the CodeFerret dashboard. Automatic PR reviews need the GitHub App installed separately — you'll do that next, from onboarding."}
+              : "This signs you into the Scrutinye dashboard. Automatic PR reviews need the GitHub App installed separately — you'll do that next, from onboarding."}
           </p>
 
           {!DEMO_MODE && (

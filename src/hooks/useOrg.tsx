@@ -13,7 +13,7 @@ export interface Org {
   platform: "github" | "bitbucket" | "demo";
 }
 
-const SELECTED_ORG_KEY = "codeferret.selectedOrgId";
+const SELECTED_ORG_KEY = "scrutinye.selectedOrgId";
 
 function readStoredOrgId(): string | null {
   try {

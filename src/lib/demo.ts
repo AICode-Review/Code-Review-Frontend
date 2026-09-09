@@ -818,7 +818,7 @@ export interface BenchmarkRow {
 
 /** Sample numbers matching DESIGN.md §1 targets — replaced by harness v1 output in Phase B. */
 export const demoBenchmark: BenchmarkRow[] = [
-  { tool: "CodeFerret", catchRatePct: 72, falsePositivesPerRun: 1.4, noisePct: 4.0, medianLatencyMin: 3.8, highlight: true },
+  { tool: "Scrutinye", catchRatePct: 72, falsePositivesPerRun: 1.4, noisePct: 4.0, medianLatencyMin: 3.8, highlight: true },
   { tool: "CodeRabbit", catchRatePct: 44, falsePositivesPerRun: 6.2, noisePct: 15, medianLatencyMin: 4.5, highlight: false },
   { tool: "Greptile", catchRatePct: 51, falsePositivesPerRun: 11, noisePct: 12, medianLatencyMin: 6.1, highlight: false },
   { tool: "Qodo", catchRatePct: 47, falsePositivesPerRun: 5.8, noisePct: 13, medianLatencyMin: 5.2, highlight: false },

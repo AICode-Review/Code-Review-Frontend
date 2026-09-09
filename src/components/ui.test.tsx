@@ -102,7 +102,7 @@ describe("PublicHeader", () => {
         <PublicHeader />
       </MemoryRouter>,
     );
-    expect(screen.getByRole("link", { name: /CodeFerret/ })).toHaveAttribute("href", "/");
+    expect(screen.getByRole("link", { name: /Scrutinye/ })).toHaveAttribute("href", "/");
     expect(screen.getByRole("button", { name: "Features" })).toHaveAttribute("aria-expanded", "false");
     expect(screen.getByRole("link", { name: "Pricing" })).toHaveAttribute("href", "/pricing");
     expect(screen.getByRole("link", { name: "Security" })).toHaveAttribute("href", "/security");

@@ -2,7 +2,7 @@
  * Persist onboarding choices so Finish survives a refresh in demo mode,
  * and so live mode can POST when the backend route exists.
  */
-const KEY = "codeferret.onboarding";
+const KEY = "scrutinye.onboarding";
 
 export interface OnboardingState {
   completed: boolean;

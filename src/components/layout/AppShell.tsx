@@ -4,8 +4,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { useOrg, useOrgs, type Org } from "../../hooks/useOrg";
 import { ErrorBoundary } from "../ErrorBoundary";
 
-const SIDEBAR_KEY = "codeferret.sidebar.collapsed";
-const THEME_KEY = "codeferret.theme";
+const SIDEBAR_KEY = "scrutinye.sidebar.collapsed";
+const THEME_KEY = "scrutinye.theme";
 type Theme = "light" | "dark";
 
 const nav = [
@@ -37,7 +37,7 @@ function pageMeta(pathname: string): { title: string; subtitle?: string } {
   if (pathname === "/settings/bitbucket") {
     return titles["/settings/bitbucket"] ?? { title: "Bitbucket accounts" };
   }
-  return titles[pathname] ?? { title: "CodeFerret" };
+  return titles[pathname] ?? { title: "Scrutinye" };
 }
 
 /** Maps the current route to a module accent used by index.css (data-module). */
@@ -487,12 +487,12 @@ function SidebarBrand({
           <IconMenu />
         </button>
       )}
-      <Link to="/dashboard" className="sidebar-label flex min-w-0 items-center gap-2.5" title="CodeFerret">
+      <Link to="/dashboard" className="sidebar-label flex min-w-0 items-center gap-2.5" title="Scrutinye">
         <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--rt-accent-bg)] text-[10px] font-bold text-[var(--rt-accent-fg)] shadow-[0_4px_12px_color-mix(in_srgb,var(--rt-accent-bg)_35%,transparent)]">
-          CF
+          S
         </span>
         <span className="min-w-0">
-          <span className="font-display block text-sm font-semibold tracking-[-0.02em] text-zinc-950">CodeFerret</span>
+          <span className="font-display block text-sm font-semibold tracking-[-0.02em] text-zinc-950">Scrutinye</span>
           <span className="type-meta mt-0.5 block">AI code review</span>
         </span>
       </Link>

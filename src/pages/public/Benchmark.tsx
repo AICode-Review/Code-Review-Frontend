@@ -36,8 +36,8 @@ export default function Benchmark() {
   return (
     <div className="relative overflow-hidden">
       <Seo
-        title="Benchmark methodology — CodeFerret"
-        description="How CodeFerret measures catch rate and false positives, and the engineering targets we publish instead of unverified customer claims."
+        title="Benchmark methodology — Scrutinye"
+        description="How Scrutinye measures catch rate and false positives, and the engineering targets we publish instead of unverified customer claims."
         path="/benchmark"
       />
       <GridTexture />
@@ -48,7 +48,7 @@ export default function Benchmark() {
             Benchmark methodology
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--mk-muted)]">
-            How we plan to measure whether CodeFerret actually catches real bugs without drowning
+            How we plan to measure whether Scrutinye actually catches real bugs without drowning
             you in noise — published before the results are, so the methodology can be judged on
             its own.
           </p>
@@ -112,7 +112,7 @@ export default function Benchmark() {
           <Link to="/security" className="text-[var(--mk-accent)] hover:underline">
             See our security approach
           </Link>{" "}
-          or reach out at benchmarks@codeferret.dev.
+          or reach out at benchmarks@scrutinye.dev.
         </p>
       </div>
     </div>

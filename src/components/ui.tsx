@@ -166,9 +166,9 @@ export function PublicHeader() {
           onClick={() => setOpen(false)}
         >
           <span className="flex size-12 items-center justify-center rounded-xl bg-[var(--mk-accent)] text-sm font-bold tracking-normal text-white shadow-[0_4px_14px_rgba(57,86,221,0.28)]">
-            CF
+            S
           </span>
-          CodeFerret
+          Scrutinye
         </Link>
         <button
           type="button"

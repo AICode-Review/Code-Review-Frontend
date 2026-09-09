@@ -54,7 +54,7 @@ export function useAuth() {
 
   const user: AuthUser | null = DEMO_MODE
     ? {
-        email: "demo@codeferret.dev",
+        email: "demo@scrutinye.dev",
         name: "Demo User",
         initials: "DU",
         provider: "demo",

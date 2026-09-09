@@ -2,18 +2,18 @@ import { Link } from "react-router-dom";
 import { GridTexture, Icon, type IconName, Reveal, TerminalPanel } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
-const install = `npm install -g @codeferret/cli
+const install = `npm install -g @scrutinye/cli
 # or
-npx @codeferret/cli review`;
+npx @scrutinye/cli review`;
 
 const localReview = `# Review the current branch against main
-codeferret review --base main
+scrutinye review --base main
 
 # Review a specific PR by number (uses gh / bb auth)
-codeferret review --pr 214
+scrutinye review --pr 214
 
 # Output JSON for CI
-codeferret review --base main --format json > findings.json`;
+scrutinye review --base main --format json > findings.json`;
 
 const ciSnippet = `# .github/workflows/review.yml
 name: AI review
@@ -27,9 +27,9 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - run: npx @codeferret/cli review --base origin/\${{ github.base_ref }} --format github
+      - run: npx @scrutinye/cli review --base origin/\${{ github.base_ref }} --format github
         env:
-          CODEFERRET_API_KEY: \${{ secrets.CODEFERRET_API_KEY }}`;
+          SCRUTINYE_API_KEY: \${{ secrets.SCRUTINYE_API_KEY }}`;
 
 const surfaces: Array<{ icon: IconName; title: string; body: string; to?: string }> = [
   { icon: "scan", title: "Web app", body: "Dashboard, rulebook, health, billing", to: "/signin" },
@@ -40,23 +40,23 @@ const surfaces: Array<{ icon: IconName; title: string; body: string; to?: string
 const commands: Array<{ icon: IconName; cmd: string; blurb: string }> = [
   {
     icon: "code",
-    cmd: "codeferret review",
+    cmd: "scrutinye review",
     blurb: "Run the same multi-pass + verification pipeline locally against your working tree or a PR.",
   },
   {
     icon: "scan",
-    cmd: "codeferret review --pr <n>",
+    cmd: "scrutinye review --pr <n>",
     blurb: "Fetch the PR diff from GitHub or Bitbucket using your existing CLI auth (gh / bb).",
   },
   {
     icon: "rulebook",
-    cmd: "codeferret config init",
+    cmd: "scrutinye config init",
     blurb: "Write a starter .review.yml (strictness, budget, ignored paths) into the repo root.",
   },
   {
     icon: "lock",
-    cmd: "codeferret auth login",
-    blurb: "Link the CLI to your CodeFerret org so rulebook + analytics stay in sync with the web app.",
+    cmd: "scrutinye auth login",
+    blurb: "Link the CLI to your Scrutinye org so rulebook + analytics stay in sync with the web app.",
   },
 ];
 
@@ -64,8 +64,8 @@ export default function Cli() {
   return (
     <div className="relative overflow-hidden">
       <Seo
-        title="CLI — CodeFerret"
-        description="Run CodeFerret's same multi-pass, verified review pipeline locally, before you even open a pull request."
+        title="CLI — Scrutinye"
+        description="Run Scrutinye's same multi-pass, verified review pipeline locally, before you even open a pull request."
         path="/cli"
       />
       <GridTexture />
@@ -73,10 +73,10 @@ export default function Cli() {
         <Reveal>
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">CLI</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
-            Same CodeFerret, in your terminal
+            Same Scrutinye, in your terminal
           </h1>
           <p className="mt-3 max-w-2xl text-base leading-7 text-[var(--mk-muted)]">
-            Use CodeFerret as a standalone web app, as a bot inside GitHub &amp; Bitbucket PRs, or as a local
+            Use Scrutinye as a standalone web app, as a bot inside GitHub &amp; Bitbucket PRs, or as a local
             CLI before you open a pull request. One engine, three surfaces — verified findings
             everywhere.
           </p>

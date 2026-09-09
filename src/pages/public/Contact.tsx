@@ -78,8 +78,8 @@ export default function Contact() {
   return (
     <main className="relative flex h-full overflow-hidden">
       <Seo
-        title="Contact us — CodeFerret"
-        description="Questions about CodeFerret, self-hosting, or a higher-volume plan? Send a message and we'll get back to you."
+        title="Contact us — Scrutinye"
+        description="Questions about Scrutinye, self-hosting, or a higher-volume plan? Send a message and we'll get back to you."
         path="/contact"
       />
       <GridTexture />

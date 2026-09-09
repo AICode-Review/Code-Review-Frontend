@@ -40,7 +40,7 @@ const rulebookPoints = [
   "Org-wide or per-repo scope",
 ];
 
-const TERM_COMMAND = "codeferret review --pr 428";
+const TERM_COMMAND = "scrutinye review --pr 428";
 
 const TERM_OUTPUT: Array<{
   text: string;
@@ -129,7 +129,7 @@ function TerminalDemo() {
                 <span className="size-2.5 rounded-full bg-[#3ccf7a]/90" />
               </span>
               <span className="truncate font-mono text-[11px] font-medium text-[#94a3b8]">
-                codeferret — acme/payments-api
+                scrutinye — acme/payments-api
               </span>
               <span className="ml-auto flex shrink-0 items-center gap-1.5 font-mono text-[10px] font-bold uppercase tracking-wide" aria-live="polite">
                 <span
@@ -211,7 +211,7 @@ export default function Landing() {
   return (
     <main className="overflow-x-hidden">
       <Seo
-        title="CodeFerret — AI code review your team can trust"
+        title="Scrutinye — AI code review your team can trust"
         description="Every finding gets cross-examined by a second model before it ever reaches your PR. No noise, no made-up bugs — just signal, verified."
         path="/"
       />
@@ -231,7 +231,7 @@ export default function Landing() {
         <div className="relative z-[1] mx-auto grid max-w-6xl items-center gap-8 px-5 py-10 sm:px-6 sm:py-12 lg:grid-cols-[0.95fr_1.15fr] lg:gap-10 lg:py-14">
           <div className="landing-hero-copy lg:pr-2">
             <p className="landing-brand font-display text-[clamp(2.5rem,7vw,4.25rem)] font-bold leading-[0.92] tracking-tight">
-              CodeFerret
+              Scrutinye
             </p>
             <h1 className="mk-text-headline mt-4 max-w-md text-balance text-lg font-semibold leading-snug tracking-tight sm:text-xl lg:text-[1.35rem]">
               AI code review with a skeptic built in —{" "}
@@ -301,7 +301,7 @@ export default function Landing() {
               </h2>
               <p className="mt-3 max-w-sm text-sm font-medium leading-6 text-[var(--mk-body)]">
                 Most AI review ships volume.{" "}
-                <span className="font-semibold text-[var(--mk-accent)]">CodeFerret ships survivors.</span>
+                <span className="font-semibold text-[var(--mk-accent)]">Scrutinye ships survivors.</span>
               </p>
             </div>
             <p className="hidden text-right text-xs font-medium text-[var(--mk-faint)] lg:block">
