@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useRuns } from "../features/runs/useRuns";
 import { useAnalytics } from "../features/analytics/useAnalytics";
 import { useRepos } from "../features/repos/useRepos";
+import { useSlowLoad } from "../hooks/useSlowLoad";
 import { Card, EmptyState, ErrorText, LoadingText } from "../components/ui";
 import {
   AreaTrendChart,
@@ -142,6 +143,7 @@ export default function Dashboard() {
   const { data: runs, isLoading, error } = useRuns();
   const { data: repos } = useRepos();
   const { data: analytics, isLoading: analyticsLoading } = useAnalytics();
+  const slowLoad = useSlowLoad(isLoading);
 
   const weekly = analytics?.weekly ?? [];
   const categories = analytics?.categories ?? [];
@@ -255,7 +257,13 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {isLoading && <LoadingText>Loading analytics…</LoadingText>}
+      {isLoading && (
+        <LoadingText>
+          {slowLoad
+            ? "Waking up the server… the backend goes to sleep when idle, this can take up to a minute on the first load."
+            : "Loading analytics…"}
+        </LoadingText>
+      )}
       {error && <ErrorText>Failed to load runs: {(error as Error).message}</ErrorText>}
 
       {!analyticsLoading && analytics?.source === "plan_required" && (

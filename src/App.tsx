@@ -1,4 +1,4 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
@@ -6,6 +6,7 @@ import { OrgProvider } from "./hooks/useOrg";
 import { PublicHeader } from "./components/ui";
 import { AppShell } from "./components/layout/AppShell";
 import { ErrorBoundary } from "./components/ErrorBoundary";
+import { trackVisit } from "./lib/tracking";
 
 // Route-level code splitting — each page becomes its own chunk, fetched on
 // navigation instead of all bundled into one ~1.1MB entry file.
@@ -45,6 +46,11 @@ const queryClient = new QueryClient({
 
 function PublicLayout() {
   const location = useLocation();
+
+  useEffect(() => {
+    trackVisit(location.pathname);
+  }, [location.pathname]);
+
   return (
     <div className="marketing-shell">
       <PublicHeader />
@@ -54,7 +60,7 @@ function PublicLayout() {
       <footer className="border-t border-[var(--mk-border)] bg-gradient-to-b from-[#eef3ff] to-[#e4ecff]">
         <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 text-sm text-[var(--mk-faint)] sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <p className="font-display text-base font-semibold text-[var(--mk-ink)]">CodeFerret</p>
+            <p className="font-display text-base font-semibold text-[var(--mk-ink)]">Scrutinye</p>
             <p className="mt-1 text-xs">© 2026 · Web app · PR bot · CLI · GitHub · Bitbucket</p>
           </div>
           <nav className="flex flex-wrap gap-5 text-sm font-medium">
