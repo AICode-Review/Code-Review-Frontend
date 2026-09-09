@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
 import { Icon, type IconName } from "./retro";
+import { LogoMark } from "./LogoMark";
 
 function MenuIcon({ open }: { open: boolean }) {
   return (
@@ -165,8 +166,8 @@ export function PublicHeader() {
           className="font-display inline-flex items-center gap-3 text-2xl font-bold tracking-tight text-[var(--mk-ink)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--mk-accent)]"
           onClick={() => setOpen(false)}
         >
-          <span className="flex size-12 items-center justify-center rounded-xl bg-[var(--mk-accent)] text-sm font-bold tracking-normal text-white shadow-[0_4px_14px_rgba(57,86,221,0.28)]">
-            S
+          <span className="flex size-12 items-center justify-center rounded-xl bg-[var(--mk-accent)] text-white shadow-[0_4px_14px_rgba(57,86,221,0.28)]">
+            <LogoMark className="size-6" />
           </span>
           Scrutinye
         </Link>

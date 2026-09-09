@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { useOrg, useOrgs, type Org } from "../../hooks/useOrg";
 import { ErrorBoundary } from "../ErrorBoundary";
+import { LogoMark } from "../LogoMark";
 
 const SIDEBAR_KEY = "scrutinye.sidebar.collapsed";
 const THEME_KEY = "scrutinye.theme";
@@ -488,8 +489,8 @@ function SidebarBrand({
         </button>
       )}
       <Link to="/dashboard" className="sidebar-label flex min-w-0 items-center gap-2.5" title="Scrutinye">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--rt-accent-bg)] text-[10px] font-bold text-[var(--rt-accent-fg)] shadow-[0_4px_12px_color-mix(in_srgb,var(--rt-accent-bg)_35%,transparent)]">
-          S
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--rt-accent-bg)] text-[var(--rt-accent-fg)] shadow-[0_4px_12px_color-mix(in_srgb,var(--rt-accent-bg)_35%,transparent)]">
+          <LogoMark className="size-4" />
         </span>
         <span className="min-w-0">
           <span className="font-display block text-sm font-semibold tracking-[-0.02em] text-zinc-950">Scrutinye</span>
