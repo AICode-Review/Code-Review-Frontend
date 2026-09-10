@@ -5,19 +5,20 @@ import { setPostSigninRedirect } from "../../lib/postSigninRedirect";
 
 type Currency = "USD" | "INR";
 
-// Display-only approximation for browsing convenience — checkout itself always runs
-// through Razorpay in whatever fixed currency each Plan was created with (see
-// RAZORPAY_PLAN_PRO/TEAM in the backend env), so this is never presented as a real
-// INR charge amount here.
-const USD_TO_INR = 83;
+// priceInr is the real, fixed amount each Razorpay Plan (RAZORPAY_PLAN_PRO/TEAM in the
+// backend env) actually charges — India-only launch, international payments not yet
+// enabled on the account. priceUsd is a display-only approximation for browsing
+// convenience (same ~83 INR/USD rate used to derive it) and is never what checkout
+// actually bills, so it's always shown with a "≈" prefix and a note saying so.
+const INR_TO_USD = 83;
 
-function formatInr(usd: number): string {
-  return `₹${Math.round((usd * USD_TO_INR) / 5) * 5}`;
+function formatUsdApprox(inr: number): string {
+  return `$${Math.round(inr / INR_TO_USD)}`;
 }
 
 interface Tier {
   name: string;
-  priceUsd: number;
+  priceInr: number;
   unit: string;
   quota: string;
   features: string[];
@@ -33,7 +34,7 @@ interface Tier {
 const tiers: Tier[] = [
   {
     name: "Free",
-    priceUsd: 0,
+    priceInr: 0,
     unit: "public repos",
     quota: "25 AI reviews / month",
     features: [
@@ -51,7 +52,7 @@ const tiers: Tier[] = [
   },
   {
     name: "Individual",
-    priceUsd: 19,
+    priceInr: 1575,
     unit: "per seat / month",
     quota: "50 AI reviews / seat / month",
     features: [
@@ -73,7 +74,7 @@ const tiers: Tier[] = [
   },
   {
     name: "Team",
-    priceUsd: 35,
+    priceInr: 2905,
     unit: "per seat / month",
     quota: "90 AI reviews / seat / month",
     features: [
@@ -117,7 +118,7 @@ function CurrencyToggle({ currency, onChange }: { currency: Currency; onChange: 
 }
 
 export default function Pricing() {
-  const [currency, setCurrency] = useState<Currency>("USD");
+  const [currency, setCurrency] = useState<Currency>("INR");
 
   return (
     <div className="mx-auto max-w-5xl px-6 py-16">
@@ -134,8 +135,8 @@ export default function Pricing() {
 
       <div className="mt-6 flex flex-col items-center gap-1.5">
         <CurrencyToggle currency={currency} onChange={setCurrency} />
-        {currency === "INR" && (
-          <p className="text-[11px] text-[var(--mk-faint)]">Approximate — checkout is always billed in USD</p>
+        {currency === "USD" && (
+          <p className="text-[11px] text-[var(--mk-faint)]">Approximate — checkout is always billed in INR</p>
         )}
       </div>
 
@@ -156,13 +157,13 @@ export default function Pricing() {
             )}
             <h2 className="text-sm font-semibold text-[var(--mk-ink)]">{tier.name}</h2>
             <p className="mt-3 font-display text-3xl font-bold tabular-nums text-[var(--mk-ink)]">
-              {tier.priceUsd === 0
-                ? currency === "USD"
-                  ? "$0"
-                  : "₹0"
-                : currency === "USD"
-                  ? `$${tier.priceUsd}`
-                  : `≈${formatInr(tier.priceUsd)}`}
+              {tier.priceInr === 0
+                ? currency === "INR"
+                  ? "₹0"
+                  : "$0"
+                : currency === "INR"
+                  ? `₹${tier.priceInr}`
+                  : `≈${formatUsdApprox(tier.priceInr)}`}
             </p>
             <p className="text-xs text-[var(--mk-faint)]">{tier.unit}</p>
             <p className="mt-2 rounded-lg border border-[var(--mk-accent)]/25 bg-[var(--mk-accent-soft)] px-2.5 py-1.5 text-[11px] font-medium text-[var(--mk-accent)]">
