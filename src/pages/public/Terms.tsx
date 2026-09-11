@@ -65,7 +65,9 @@ const sections: Array<{ title: string; body: string[] }> = [
   },
   {
     title: "11. Contact",
-    body: ["Questions about these Terms: legal@scrutinye.dev"],
+    body: [
+      "Questions about these Terms: use our Contact page (scrutinye.dev/contact) and select \"Legal & privacy\" as the reason — it reaches the same team and is the fastest way to get a reply.",
+    ],
   },
 ];
 

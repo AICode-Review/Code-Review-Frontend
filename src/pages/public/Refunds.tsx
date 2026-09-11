@@ -35,7 +35,9 @@ const sections: Array<{ title: string; body: string[] }> = [
   },
   {
     title: "6. Contact",
-    body: ["Questions about a charge, a cancellation, or a refund request: billing@scrutinye.dev"],
+    body: [
+      "Questions about a charge, a cancellation, or a refund request: use our Contact page (scrutinye.dev/contact) and select \"Plans & billing\" as the reason — it reaches the same team and is the fastest way to get a reply.",
+    ],
   },
 ];
 

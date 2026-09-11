@@ -56,11 +56,15 @@ export const onboardingFinishSchema = z.object({
   preset: z.enum(["chill", "standard", "strict"]),
 });
 
+export const contactReasonSchema = z.enum(["general", "billing", "legal", "enterprise", "bug"]);
+export type ContactReason = z.infer<typeof contactReasonSchema>;
+
 /** Mirrors backend/src/routes/contact.ts's ContactSchema — kept in sync by hand (frontend/backend share no code). */
 export const contactFormSchema = z.object({
   name: z.string().trim().min(1, "Enter your name").max(200),
   email: z.string().trim().email("Enter a valid email").max(320),
   message: z.string().trim().min(1, "Enter a message").max(5000),
+  reason: contactReasonSchema.default("general"),
 });
 
 export type AnalyticsPayload = z.infer<typeof analyticsSchema>;

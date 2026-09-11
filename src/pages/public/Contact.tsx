@@ -1,23 +1,35 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { apiUrl } from "../../lib/api";
 import { DEMO_MODE } from "../../lib/demo";
-import { contactFormSchema } from "../../lib/schemas";
+import { contactFormSchema, contactReasonSchema, type ContactReason } from "../../lib/schemas";
 import { CornerBrackets, GridTexture, Icon, Reveal, type IconName } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
 type Status = "idle" | "submitting" | "sent" | "error";
 
-const reasons: Array<{ icon: IconName; title: string }> = [
-  { icon: "shield", title: "Self-hosted or enterprise" },
-  { icon: "budget", title: "Plans & billing" },
-  { icon: "code", title: "Bugs & feedback" },
+const reasons: Array<{ icon: IconName; title: string; reason: ContactReason }> = [
+  { icon: "shield", title: "Self-hosted or enterprise", reason: "enterprise" },
+  { icon: "budget", title: "Plans & billing", reason: "billing" },
+  { icon: "lock", title: "Legal & privacy", reason: "legal" },
+  { icon: "code", title: "Bugs & feedback", reason: "bug" },
 ];
 
+const reasonLabels: Record<ContactReason, string> = {
+  general: "General question",
+  billing: "Plans & billing",
+  legal: "Legal & privacy",
+  enterprise: "Self-hosted or enterprise",
+  bug: "Bugs & feedback",
+};
+
 export default function Contact() {
+  const [searchParams] = useSearchParams();
+  const initialReason = contactReasonSchema.safeParse(searchParams.get("reason"));
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
+  const [reason, setReason] = useState<ContactReason>(initialReason.success ? initialReason.data : "general");
   const [website, setWebsite] = useState(""); // honeypot — left blank by real visitors
   const [status, setStatus] = useState<Status>("idle");
   const [error, setError] = useState<string | null>(null);
@@ -34,7 +46,7 @@ export default function Contact() {
     e.preventDefault();
     setError(null);
 
-    const parsed = contactFormSchema.safeParse({ name, email, message });
+    const parsed = contactFormSchema.safeParse({ name, email, message, reason });
     if (!parsed.success) {
       setError(parsed.error.issues[0]?.message ?? "Check the form and try again.");
       return;
@@ -108,11 +120,20 @@ export default function Contact() {
               </p>
               <ul className="mt-3 space-y-2.5">
                 {reasons.map((r) => (
-                  <li key={r.title} className="flex items-center gap-2.5">
-                    <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
-                      <Icon name={r.icon} />
-                    </span>
-                    <span className="text-sm font-medium text-[var(--mk-ink)]">{r.title}</span>
+                  <li key={r.title}>
+                    <button
+                      type="button"
+                      onClick={() => setReason(r.reason)}
+                      aria-pressed={reason === r.reason}
+                      className={`flex w-full items-center gap-2.5 rounded-lg px-1.5 py-1 text-left transition ${
+                        reason === r.reason ? "bg-[var(--mk-accent-soft)]" : "hover:bg-[var(--mk-bg)]"
+                      }`}
+                    >
+                      <span className="flex size-7 shrink-0 items-center justify-center rounded-md bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
+                        <Icon name={r.icon} />
+                      </span>
+                      <span className="text-sm font-medium text-[var(--mk-ink)]">{r.title}</span>
+                    </button>
                   </li>
                 ))}
               </ul>
@@ -202,6 +223,21 @@ export default function Contact() {
                       />
                     </label>
                   </div>
+
+                  <label className="block">
+                    <span className="mb-1 block text-xs font-medium text-[var(--mk-muted)]">Reason</span>
+                    <select
+                      value={reason}
+                      onChange={(e) => setReason(e.target.value as ContactReason)}
+                      className={inputClass}
+                    >
+                      {Object.entries(reasonLabels).map(([value, label]) => (
+                        <option key={value} value={value}>
+                          {label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
 
                   <label className="block">
                     <span className="mb-1 block text-xs font-medium text-[var(--mk-muted)]">Message</span>
