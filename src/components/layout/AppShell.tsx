@@ -4,6 +4,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { useOrg, useOrgs, type Org } from "../../hooks/useOrg";
 import { ErrorBoundary } from "../ErrorBoundary";
 import { LogoMark } from "../LogoMark";
+import { DEMO_MODE } from "../../lib/demo";
+import "./AppTheme.css";
 
 const SIDEBAR_KEY = "scrutinye.sidebar.collapsed";
 const THEME_KEY = "scrutinye.theme";
@@ -19,21 +21,49 @@ const nav = [
 ] as const;
 
 const titles: Record<string, { title: string; subtitle?: string }> = {
-  "/dashboard": { title: "Dashboard", subtitle: "Review health and recent activity" },
-  "/repos": { title: "Repositories", subtitle: "Connected repos and review config" },
-  "/prs": { title: "Pull Requests", subtitle: "Every PR reviewed, with an advisory score" },
-  "/reviews": { title: "Code Review", subtitle: "Automatic on PR · manual run from an open review" },
-  "/rulebook": { title: "Rulebook", subtitle: "Team standards learned from feedback" },
-  "/settings": { title: "Settings", subtitle: "Account, billing, members, and audit" },
-  "/settings/bitbucket": { title: "Bitbucket accounts", subtitle: "Connect and manage Bitbucket workspaces" },
+  "/dashboard": {
+    title: "Dashboard",
+    subtitle: "Review health and recent activity",
+  },
+  "/repos": {
+    title: "Repositories",
+    subtitle: "Connected repos and review config",
+  },
+  "/prs": {
+    title: "Pull Requests",
+    subtitle: "Every PR reviewed, with an advisory score",
+  },
+  "/reviews": {
+    title: "Code Review",
+    subtitle: "Automatic on PR · manual run from an open review",
+  },
+  "/rulebook": {
+    title: "Rulebook",
+    subtitle: "Team standards learned from feedback",
+  },
+  "/settings": {
+    title: "Settings",
+    subtitle: "Account, billing, members, and audit",
+  },
+  "/settings/bitbucket": {
+    title: "Bitbucket accounts",
+    subtitle: "Connect and manage Bitbucket workspaces",
+  },
   "/profile": { title: "Profile", subtitle: "Your account and preferences" },
-  "/onboarding": { title: "Onboarding", subtitle: "Get your first review in under 3 minutes" },
+  "/onboarding": {
+    title: "Onboarding",
+    subtitle: "Get your first review in under 3 minutes",
+  },
 };
 
 function pageMeta(pathname: string): { title: string; subtitle?: string } {
-  if (pathname.startsWith("/repos/")) return { title: "Repository", subtitle: "Config, health, and runs" };
+  if (pathname.startsWith("/repos/"))
+    return { title: "Repository", subtitle: "Config, health, and runs" };
   if (pathname.startsWith("/runs/") || pathname.startsWith("/reviews/")) {
-    return { title: "Code Review", subtitle: "Comments, suggestions, and verification" };
+    return {
+      title: "Code Review",
+      subtitle: "Comments, suggestions, and verification",
+    };
   }
   if (pathname === "/settings/bitbucket") {
     return titles["/settings/bitbucket"] ?? { title: "Bitbucket accounts" };
@@ -45,9 +75,14 @@ function pageMeta(pathname: string): { title: string; subtitle?: string } {
 function pageModule(pathname: string): string {
   if (pathname.startsWith("/repos")) return "repos";
   if (pathname.startsWith("/prs")) return "prs";
-  if (pathname.startsWith("/reviews") || pathname.startsWith("/runs")) return "reviews";
+  if (pathname.startsWith("/reviews") || pathname.startsWith("/runs"))
+    return "reviews";
   if (pathname.startsWith("/rulebook")) return "rulebook";
-  if (pathname.startsWith("/settings") || pathname.startsWith("/profile") || pathname.startsWith("/onboarding")) {
+  if (
+    pathname.startsWith("/settings") ||
+    pathname.startsWith("/profile") ||
+    pathname.startsWith("/onboarding")
+  ) {
     return "settings";
   }
   return "dashboard";
@@ -56,12 +91,18 @@ function pageModule(pathname: string): string {
 /** Which sidebar item should light up for a given path (covers nested routes like /runs/:id). */
 function isNavActive(pathname: string, to: string): boolean {
   if (to === "/dashboard") return pathname === "/dashboard" || pathname === "/";
-  if (to === "/repos") return pathname === "/repos" || pathname.startsWith("/repos/");
+  if (to === "/repos")
+    return pathname === "/repos" || pathname.startsWith("/repos/");
   if (to === "/prs") return pathname === "/prs" || pathname.startsWith("/prs/");
   if (to === "/reviews") {
-    return pathname === "/reviews" || pathname.startsWith("/reviews/") || pathname.startsWith("/runs/");
+    return (
+      pathname === "/reviews" ||
+      pathname.startsWith("/reviews/") ||
+      pathname.startsWith("/runs/")
+    );
   }
-  if (to === "/rulebook") return pathname === "/rulebook" || pathname.startsWith("/rulebook/");
+  if (to === "/rulebook")
+    return pathname === "/rulebook" || pathname.startsWith("/rulebook/");
   if (to === "/settings") {
     return (
       pathname === "/settings" ||
@@ -91,7 +132,14 @@ function readTheme(): Theme {
 
 function IconSun({ className }: { className?: string }) {
   return (
-    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden
+    >
       <circle cx="8" cy="8" r="3" stroke="currentColor" strokeWidth="1.4" />
       <path
         d="M8 1.5v1.4M8 13.1v1.4M14.5 8h-1.4M2.9 8H1.5M12.5 3.5l-1 1M4.5 11.5l-1 1M12.5 12.5l-1-1M4.5 4.5l-1-1"
@@ -105,7 +153,14 @@ function IconSun({ className }: { className?: string }) {
 
 function IconMoon({ className }: { className?: string }) {
   return (
-    <svg className={className} width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="16"
+      height="16"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden
+    >
       <path
         d="M13.5 9.7A5.8 5.8 0 0 1 6.3 2.5a5.8 5.8 0 1 0 7.2 7.2Z"
         stroke="currentColor"
@@ -118,56 +173,138 @@ function IconMoon({ className }: { className?: string }) {
 
 function IconDashboard({ className }: { className?: string }) {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-      <rect x="2" y="2" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
-      <rect x="10" y="2" width="6" height="4" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
-      <rect x="10" y="8" width="6" height="8" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
-      <rect x="2" y="10" width="6" height="6" rx="1.5" stroke="currentColor" strokeWidth="1.4" />
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden
+    >
+      <rect
+        x="2"
+        y="2"
+        width="6"
+        height="6"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <rect
+        x="10"
+        y="2"
+        width="6"
+        height="4"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <rect
+        x="10"
+        y="8"
+        width="6"
+        height="8"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <rect
+        x="2"
+        y="10"
+        width="6"
+        height="6"
+        rx="1.5"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
     </svg>
   );
 }
 
 function IconRepos({ className }: { className?: string }) {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden
+    >
       <path
         d="M6 3.5h8.5A1.5 1.5 0 0 1 16 5v9.5A1.5 1.5 0 0 1 14.5 16H6A1.5 1.5 0 0 1 4.5 14.5V5A1.5 1.5 0 0 1 6 3.5Z"
         stroke="currentColor"
         strokeWidth="1.4"
       />
-      <path d="M4.5 6.5H3A1 1 0 0 0 2 7.5v7A1.5 1.5 0 0 0 3.5 16H6" stroke="currentColor" strokeWidth="1.4" />
+      <path
+        d="M4.5 6.5H3A1 1 0 0 0 2 7.5v7A1.5 1.5 0 0 0 3.5 16H6"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
     </svg>
   );
 }
 
 function IconPrs({ className }: { className?: string }) {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden
+    >
       <circle cx="5" cy="4" r="1.8" stroke="currentColor" strokeWidth="1.4" />
       <circle cx="5" cy="14" r="1.8" stroke="currentColor" strokeWidth="1.4" />
       <circle cx="13" cy="14" r="1.8" stroke="currentColor" strokeWidth="1.4" />
-      <path d="M5 5.8V12.2M13 12.2V8.5A3.5 3.5 0 0 0 9.5 5H8" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+      <path
+        d="M5 5.8V12.2M13 12.2V8.5A3.5 3.5 0 0 0 9.5 5H8"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
 
 function IconReviews({ className }: { className?: string }) {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden
+    >
       <path
         d="M3.5 4.5h11M3.5 9h8M3.5 13.5h5"
         stroke="currentColor"
         strokeWidth="1.4"
         strokeLinecap="round"
       />
-      <path d="M13 11.5l1.5 1.5L17 10" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round" />
+      <path
+        d="M13 11.5l1.5 1.5L17 10"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </svg>
   );
 }
 
 function IconRulebook({ className }: { className?: string }) {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden
+    >
       <path
         d="M4 3.5h8.5A1.5 1.5 0 0 1 14 5v10.5L9.5 13 5 15.5V5A1.5 1.5 0 0 1 6.5 3.5"
         stroke="currentColor"
@@ -180,7 +317,14 @@ function IconRulebook({ className }: { className?: string }) {
 
 function IconSettings({ className }: { className?: string }) {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden
+    >
       <circle cx="9" cy="9" r="2.2" stroke="currentColor" strokeWidth="1.4" />
       <path
         d="M9 2.5v1.8M9 13.7v1.8M2.5 9h1.8M13.7 9h1.8M4.2 4.2l1.3 1.3M12.5 12.5l1.3 1.3M13.8 4.2l-1.3 1.3M5.5 12.5l-1.3 1.3"
@@ -194,8 +338,20 @@ function IconSettings({ className }: { className?: string }) {
 
 function IconMenu({ className }: { className?: string }) {
   return (
-    <svg className={className} width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-      <path d="M3 4.5h12M3 9h12M3 13.5h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+    <svg
+      className={className}
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      aria-hidden
+    >
+      <path
+        d="M3 4.5h12M3 9h12M3 13.5h12"
+        stroke="currentColor"
+        strokeWidth="1.4"
+        strokeLinecap="round"
+      />
     </svg>
   );
 }
@@ -210,7 +366,10 @@ function SidebarNav({
   const { pathname } = useLocation();
 
   return (
-    <nav className="flex flex-1 flex-col gap-0.5 px-2 py-3" aria-label="Main">
+    <nav
+      className="studio-nav flex flex-1 flex-col gap-0.5 px-2 py-3"
+      aria-label="Main"
+    >
       <p className="sidebar-section-label type-label px-2.5">Workspace</p>
       {nav.map((item) => {
         const active = isNavActive(pathname, item.to);
@@ -222,13 +381,15 @@ function SidebarNav({
             onClick={onNavigate}
             title={collapsed ? item.label : undefined}
             aria-current={active ? "page" : undefined}
-            className={`nav-item relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-[background-color,color,box-shadow] ${
+            className={`nav-item ${item.to === "/settings" ? "studio-nav-settings" : ""} relative flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-[background-color,color,box-shadow] ${
               active
                 ? "nav-active font-semibold"
                 : "text-zinc-600 hover:bg-zinc-100/80 hover:text-zinc-950"
             }`}
           >
-            <item.icon className={`size-[18px] shrink-0 ${active ? "opacity-100" : "opacity-70"}`} />
+            <item.icon
+              className={`size-[18px] shrink-0 ${active ? "opacity-100" : "opacity-70"}`}
+            />
             <span className="sidebar-label tracking-wide">{item.label}</span>
           </NavLink>
         );
@@ -254,20 +415,25 @@ function ProfileMenu() {
   const name = user?.name ?? "User";
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="studio-profile relative" ref={ref}>
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
         className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 py-1 pl-1 pr-2.5 text-left hover:border-zinc-300"
         aria-expanded={open}
         aria-haspopup="menu"
+        aria-label="Open profile menu"
       >
         <span className="flex h-8 w-8 items-center justify-center rounded-md bg-blue-50 text-xs font-semibold text-blue-700 ring-1 ring-blue-100">
           {initials}
         </span>
         <span className="hidden min-w-0 sm:block">
-          <span className="block truncate text-xs font-medium text-zinc-900">{name}</span>
-          <span className="block truncate text-[11px] text-zinc-500">{user?.email}</span>
+          <span className="block truncate text-xs font-medium text-zinc-900">
+            {name}
+          </span>
+          <span className="block truncate text-[11px] text-zinc-500">
+            {user?.email}
+          </span>
         </span>
       </button>
       {open && (
@@ -341,9 +507,12 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
   const ref = useRef<HTMLDivElement>(null);
 
   const multi = orgs.length > 1;
-  const kindLabel = org?.kind === "individual" ? "Personal" : (org?.plan ?? "Free");
+  const kindLabel =
+    org?.kind === "individual" ? "Personal" : (org?.plan ?? "Free");
   const platform = platformLabel(org?.platform);
-  const fullTitle = [org?.name, platform, kindLabel].filter(Boolean).join(" · ");
+  const fullTitle = [org?.name, platform, kindLabel]
+    .filter(Boolean)
+    .join(" · ");
 
   useEffect(() => {
     function onDoc(e: MouseEvent) {
@@ -368,11 +537,13 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
   }
 
   return (
-    <div className="relative" ref={ref}>
+    <div className="studio-org relative" ref={ref}>
+      <p className="studio-org-label">Current workspace</p>
       <button
         type="button"
         onClick={() => multi && setOpen((v) => !v)}
         disabled={!multi}
+        aria-label={`Current workspace: ${org?.name || "Workspace"}`}
         aria-expanded={multi ? open : undefined}
         aria-haspopup={multi ? "listbox" : undefined}
         className={`flex w-full items-center gap-3 rounded-xl border border-zinc-200/90 bg-zinc-50 px-2.5 py-2.5 text-left transition ${
@@ -407,7 +578,13 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
             fill="none"
             aria-hidden
           >
-            <path d="M4 6l4 4 4-4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path
+              d="M4 6l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
           </svg>
         )}
       </button>
@@ -424,7 +601,8 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
           {orgs.map((o) => {
             const active = o.id === selectedOrgId;
             const oPlatform = platformLabel(o.platform);
-            const oKind = o.kind === "individual" ? "Personal" : (o.plan ?? "Free");
+            const oKind =
+              o.kind === "individual" ? "Personal" : (o.plan ?? "Free");
             return (
               <button
                 key={o.id}
@@ -449,14 +627,27 @@ function OrgSwitcher({ collapsed }: { collapsed?: boolean }) {
                   {orgInitials(o.name)}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-medium text-zinc-900">{o.name}</span>
+                  <span className="block truncate text-sm font-medium text-zinc-900">
+                    {o.name}
+                  </span>
                   <span className="mt-0.5 block truncate text-[11px] text-zinc-500">
                     {[oPlatform, oKind].filter(Boolean).join(" · ")}
                   </span>
                 </span>
                 {active && (
-                  <svg className="size-4 shrink-0 text-blue-600" viewBox="0 0 16 16" fill="none" aria-hidden>
-                    <path d="m3.5 8.5 3 3 6-7" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" />
+                  <svg
+                    className="size-4 shrink-0 text-blue-600"
+                    viewBox="0 0 16 16"
+                    fill="none"
+                    aria-hidden
+                  >
+                    <path
+                      d="m3.5 8.5 3 3 6-7"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 )}
               </button>
@@ -476,27 +667,28 @@ function SidebarBrand({
   onToggle?: () => void;
 }) {
   return (
-    <div className="flex items-center gap-1 px-2 py-3">
+    <div className="studio-brand-row">
+      <Link
+        to="/dashboard"
+        className="studio-brand-link"
+        aria-label="Scrutinye dashboard"
+      >
+        <span className="studio-brand-mark">
+          <LogoMark />
+        </span>
+        <span className="sidebar-label studio-brand-name">scrutinye</span>
+      </Link>
       {onToggle && (
         <button
           type="button"
           onClick={onToggle}
-          className="shrink-0 rounded-lg p-2 text-zinc-600 transition-[background-color,color] hover:bg-zinc-100 hover:text-zinc-900"
+          className="studio-collapse"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
           title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >
           <IconMenu />
         </button>
       )}
-      <Link to="/dashboard" className="sidebar-label flex min-w-0 items-center gap-2.5" title="Scrutinye">
-        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[var(--rt-accent-bg)] text-[var(--rt-accent-fg)] shadow-[0_4px_12px_color-mix(in_srgb,var(--rt-accent-bg)_35%,transparent)]">
-          <LogoMark className="size-4" />
-        </span>
-        <span className="min-w-0">
-          <span className="font-display block text-sm font-semibold tracking-[-0.02em] text-zinc-950">Scrutinye</span>
-          <span className="type-meta mt-0.5 block">AI code review</span>
-        </span>
-      </Link>
     </div>
   );
 }
@@ -504,6 +696,8 @@ function SidebarBrand({
 export function AppShell() {
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const drawerRef = useRef<HTMLElement>(null);
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
   const [collapsed, setCollapsed] = useState(readCollapsed);
   const [theme, setTheme] = useState<Theme>(readTheme);
   const meta = pageMeta(location.pathname);
@@ -529,6 +723,38 @@ export function AppShell() {
     }
   }, [theme]);
 
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const drawer = drawerRef.current;
+    const focusables = () =>
+      Array.from(
+        drawer?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), select:not([disabled]), [tabindex="0"]',
+        ) ?? [],
+      );
+    focusables()[0]?.focus();
+    const handleKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMobileOpen(false);
+        mobileTriggerRef.current?.focus();
+      }
+      if (event.key === "Tab") {
+        const elements = focusables();
+        const first = elements[0];
+        const last = elements.at(-1);
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last?.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first?.focus();
+        }
+      }
+    };
+    document.addEventListener("keydown", handleKey);
+    return () => document.removeEventListener("keydown", handleKey);
+  }, [mobileOpen]);
+
   function toggleCollapsed() {
     setCollapsed((v) => !v);
   }
@@ -538,7 +764,11 @@ export function AppShell() {
   }
 
   return (
-    <div className="app-shell flex h-dvh flex-col overflow-hidden" data-theme={theme} data-module={module}>
+    <div
+      className="app-shell studio-app flex h-dvh flex-col overflow-hidden"
+      data-theme={theme}
+      data-module={module}
+    >
       <div className="flex min-h-0 flex-1 overflow-hidden">
         {/* Desktop sidebar */}
         <aside
@@ -551,8 +781,14 @@ export function AppShell() {
           <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain overflow-x-hidden">
             <SidebarNav collapsed={collapsed} />
           </div>
-          <div className="shrink-0 border-t border-zinc-200/80 p-2.5">
+          <div className="studio-org-slot">
             <OrgSwitcher collapsed={collapsed} />
+          </div>
+          <div className="studio-sidebar-bottom">
+            <Link to="/contact" title="Help & support">
+              <span aria-hidden="true">?</span>
+              <span className="sidebar-label">Help & support</span>
+            </Link>
           </div>
         </aside>
 
@@ -561,11 +797,17 @@ export function AppShell() {
           <div className="fixed inset-0 z-50 lg:hidden">
             <button
               type="button"
-              className="absolute inset-0 bg-zinc-900/30"
+              className="studio-drawer-backdrop absolute inset-0"
               aria-label="Close sidebar"
               onClick={() => setMobileOpen(false)}
             />
-            <aside className="absolute left-0 top-0 flex h-full w-64 flex-col overflow-hidden border-r border-zinc-200 bg-zinc-50 shadow-xl">
+            <aside
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Workspace navigation"
+              className="studio-drawer absolute left-0 top-0 flex h-full w-64 flex-col overflow-hidden border-r border-zinc-200 bg-zinc-50 shadow-xl"
+            >
               <div className="flex shrink-0 items-center justify-between pr-2">
                 <SidebarBrand />
                 <button
@@ -574,38 +816,66 @@ export function AppShell() {
                   className="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
                   aria-label="Close"
                 >
-                  <svg viewBox="0 0 18 18" fill="none" className="size-4" aria-hidden="true">
-                    <path d="m4 4 10 10M14 4 4 14" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+                  <svg
+                    viewBox="0 0 18 18"
+                    fill="none"
+                    className="size-4"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="m4 4 10 10M14 4 4 14"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                    />
                   </svg>
                 </button>
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
                 <SidebarNav onNavigate={() => setMobileOpen(false)} />
               </div>
+              <div className="studio-org-slot">
+                <OrgSwitcher />
+              </div>
             </aside>
           </div>
         )}
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-          <header className="z-30 shrink-0 border-b border-zinc-200/80 bg-zinc-50/92 shadow-[0_1px_0_color-mix(in_srgb,var(--color-zinc-950)_6%,transparent)] backdrop-blur-xl">
-            <div className="app-module-bar h-0.5 w-full" aria-hidden="true" />
-            <div className="flex h-14 items-center gap-3 px-4 sm:px-6">
+          <header className="studio-header z-30 shrink-0 border-b border-zinc-200/80 bg-zinc-50/92 shadow-[0_1px_0_color-mix(in_srgb,var(--color-zinc-950)_6%,transparent)] backdrop-blur-xl">
+            <div className="studio-header-row flex items-center gap-3">
               <button
                 type="button"
                 className="rounded-lg border border-zinc-200 bg-zinc-50 p-2 text-zinc-700 lg:hidden"
+                ref={mobileTriggerRef}
+                aria-expanded={mobileOpen}
                 aria-label="Open sidebar"
                 onClick={() => setMobileOpen(true)}
               >
-                <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden>
-                  <path d="M3 4.5h12M3 9h12M3 13.5h12" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" />
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 18 18"
+                  fill="none"
+                  aria-hidden
+                >
+                  <path
+                    d="M3 4.5h12M3 9h12M3 13.5h12"
+                    stroke="currentColor"
+                    strokeWidth="1.4"
+                    strokeLinecap="round"
+                  />
                 </svg>
               </button>
 
               <div className="min-w-0 flex-1">
-                <h1 className="font-display truncate text-base font-semibold tracking-[-0.02em] text-zinc-950">{meta.title}</h1>
-                {meta.subtitle && (
-                  <p className="type-meta mt-0.5 hidden truncate sm:block">{meta.subtitle}</p>
-                )}
+                <p className="studio-breadcrumb">
+                  Workspace <span aria-hidden="true">/</span>{" "}
+                  <span>{meta.title}</span>
+                </p>
+                <h1 className="studio-header-title font-display truncate text-zinc-950">
+                  {meta.title}
+                </h1>
               </div>
 
               <Link
@@ -618,17 +888,28 @@ export function AppShell() {
                 type="button"
                 onClick={toggleTheme}
                 className="rounded-lg border border-zinc-200 bg-zinc-50 p-2 text-zinc-600 hover:border-zinc-300 hover:text-zinc-900"
-                aria-label={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
-                title={theme === "light" ? "Switch to dark theme" : "Switch to light theme"}
+                aria-label={
+                  theme === "light"
+                    ? "Switch to dark theme"
+                    : "Switch to light theme"
+                }
+                title={
+                  theme === "light"
+                    ? "Switch to dark theme"
+                    : "Switch to light theme"
+                }
               >
                 {theme === "light" ? <IconMoon /> : <IconSun />}
               </button>
+              {DEMO_MODE && (
+                <span className="studio-demo-label">Demo workspace</span>
+              )}
               <ProfileMenu />
             </div>
           </header>
 
           <main className="app-workspace min-h-0 flex-1 overflow-y-auto overscroll-contain">
-            <div className="w-full px-3 py-3 sm:px-4 sm:py-4">
+            <div className="studio-page-content w-full">
               {/* Keyed by pathname so a crash on one page doesn't leave every later
                   navigation stuck on the fallback UI — the sidebar/header stay alive either way. */}
               <ErrorBoundary key={location.pathname} scope="page">
@@ -654,11 +935,13 @@ export function PageIntro({
 }) {
   if (!title && !description && !actions) return null;
   return (
-    <div className="mb-5 flex flex-wrap items-start justify-between gap-3 border-b border-zinc-200/80 pb-4">
+    <div className="studio-page-intro mb-5 flex flex-wrap items-start justify-between gap-3 pb-4">
       <div>
         {title && <h2 className="type-title">{title}</h2>}
         {description && (
-          <p className={`type-body max-w-3xl ${title ? "mt-1" : ""}`}>{description}</p>
+          <p className={`type-body max-w-3xl ${title ? "mt-1" : ""}`}>
+            {description}
+          </p>
         )}
       </div>
       {actions}

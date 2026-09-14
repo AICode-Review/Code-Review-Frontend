@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CornerBrackets, GridTexture, Icon, type IconName, Reveal } from "../../components/retro";
+import { Icon, type IconName, Reveal } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
 const items: Array<{ icon: IconName; title: string; body: string }> = [
@@ -37,15 +37,14 @@ const items: Array<{ icon: IconName; title: string; body: string }> = [
 
 export default function Security() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="site-secondary-page relative overflow-hidden">
       <Seo
         title="Security — Scrutinye"
         description="How Scrutinye handles your source code: nothing persisted beyond the review, encrypted tokens, and row-level security on every table."
         path="/security"
       />
-      <GridTexture />
       <div className="mx-auto max-w-4xl px-6 py-16">
-        <Reveal>
+        <Reveal className="site-page-intro">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Trust</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Security &amp; trust
@@ -71,7 +70,6 @@ export default function Security() {
         </Reveal>
 
         <Reveal className="relative mt-10 rounded-2xl border border-[var(--mk-accent)]/30 bg-[var(--mk-bg-elevated)] p-6 text-center">
-          <CornerBrackets />
           <p className="text-sm font-semibold text-[var(--mk-ink)]">
             Questions, or a security disclosure?
           </p>

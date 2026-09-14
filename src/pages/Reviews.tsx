@@ -139,7 +139,7 @@ export default function Reviews() {
   }, [page, totalPages]);
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] min-h-0 flex-col gap-3">
+    <div className="studio-table-page flex min-h-0 flex-col gap-3">
       <div className="shrink-0 space-y-3">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <p className="max-w-2xl text-sm text-zinc-600">

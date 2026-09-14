@@ -73,7 +73,7 @@ export default function RepoDetail() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="studio-repo-detail space-y-8">
       <div className="flex items-center justify-between gap-4">
         <div>
           <p className="text-xs text-zinc-500">

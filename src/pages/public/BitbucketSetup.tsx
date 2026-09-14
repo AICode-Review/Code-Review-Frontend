@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CornerBrackets, GridTexture, Icon, type IconName, Reveal } from "../../components/retro";
+import { Icon, type IconName, Reveal } from "../../components/retro";
 
 const steps: Array<{ icon: IconName; title: string; body: string }> = [
   {
@@ -26,10 +26,9 @@ const steps: Array<{ icon: IconName; title: string; body: string }> = [
 
 export default function BitbucketSetup() {
   return (
-    <div className="relative overflow-hidden">
-      <GridTexture />
+    <div className="site-secondary-page relative overflow-hidden">
       <div className="mx-auto max-w-4xl px-6 py-16">
-        <Reveal>
+        <Reveal className="site-page-intro">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Setup guide</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Connecting a Bitbucket workspace
@@ -71,7 +70,6 @@ export default function BitbucketSetup() {
         </Reveal>
 
         <Reveal className="relative mt-10 rounded-2xl border border-[var(--mk-accent)]/30 bg-[var(--mk-bg-elevated)] p-6 text-center">
-          <CornerBrackets />
           <p className="text-sm font-semibold text-[var(--mk-ink)]">Questions about this setup?</p>
           <p className="mt-1.5 text-sm text-[var(--mk-muted)]">Reach out and we'll walk you through it.</p>
           <Link to="/security" className="mt-4 inline-flex text-sm font-medium text-[var(--mk-accent)] hover:underline">

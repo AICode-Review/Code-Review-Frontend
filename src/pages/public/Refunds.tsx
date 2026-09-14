@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { GridTexture, Reveal } from "../../components/retro";
+import { Reveal } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
 const sections: Array<{ title: string; body: string[] }> = [
@@ -43,15 +43,14 @@ const sections: Array<{ title: string; body: string[] }> = [
 
 export default function Refunds() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="site-secondary-page relative overflow-hidden">
       <Seo
         title="Cancellation & Refund Policy — Scrutinye"
         description="How cancellations and refunds work for Scrutinye's paid plans."
         path="/refunds"
       />
-      <GridTexture />
-      <div className="mx-auto max-w-3xl px-6 py-16">
-        <Reveal>
+      <div className="site-legal mx-auto max-w-3xl px-6 py-16">
+        <Reveal className="site-page-intro">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Legal</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Cancellation &amp; Refund Policy

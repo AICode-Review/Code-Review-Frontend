@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { CornerBrackets, GridTexture, Icon, Reveal, type IconName } from "../../components/retro";
+import { Icon, type IconName } from "../../components/retro";
+import {
+  PublicIntro,
+  PublicCallToAction,
+} from "../../components/layout/PublicSite";
 import { Seo } from "../../components/Seo";
 
 const pipeline: Array<{ icon: IconName; title: string; body: string }> = [
@@ -35,10 +39,22 @@ const delivery: Array<{ icon: IconName; title: string; body: string }> = [
 ];
 
 const rulebook: Array<[string, string]> = [
-  ["Plain-language rules", "Add team standards without prompt engineering — write the rule the way you'd say it out loud."],
-  ["Evidence before activation", "A single dismissal starts a rule as a suggestion; repeated evidence is what promotes it to active and enforced."],
-  ["Fully reviewable", "Every learned rule stays visible, editable, and removable — nothing enforces itself silently."],
-  ["Repo-aware", "Rules can apply org-wide or to a single repository, matching how teams' standards actually differ project to project."],
+  [
+    "Plain-language rules",
+    "Add team standards without prompt engineering — write the rule the way you'd say it out loud.",
+  ],
+  [
+    "Evidence before activation",
+    "A single dismissal starts a rule as a suggestion; repeated evidence is what promotes it to active and enforced.",
+  ],
+  [
+    "Fully reviewable",
+    "Every learned rule stays visible, editable, and removable — nothing enforces itself silently.",
+  ],
+  [
+    "Repo-aware",
+    "Rules can apply org-wide or to a single repository, matching how teams' standards actually differ project to project.",
+  ],
 ];
 
 const everywhere: Array<{ icon: IconName; title: string; body: string }> = [
@@ -77,143 +93,184 @@ export default function Features() {
   }, [location.hash]);
 
   return (
-    <main className="overflow-hidden">
+    <main className="site-features">
       <Seo
         title="Features — Scrutinye"
-        description="Specialist review passes, cross-model verification, execution-sandbox repro, a learning rulebook, and budgeted delivery — how Scrutinye turns AI review into signal instead of noise."
+        description="Specialist review passes, cross-model verification, execution-sandbox repro, a learning rulebook, and budgeted delivery."
         path="/features"
       />
-
-      <section className="relative border-b border-[var(--mk-border)]">
-        <GridTexture />
-        <Reveal className="relative mx-auto max-w-4xl px-5 py-16 text-center sm:px-6 sm:py-20">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">How it works</p>
-          <h1 className="mt-3 text-balance text-3xl font-semibold tracking-tight text-[var(--mk-ink)] sm:text-4xl">
-            Built to be trusted with a real pull request
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-pretty text-base leading-7 text-[var(--mk-muted)]">
-            Every capability below exists for one reason: so what lands as a comment on your PR is worth reading.
+      <div className="home-container">
+        <PublicIntro
+          eyebrow="BUILT TO LOOK CLOSER"
+          title={
+            <>
+              Every angle covered.
+              <br />
+              <span>Every finding challenged.</span>
+            </>
+          }
+          description="From the first pass to the final comment, a thoughtful review pipeline that earns its place in your workflow."
+        />
+        <nav className="site-section-nav" aria-label="Feature sections">
+          <a href="#pipeline">Review & verify</a>
+          <a href="#delivery">Less noise</a>
+          <a href="#rulebook">Team rulebook</a>
+          <a href="#languages">Languages</a>
+          <a href="#platform">Your workflow</a>
+        </nav>
+      </div>
+      <section id="pipeline" className="site-feature-section home-container">
+        <div className="site-feature-heading">
+          <div>
+            <p className="site-eyebrow">01 / REVIEW & VERIFY</p>
+            <h2>
+              A closer look.
+              <br />
+              <span>Then a second opinion.</span>
+            </h2>
+          </div>
+          <p>
+            Specialists find the risks. Verification decides what deserves your
+            attention.
           </p>
-        </Reveal>
+        </div>
+        <div className="site-feature-cards">
+          {pipeline.map((item, i) => (
+            <article key={item.title}>
+              <div className="site-card-top">
+                <span className="site-icon">
+                  <Icon name={item.icon} />
+                </span>
+                <span>0{i + 1}</span>
+              </div>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
       </section>
-
-      <section id="pipeline" className="scroll-mt-20 border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
-        <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Find broadly, verify ruthlessly</p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-3">
-            {pipeline.map((f) => (
-              <article key={f.title} className="ferret-card rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg)] p-5">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
-                  <Icon name={f.icon} />
-                </div>
-                <h3 className="mt-4 text-sm font-semibold text-[var(--mk-ink)]">{f.title}</h3>
-                <p className="mt-1.5 text-sm leading-6 text-[var(--mk-muted)]">{f.body}</p>
+      <section id="delivery" className="site-delivery-band">
+        <div className="home-container site-delivery-grid">
+          <div>
+            <p className="site-eyebrow">02 / A QUIETER PULL REQUEST</p>
+            <h2>
+              Your attention
+              <br />
+              is worth protecting.
+            </h2>
+            <p className="site-delivery-description">
+              The best review is the one that helps you move forward. Clear
+              priorities. Useful comments. Room to focus.
+            </p>
+            <div className="site-delivery-example">
+              <span className="site-delivery-check">✓</span>
+              <div>
+                <strong>Review complete</strong>
+                <p>Verified findings inline. Everything else in the digest.</p>
+              </div>
+            </div>
+          </div>
+          <div className="site-delivery-cards">
+            {delivery.map((item) => (
+              <article key={item.title}>
+                <Icon name={item.icon} />
+                <h3>{item.title}</h3>
+                <p>{item.body}</p>
               </article>
             ))}
           </div>
-        </Reveal>
+        </div>
       </section>
-
-      <section id="delivery" className="scroll-mt-20 border-b border-[var(--mk-border)]">
-        <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Signal over volume</p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {delivery.map((f) => (
-              <article key={f.title} className="ferret-card rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-5">
-                <div className="flex size-9 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
-                  <Icon name={f.icon} />
-                </div>
-                <h3 className="mt-4 text-sm font-semibold text-[var(--mk-ink)]">{f.title}</h3>
-                <p className="mt-1.5 text-sm leading-6 text-[var(--mk-muted)]">{f.body}</p>
-              </article>
-            ))}
+      <section id="rulebook" className="site-feature-section home-container">
+        <div className="site-feature-heading">
+          <div>
+            <p className="site-eyebrow">03 / YOUR STANDARDS, REMEMBERED</p>
+            <h2>
+              Less repeating yourself.
+              <br />
+              <span>More shared understanding.</span>
+            </h2>
           </div>
-        </Reveal>
-      </section>
-
-      <section id="rulebook" className="scroll-mt-20 border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
-        <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Learns with your team</p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--mk-ink)]">The rulebook</h2>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {rulebook.map(([title, body]) => (
-              <div key={title} className="rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg)] p-4">
-                <p className="text-sm font-semibold text-[var(--mk-ink)]">{title}</p>
-                <p className="mt-1 text-sm leading-6 text-[var(--mk-muted)]">{body}</p>
-              </div>
-            ))}
-          </div>
-        </Reveal>
-      </section>
-
-      <section id="languages" className="scroll-mt-20 border-b border-[var(--mk-border)]">
-        <Reveal className="mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Every language, genuinely</p>
-          <p className="mt-3 max-w-3xl text-base leading-7 text-[var(--mk-muted)]">
-            Nothing is filtered out of review except actual binaries. Kotlin, Swift, React Native, Flutter — every
-            source file gets full LLM-level analysis, not a Tier-1 allow-list. A repo-aware semantic index feeds
-            relevant symbols and context into every pass, so review quality doesn&apos;t depend on which language you
-            picked.
+          <p>
+            A living rulebook that grows with your feedback and stays in your
+            control.
           </p>
-        </Reveal>
-      </section>
-
-      <section id="platform" className="relative scroll-mt-20 border-b border-[var(--mk-border)] bg-[var(--mk-bg-elevated)]">
-        <GridTexture />
-        <Reveal className="relative mx-auto max-w-6xl px-5 py-14 sm:px-6 sm:py-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">One engine, everywhere you work</p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            {everywhere.map((f) => (
-              <div key={f.title} className="ferret-card relative rounded-xl border border-[var(--mk-border)] bg-[var(--mk-bg)] p-5">
-                <CornerBrackets />
-                <div className="flex size-9 items-center justify-center rounded-lg bg-[var(--mk-accent-soft)] text-[var(--mk-accent)]">
-                  <Icon name={f.icon} />
-                </div>
-                <h3 className="mt-4 text-sm font-semibold text-[var(--mk-ink)]">{f.title}</h3>
-                <p className="mt-1.5 text-sm leading-6 text-[var(--mk-muted)]">{f.body}</p>
+        </div>
+        <div className="site-rule-grid">
+          {rulebook.map(([title, body], i) => (
+            <article key={title}>
+              <span className="site-rule-index">0{i + 1}</span>
+              <div>
+                <h3>{title}</h3>
+                <p>{body}</p>
               </div>
-            ))}
-          </div>
-        </Reveal>
+            </article>
+          ))}
+        </div>
       </section>
-
-      <section className="border-b border-[var(--mk-border)]">
-        <Reveal className="mx-auto flex max-w-4xl flex-col items-center gap-4 px-6 py-14 text-center">
-          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Built to be trusted with your code</p>
-          <div className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3 text-sm text-[var(--mk-muted)]">
-            {trust.map(([icon, label]) => (
-              <span key={label} className="inline-flex items-center gap-2">
-                <Icon name={icon} /> {label}
-              </span>
-            ))}
+      <section id="languages" className="site-languages-band">
+        <div className="home-container site-languages-grid">
+          <div>
+            <p className="site-eyebrow">04 / BUILD IN YOUR LANGUAGE</p>
+            <h2>Your stack is welcome here.</h2>
+            <p>
+              Every source file gets full LLM-level analysis. Repository context
+              brings relevant symbols into each pass, with AST-enhanced depth
+              for supported languages.
+            </p>
           </div>
-          <Link to="/security" className="text-sm font-medium text-[var(--mk-accent)] hover:underline">
-            Full security approach →
+          <div
+            className="site-language-list"
+            aria-label="Example supported languages"
+          >
+            {[
+              "TypeScript",
+              "Python",
+              "Java",
+              "Go",
+              "Rust",
+              "Kotlin",
+              "Swift",
+              "Dart",
+            ].map((language) => (
+              <span key={language}>{language}</span>
+            ))}
+            <small>And any other source language you build with.</small>
+          </div>
+        </div>
+      </section>
+      <section id="platform" className="site-feature-section home-container">
+        <div className="site-feature-heading">
+          <div>
+            <p className="site-eyebrow">05 / RIGHT WHERE YOU WORK</p>
+            <h2>One engine. Your workflow.</h2>
+          </div>
+          <Link to="/cli" className="home-text-link">
+            Explore the CLI <span aria-hidden="true">↗</span>
           </Link>
-        </Reveal>
+        </div>
+        <div className="site-platform-grid">
+          {everywhere.map((item) => (
+            <article key={item.title}>
+              <span className="site-icon">
+                <Icon name={item.icon} />
+              </span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+        <div className="site-feature-trust">
+          {trust.map(([icon, label]) => (
+            <span key={label}>
+              <Icon name={icon} />
+              {label}
+            </span>
+          ))}
+          <Link to="/security">Security & trust ↗</Link>
+        </div>
       </section>
-
-      <section className="px-5 py-14 sm:px-6 sm:py-16">
-        <Reveal className="mx-auto flex max-w-2xl flex-col items-center gap-5 text-center">
-          <h2 className="text-2xl font-semibold tracking-tight text-[var(--mk-ink)] sm:text-3xl">
-            See it on your own pull request
-          </h2>
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              to="/signin"
-              className="ferret-shimmer inline-flex items-center justify-center gap-2 rounded-lg bg-[var(--mk-accent)] px-5 py-3 text-sm font-semibold text-[var(--mk-accent-fg)] shadow-[0_8px_24px_rgba(57,86,221,0.3)] transition hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
-            >
-              Run first scan
-            </Link>
-            <Link
-              to="/pricing"
-              className="inline-flex items-center justify-center rounded-lg border border-[var(--mk-border-strong)] bg-[var(--mk-surface)]/60 px-5 py-3 text-sm font-medium text-[var(--mk-ink)] transition hover:border-[var(--mk-accent)]/40 hover:text-[var(--mk-accent)]"
-            >
-              View plans
-            </Link>
-          </div>
-        </Reveal>
-      </section>
+      <PublicCallToAction />
     </main>
   );
 }

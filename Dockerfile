@@ -1,6 +1,6 @@
 # Self-hosted edition (DESIGN.md §11) — static build served by nginx.
 # Vite env vars (VITE_*) are baked in at build time; pass them as build args.
-FROM node:20-slim AS build
+FROM node:24-slim AS build
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci

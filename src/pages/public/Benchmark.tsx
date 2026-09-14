@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { CornerBrackets, GridTexture, Icon, type IconName, Reveal } from "../../components/retro";
+import { Icon, type IconName, Reveal } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
 const targets = [
@@ -34,15 +34,14 @@ const methodology: Array<{ icon: IconName; title: string; body: string }> = [
 
 export default function Benchmark() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="site-secondary-page relative overflow-hidden">
       <Seo
         title="Benchmark methodology — Scrutinye"
         description="How Scrutinye measures catch rate and false positives, and the engineering targets we publish instead of unverified customer claims."
         path="/benchmark"
       />
-      <GridTexture />
       <div className="mx-auto max-w-4xl px-6 py-16">
-        <Reveal>
+        <Reveal className="site-page-intro">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Methodology</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Benchmark methodology
@@ -56,8 +55,7 @@ export default function Benchmark() {
 
         <Reveal>
           <div className="relative mt-8 grid grid-cols-2 gap-x-6 gap-y-6 rounded-2xl border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-6 sm:grid-cols-4">
-            <CornerBrackets />
-            {targets.map((t) => (
+              {targets.map((t) => (
               <div key={t.label}>
                 <p className="font-display text-2xl font-bold tabular-nums text-[var(--mk-accent)] sm:text-3xl">
                   {t.value}
@@ -86,7 +84,6 @@ export default function Benchmark() {
         </Reveal>
 
         <Reveal className="relative mt-8 rounded-2xl border border-[var(--mk-accent)]/30 bg-[var(--mk-bg-elevated)] p-5">
-          <CornerBrackets />
           <h2 className="text-sm font-semibold text-[var(--mk-accent)]">Current status</h2>
           <ul className="mt-2 space-y-1.5 text-sm leading-relaxed text-[var(--mk-muted)]">
             <li>

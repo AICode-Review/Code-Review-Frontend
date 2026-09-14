@@ -155,7 +155,7 @@ export default function Prs() {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] min-h-0 flex-col gap-3">
+    <div className="studio-table-page flex min-h-0 flex-col gap-3">
       <div className="shrink-0">
         <p className="text-sm text-zinc-600">
           Every pull request Scrutinye has reviewed, one row per PR, with an advisory 0-100 score from its latest run —
@@ -231,8 +231,8 @@ export default function Prs() {
               </EmptyState>
             </div>
           ) : (
-            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden">
-              <table className="w-full table-fixed border-collapse text-sm">
+            <div className="min-h-0 flex-1 overflow-y-auto overflow-x-auto">
+              <table className="w-full min-w-[520px] table-fixed border-collapse text-sm">
                 <thead className="sticky top-0 z-10 border-b border-zinc-200 bg-zinc-50">
                   <tr>
                     <SortHeader label="PR" sortKey="number" activeKey={sortKey} direction={sortDirection} onSort={handleSort} className="w-[34%] md:w-[22%]" />

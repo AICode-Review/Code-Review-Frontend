@@ -186,7 +186,7 @@ export default function Repos() {
   }
 
   return (
-    <div className="flex h-[calc(100dvh-5.5rem)] min-h-0 flex-col gap-3">
+    <div className="studio-table-page studio-repos-page flex min-h-0 flex-col gap-3">
       <div className="flex shrink-0 flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-sm text-zinc-600">

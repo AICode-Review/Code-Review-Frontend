@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { GridTexture, Icon, type IconName, Reveal, TerminalPanel } from "../../components/retro";
+import { Icon, type IconName, Reveal, TerminalPanel } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
 const install = `npm install -g @scrutinye/cli
@@ -62,15 +62,14 @@ const commands: Array<{ icon: IconName; cmd: string; blurb: string }> = [
 
 export default function Cli() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="site-secondary-page relative overflow-hidden">
       <Seo
         title="CLI — Scrutinye"
         description="Run Scrutinye's same multi-pass, verified review pipeline locally, before you even open a pull request."
         path="/cli"
       />
-      <GridTexture />
       <div className="mx-auto max-w-4xl px-6 py-16">
-        <Reveal>
+        <Reveal className="site-page-intro">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">CLI</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Same Scrutinye, in your terminal

@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { PublicIntro } from "../../components/layout/PublicSite";
 import { Seo } from "../../components/Seo";
 import { setPostSigninRedirect } from "../../lib/postSigninRedirect";
 
@@ -91,7 +92,13 @@ const tiers: Tier[] = [
   },
 ];
 
-function CurrencyToggle({ currency, onChange }: { currency: Currency; onChange: (c: Currency) => void }) {
+function CurrencyToggle({
+  currency,
+  onChange,
+}: {
+  currency: Currency;
+  onChange: (c: Currency) => void;
+}) {
   return (
     <div
       className="inline-flex overflow-hidden rounded-lg border border-[var(--mk-border)] bg-[var(--mk-bg-elevated)] p-0.5"
@@ -119,89 +126,145 @@ function CurrencyToggle({ currency, onChange }: { currency: Currency; onChange: 
 
 export default function Pricing() {
   const [currency, setCurrency] = useState<Currency>("INR");
-
   return (
-    <div className="mx-auto max-w-5xl px-6 py-16">
+    <main className="site-pricing home-container">
       <Seo
         title="Pricing — Scrutinye"
         description="Seat-based pricing for AI code review: Free for public repos, Individual and Team for private repos with rulebook learning, sandbox verification, and analytics."
         path="/pricing"
       />
-      <p className="text-center text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Pick your tier</p>
-      <h1 className="mt-3 text-center text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">Pricing</h1>
-      <p className="mt-3 text-center text-base text-[var(--mk-muted)]">
-        Seat-based. A seat is a developer whose PRs get reviewed.
-      </p>
-
-      <div className="mt-6 flex flex-col items-center gap-1.5">
-        <CurrencyToggle currency={currency} onChange={setCurrency} />
-        {currency === "USD" && (
-          <p className="text-[11px] text-[var(--mk-faint)]">Approximate — checkout is always billed in INR</p>
-        )}
-      </div>
-
-      <div className="mt-8 grid gap-4 md:grid-cols-3">
+      <PublicIntro
+        eyebrow="SIMPLE PLANS. SERIOUS SCRUTINY."
+        title={
+          <>
+            A little investment.
+            <br />
+            <span>A lot more confidence.</span>
+          </>
+        }
+        description="Start with your public repos. Add deeper controls as you grow. One seat for each developer whose pull requests we review."
+      >
+        <div className="site-currency">
+          <CurrencyToggle currency={currency} onChange={setCurrency} />
+          <p>
+            {currency === "USD"
+              ? "Approximate USD prices. Checkout is always billed in INR."
+              : "Monthly billing in INR. No credit card needed for Free."}
+          </p>
+        </div>
+      </PublicIntro>
+      <div className="site-pricing-grid">
         {tiers.map((tier) => (
-          <div
+          <article
             key={tier.name}
-            className={`flex flex-col rounded-2xl border bg-[var(--mk-bg-elevated)] p-5 ${
-              tier.highlight
-                ? "border-[var(--mk-accent)] shadow-[0_0_0_1px_var(--mk-accent),0_8px_32px_rgba(57,86,221,0.15)]"
-                : "border-[var(--mk-border)]"
-            }`}
+            className={`site-plan ${tier.highlight ? "site-plan-featured" : ""}`}
           >
-            {tier.highlight && (
-              <span className="mb-2 self-start rounded-md border border-[var(--mk-accent)]/40 bg-[var(--mk-accent-soft)] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--mk-accent)]">
-                Most popular
-              </span>
-            )}
-            <h2 className="text-sm font-semibold text-[var(--mk-ink)]">{tier.name}</h2>
-            <p className="mt-3 font-display text-3xl font-bold tabular-nums text-[var(--mk-ink)]">
+            <div className="site-plan-heading">
+              <h2>{tier.name}</h2>
+              {tier.highlight && (
+                <span className="site-popular">MOST POPULAR</span>
+              )}
+            </div>
+            <p className="site-plan-description">
+              {tier.name === "Free"
+                ? "For open-source projects and curious builders."
+                : tier.name === "Individual"
+                  ? "For developers ready to go deeper."
+                  : "For teams building better, together."}
+            </p>
+            <p className="site-plan-price">
               {tier.priceInr === 0
                 ? currency === "INR"
                   ? "₹0"
                   : "$0"
                 : currency === "INR"
-                  ? `₹${tier.priceInr}`
-                  : `≈${formatUsdApprox(tier.priceInr)}`}
+                  ? "₹" + tier.priceInr.toLocaleString("en-IN")
+                  : "≈" + formatUsdApprox(tier.priceInr)}
             </p>
-            <p className="text-xs text-[var(--mk-faint)]">{tier.unit}</p>
-            <p className="mt-2 rounded-lg border border-[var(--mk-accent)]/25 bg-[var(--mk-accent-soft)] px-2.5 py-1.5 text-[11px] font-medium text-[var(--mk-accent)]">
+            <p className="site-plan-unit">{tier.unit}</p>
+            <p className="site-plan-quota">
+              <span aria-hidden="true">◎</span>
               {tier.quota}
             </p>
-            <ul className="mt-4 flex-1 space-y-2 text-sm text-[var(--mk-muted)]">
-              {tier.features.map((f) => (
-                <li key={f} className="flex gap-2">
-                  <span className="text-[var(--mk-success)]">✓</span>
-                  {f}
-                </li>
-              ))}
-            </ul>
             <Link
               to={tier.ctaTo}
               onClick={() => {
                 if (tier.paid) setPostSigninRedirect("/settings");
               }}
-              className={`mt-5 rounded-lg px-4 py-2.5 text-center text-sm font-semibold transition ${
-                tier.highlight
-                  ? "bg-[var(--mk-accent)] text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(57,86,221,0.3)] hover:-translate-y-0.5 hover:bg-[var(--mk-accent-hover)]"
-                  : "border border-[var(--mk-border-strong)] text-[var(--mk-ink)] hover:border-[var(--mk-accent)]/40 hover:text-[var(--mk-accent)]"
-              }`}
+              className={`home-button ${tier.highlight ? "home-button-green" : "site-button-outline"}`}
             >
               {tier.cta}
+              <span aria-hidden="true">↗</span>
             </Link>
-          </div>
+            <p className="site-plan-includes">
+              {tier.name === "Free"
+                ? "A strong foundation"
+                : tier.name === "Individual"
+                  ? "More context. More control."
+                  : "Made for collaboration"}
+            </p>
+            <ul>
+              {tier.features.map((feature) => (
+                <li key={feature}>
+                  <span aria-hidden="true">✓</span>
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </article>
         ))}
       </div>
-
-      <p className="mt-6 text-center text-sm text-[var(--mk-faint)]">
-        Review quotas are sized against our per-review cost cap, not measured usage yet. Need self-hosted or a higher
-        volume?{" "}
-        <Link to="/contact" className="text-[var(--mk-accent)] hover:underline">
-          Talk to us
+      <div className="site-pricing-enterprise">
+        <div>
+          <p className="site-eyebrow">YOUR INFRASTRUCTURE. YOUR RULES.</p>
+          <h2>Need a little more room?</h2>
+          <p>
+            Talk to us about self-hosting, enterprise needs, or higher review
+            volume.
+          </p>
+        </div>
+        <Link
+          to="/contact?reason=enterprise"
+          className="home-button site-button-outline"
+        >
+          Let's talk <span aria-hidden="true">↗</span>
         </Link>
-        .
+      </div>
+      <p className="site-pricing-note">
+        Review quotas are sized against our per-review cost cap, not measured
+        usage yet. <Link to="/benchmark">Explore our methodology →</Link>
       </p>
-    </div>
+      <div className="site-pricing-faq">
+        <h2>A few plan details.</h2>
+        <details>
+          <summary>
+            What counts as a seat?<span aria-hidden="true">+</span>
+          </summary>
+          <p>
+            A seat is a developer whose pull requests get reviewed. Individual
+            and Team quotas scale with your seat count.
+          </p>
+        </details>
+        <details>
+          <summary>
+            Can I start with a private repository?
+            <span aria-hidden="true">+</span>
+          </summary>
+          <p>
+            Yes. Choose Individual or Team for private repositories. Free
+            includes public repositories.
+          </p>
+        </details>
+        <details>
+          <summary>
+            How are payments handled?<span aria-hidden="true">+</span>
+          </summary>
+          <p>
+            Paid plans use Razorpay and are billed in INR. USD amounts are
+            approximate and provided for browsing convenience.
+          </p>
+        </details>
+      </div>
+    </main>
   );
 }

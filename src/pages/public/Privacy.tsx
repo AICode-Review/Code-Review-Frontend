@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { GridTexture, Reveal } from "../../components/retro";
+import { Reveal } from "../../components/retro";
 import { Seo } from "../../components/Seo";
 
 const sections: Array<{ title: string; body: string[] }> = [
@@ -59,11 +59,10 @@ const sections: Array<{ title: string; body: string[] }> = [
 
 export default function Privacy() {
   return (
-    <div className="relative overflow-hidden">
+    <div className="site-secondary-page relative overflow-hidden">
       <Seo title="Privacy Policy — Scrutinye" description="Scrutinye's Privacy Policy — what we collect and how source code is handled." path="/privacy" />
-      <GridTexture />
-      <div className="mx-auto max-w-3xl px-6 py-16">
-        <Reveal>
+      <div className="site-legal mx-auto max-w-3xl px-6 py-16">
+        <Reveal className="site-page-intro">
           <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[var(--mk-accent)]">Legal</p>
           <h1 className="mt-3 text-3xl font-semibold tracking-tight text-[var(--mk-ink)]">
             Privacy Policy

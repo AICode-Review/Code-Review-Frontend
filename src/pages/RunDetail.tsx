@@ -150,7 +150,7 @@ export default function RunDetail() {
   ].filter((p): p is string => p !== null);
 
   return (
-    <div className="space-y-6">
+    <div className="studio-run-detail space-y-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div className="min-w-0">
           <p className="text-xs text-zinc-500">
@@ -263,6 +263,14 @@ export default function RunDetail() {
           <ErrorText>Failed to load PR changes: {(diffError as Error).message}</ErrorText>
         </Card>
       )}
+      {run.status === "completed" && run.error && (
+        <div role="status" className="rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-800">
+          <p className="font-semibold">Review coverage is incomplete</p>
+          <p className="mt-1">{run.error}</p>
+          <p className="mt-2">Verified findings are shown below. Run the review again to retry unavailable checks.</p>
+        </div>
+      )}
+
       {diff && diff.files.length > 0 && (
         <DiffViewer diff={diff} title="What changed in this PR" />
       )}

@@ -91,7 +91,7 @@ export default function Rulebook() {
   const pending = filtered.filter((r) => !r.active);
 
   return (
-    <div className="space-y-5">
+    <div className="studio-rulebook space-y-5">
       <PageIntro description="Your team's standards—learned from review feedback or added manually. Rules with repeated evidence activate automatically; single-event rules wait for approval." />
 
       {isLoading && <LoadingText>Loading rulebook…</LoadingText>}

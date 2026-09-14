@@ -1,0 +1,843 @@
+/* App-only visual system. Public pages and admin console keep their own themes. */
+.app-shell.studio-app {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --radius-md: 0.4rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.7rem;
+  font-family: var(--font-sans);
+  font-size: 14px;
+  letter-spacing: -0.015em;
+}
+.app-shell.studio-app[data-theme="light"] {
+  --studio-canvas: #f5f7f2;
+  --studio-sidebar: #fbfcf8;
+  --studio-surface: #fff;
+  --studio-soft: #f1f5eb;
+  --studio-shadow: 0 2px 5px #273b2203, 0 7px 20px #273b2203;
+  --studio-brand-mark: #193d2e;
+  --studio-brand-ink: #f0f6e9;
+  --color-zinc-50: #fff;
+  --color-zinc-100: #f1f4ed;
+  --color-zinc-200: #e0e6da;
+  --color-zinc-300: #c7d2bf;
+  --color-zinc-400: #92a187;
+  --color-zinc-500: #71816b;
+  --color-zinc-600: #586b51;
+  --color-zinc-700: #42583c;
+  --color-zinc-800: #30482b;
+  --color-zinc-900: #233c26;
+  --color-zinc-950: #183426;
+  --color-blue-50: #edf5e7;
+  --color-blue-100: #dcebcf;
+  --color-blue-200: #c3dcb0;
+  --color-blue-300: #9fc48b;
+  --color-blue-400: #6aa16f;
+  --color-blue-500: #3f8b5b;
+  --color-blue-600: #217857;
+  --color-blue-700: #1e6848;
+  --color-blue-800: #1a573e;
+  --color-emerald-50: #eef6e9;
+  --color-emerald-100: #dceece;
+  --color-emerald-200: #bfdda6;
+  --color-emerald-500: #5a9b5a;
+  --color-emerald-600: #3c813d;
+  --color-emerald-700: #32682d;
+  --color-emerald-900: #244d24;
+  --color-indigo-50: #eff1f9;
+  --color-indigo-700: #596889;
+  --rt-accent-bg: #217857;
+  --rt-accent-bg-hover: #195f43;
+  --rt-accent-fg: #fff;
+  --rt-focus: #4e9865;
+  --rt-btn-shadow: 0 2px 5px #234f2b12;
+  --module-dashboard: #217857;
+  --module-repos: #217857;
+  --module-prs: #217857;
+  --module-reviews: #217857;
+  --module-rulebook: #217857;
+  --module-settings: #217857;
+  --chart-brand: #347d58;
+  --chart-success: #74a455;
+  --chart-warning: #d3a44c;
+  --chart-danger: #cf7162;
+  --chart-info: #718ba4;
+  --chart-muted: #a6b39b;
+  background: var(--studio-canvas);
+}
+.app-shell.studio-app[data-theme="dark"] {
+  --studio-canvas: #111c17;
+  --studio-sidebar: #15231b;
+  --studio-surface: #1a2921;
+  --studio-soft: #23372a;
+  --studio-shadow: 0 3px 12px #00000012;
+  --studio-brand-mark: #c7dfa8;
+  --studio-brand-ink: #183426;
+  --color-zinc-50: #1a2921;
+  --color-zinc-100: #22352a;
+  --color-zinc-200: #334738;
+  --color-zinc-300: #4a6250;
+  --color-zinc-400: #7f967e;
+  --color-zinc-500: #9aaa92;
+  --color-zinc-600: #b6c3aa;
+  --color-zinc-700: #cbd5c1;
+  --color-zinc-800: #dce4d2;
+  --color-zinc-900: #e9efdf;
+  --color-zinc-950: #f3f7eb;
+  --color-blue-50: #243e2d;
+  --color-blue-100: #2e5035;
+  --color-blue-200: #3c6641;
+  --color-blue-300: #5a8a59;
+  --color-blue-400: #93be82;
+  --color-blue-500: #83b476;
+  --color-blue-600: #a3ce94;
+  --color-blue-700: #bfdfa9;
+  --color-blue-800: #d4eac4;
+  --color-emerald-50: #283e24;
+  --color-emerald-100: #344f29;
+  --color-emerald-200: #486c38;
+  --color-emerald-500: #89bb6b;
+  --color-emerald-600: #a8cf8c;
+  --color-emerald-700: #c1dda4;
+  --color-emerald-900: #dfedc9;
+  --color-indigo-50: #293443;
+  --color-indigo-700: #b2c1df;
+  --rt-accent-bg: #bcdaa1;
+  --rt-accent-bg-hover: #cee7b7;
+  --rt-accent-fg: #1a3825;
+  --rt-focus: #9ec483;
+  --rt-btn-shadow: 0 2px 5px #00000018;
+  --module-dashboard: #b4d695;
+  --module-repos: #b4d695;
+  --module-prs: #b4d695;
+  --module-reviews: #b4d695;
+  --module-rulebook: #b4d695;
+  --module-settings: #b4d695;
+  --chart-brand: #9ac97c;
+  --chart-success: #679f73;
+  --chart-warning: #dfb76b;
+  --chart-danger: #df8a77;
+  --chart-info: #8eaac1;
+  --chart-muted: #6f896e;
+  background: var(--studio-canvas);
+}
+.app-shell.studio-app .app-workspace {
+  background: var(--studio-canvas);
+  scrollbar-color: var(--color-zinc-300) transparent;
+  scrollbar-width: thin;
+}
+.app-shell.studio-app .studio-page-content {
+  padding: 25px 30px;
+  height: 100%;
+  max-width: 1600px;
+  margin-inline: auto;
+}
+.app-shell.studio-app .app-sidebar {
+  width: 244px;
+  background: var(--studio-sidebar);
+  background-image: none;
+  border-color: var(--color-zinc-200);
+  backdrop-filter: none;
+}
+.app-shell.studio-app .app-sidebar[data-collapsed="true"] {
+  width: 76px;
+}
+.app-shell.studio-app .studio-brand-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  height: 80px;
+  padding: 20px;
+}
+.app-shell.studio-app .studio-brand-link {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+}
+.app-shell.studio-app .studio-brand-mark {
+  display: grid;
+  place-items: center;
+  flex: 0 0 31px;
+  height: 31px;
+  border-radius: 9px;
+  background: var(--studio-brand-mark);
+  color: var(--studio-brand-ink);
+}
+.app-shell.studio-app .studio-brand-mark svg {
+  width: 25px;
+}
+.app-shell.studio-app .studio-brand-name {
+  font-size: 21px;
+  font-weight: 650;
+  letter-spacing: -1.2px;
+  color: var(--color-zinc-950);
+}
+.app-shell.studio-app .studio-collapse {
+  color: var(--color-zinc-400);
+  border-radius: 5px;
+  padding: 5px;
+}
+.app-shell.studio-app .studio-collapse:hover {
+  background: var(--color-zinc-100);
+  color: var(--color-zinc-800);
+}
+.app-shell.studio-app .app-sidebar[data-collapsed="true"] .studio-brand-row {
+  justify-content: center;
+  padding-inline: 10px;
+}
+.app-shell.studio-app .app-sidebar[data-collapsed="true"] .studio-brand-link {
+  display: none;
+}
+.app-shell.studio-app .studio-org-slot {
+  flex-shrink: 0;
+  padding: 16px 13px;
+  border-top: 1px solid var(--color-zinc-200);
+}
+.app-shell.studio-app .studio-org-label {
+  margin: 0 0 9px 10px;
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--color-zinc-500);
+}
+.app-shell.studio-app .studio-org > button {
+  border-radius: 8px;
+  box-shadow: none;
+  border-color: var(--color-zinc-200);
+  background: var(--studio-surface);
+  padding: 11px 10px;
+  gap: 10px;
+}
+.app-shell.studio-app .studio-org > button > span:first-child {
+  border-radius: 7px;
+  height: 31px;
+  width: 31px;
+  font-size: 10px;
+}
+.app-shell.studio-app .studio-org > button .text-sm {
+  font-size: 12px;
+}
+.app-shell.studio-app .studio-org > button .text-\[10px\] {
+  font-size: 10px;
+  background: transparent;
+  padding: 0;
+}
+.app-shell.studio-app .studio-nav {
+  padding: 24px 13px;
+  gap: 5px;
+}
+.app-shell.studio-app .sidebar-section-label {
+  font-size: 9px;
+  color: var(--color-zinc-400);
+  letter-spacing: 1.6px;
+  padding-left: 12px;
+  margin-bottom: 15px;
+}
+.app-shell.studio-app .nav-item {
+  min-height: 42px;
+  padding: 11px 12px;
+  font-size: 12px;
+  gap: 12px;
+  border-radius: 7px;
+}
+.app-shell.studio-app .nav-item .sidebar-label {
+  letter-spacing: -0.1px;
+}
+.app-shell.studio-app .nav-item svg {
+  width: 17px;
+  height: 17px;
+}
+.app-shell.studio-app .nav-active,
+.app-shell.studio-app[data-theme="dark"] .nav-active {
+  background: var(--color-blue-50);
+  color: var(--color-blue-700);
+  box-shadow: none;
+}
+.app-shell.studio-app .nav-active::after {
+  content: "";
+  margin-left: auto;
+  width: 5px;
+  height: 5px;
+  background: var(--color-blue-500);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.app-shell.studio-app .studio-nav-settings {
+  margin-top: 23px;
+}
+.app-shell.studio-app .app-sidebar[data-collapsed="true"] .studio-nav {
+  padding-inline: 13px;
+}
+.app-shell.studio-app .app-sidebar[data-collapsed="true"] .nav-item {
+  justify-content: center;
+  gap: 0;
+  padding-inline: 0;
+}
+.app-shell.studio-app .app-sidebar[data-collapsed="true"] .nav-active::after {
+  display: none;
+}
+.app-shell.studio-app .studio-sidebar-bottom {
+  flex-shrink: 0;
+  padding: 0 23px 20px;
+}
+.app-shell.studio-app .studio-sidebar-bottom a {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--color-zinc-600);
+  font-size: 11px;
+}
+.app-shell.studio-app .studio-sidebar-bottom a > span:first-child {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border: 1px solid var(--color-zinc-300);
+  border-radius: 50%;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.app-shell.studio-app .studio-sidebar-bottom p {
+  margin: 17px 0 0;
+  font-size: 9px;
+  color: var(--color-zinc-400);
+}
+.app-shell.studio-app
+  .app-sidebar[data-collapsed="true"]
+  .studio-sidebar-bottom {
+  padding-inline: 26px;
+}
+.app-shell.studio-app
+  .app-sidebar[data-collapsed="true"]
+  .studio-sidebar-bottom
+  p {
+  display: none;
+}
+.app-shell.studio-app .studio-header {
+  background: var(--studio-sidebar);
+  box-shadow: none;
+  border-color: var(--color-zinc-200);
+  backdrop-filter: none;
+}
+.app-shell.studio-app .studio-header-row {
+  height: 80px;
+  padding-inline: 30px;
+  gap: 16px;
+}
+.app-shell.studio-app .studio-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--color-zinc-400);
+  font-size: 9px;
+  line-height: 1.4;
+}
+.app-shell.studio-app .studio-breadcrumb > span:last-child {
+  color: var(--color-zinc-500);
+}
+.app-shell.studio-app h1.studio-header-title {
+  font-size: 18px;
+  font-weight: 550;
+  letter-spacing: -0.6px;
+  margin-top: 5px;
+}
+.app-shell.studio-app .studio-header-row > a {
+  font-size: 11px;
+  padding: 8px 13px;
+  border-radius: 6px;
+  background: transparent;
+}
+.app-shell.studio-app .studio-header-row > button {
+  border-radius: 7px;
+  background: var(--studio-surface);
+  padding: 9px;
+}
+.app-shell.studio-app .studio-demo-label {
+  font-size: 9px;
+  color: var(--color-zinc-500);
+  border: 1px solid var(--color-zinc-200);
+  padding: 5px 8px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+.app-shell.studio-app .studio-profile > button {
+  padding: 0;
+  border: none;
+  gap: 10px;
+  background: transparent;
+}
+.app-shell.studio-app .studio-profile > button > span:first-child {
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  background: var(--color-blue-100);
+  color: var(--color-blue-800);
+  font-size: 10px;
+}
+.app-shell.studio-app
+  .studio-profile
+  > button
+  > span:last-child
+  > span:first-child {
+  font-size: 11px;
+}
+.app-shell.studio-app
+  .studio-profile
+  > button
+  > span:last-child
+  > span:last-child {
+  font-size: 9px;
+}
+.app-shell.studio-app .studio-card {
+  border-radius: 10px;
+  box-shadow: var(--studio-shadow);
+}
+.app-shell.studio-app :where(h1, h2, h3, h4),
+.app-shell.studio-app .font-display {
+  font-family: var(--font-sans);
+  font-weight: 550;
+}
+.app-shell.studio-app h1 {
+  font-size: 28px;
+  letter-spacing: -1.1px;
+}
+.app-shell.studio-app h2 {
+  font-size: 17px;
+  letter-spacing: -0.4px;
+}
+.app-shell.studio-app h3 {
+  font-size: 15px;
+  letter-spacing: -0.25px;
+}
+.app-shell.studio-app .type-title {
+  font-family: var(--font-sans);
+  font-size: 23px;
+  font-weight: 550;
+  letter-spacing: -0.7px;
+}
+.app-shell.studio-app .type-display {
+  font-family: var(--font-sans);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+.app-shell.studio-app .type-label {
+  font-size: 10px;
+  letter-spacing: 0.6px;
+}
+.app-shell.studio-app .type-meta {
+  font-size: 11px;
+}
+.app-shell.studio-app .type-body {
+  font-size: 13px;
+  line-height: 1.75;
+}
+.app-shell.studio-app .studio-page-intro {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.app-shell.studio-app
+  :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"])),
+.app-shell.studio-app select,
+.app-shell.studio-app textarea {
+  border-radius: 6px;
+  background-color: var(--studio-surface);
+  font-size: 12px;
+  min-height: 36px;
+  border-color: var(--color-zinc-200);
+}
+.app-shell.studio-app input[type="checkbox"],
+.app-shell.studio-app input[type="radio"] {
+  accent-color: var(--rt-accent-bg);
+}
+.app-shell.studio-app :where(button, a).rounded-xl {
+  border-radius: 6px;
+}
+.app-shell.studio-app :where(button, a).bg-zinc-900,
+.app-shell.studio-app :where(button, a).bg-blue-600 {
+  background: var(--rt-accent-bg);
+  color: var(--rt-accent-fg);
+  box-shadow: var(--rt-btn-shadow);
+}
+.app-shell.studio-app :where(button, a).bg-zinc-900:hover:not(:disabled),
+.app-shell.studio-app :where(button, a).bg-blue-600:hover:not(:disabled) {
+  background: var(--rt-accent-bg-hover);
+  transform: none;
+}
+.app-shell.studio-app .studio-badge {
+  font-size: 10px;
+  letter-spacing: 0;
+  font-weight: 500;
+  border: 1px solid color-mix(in srgb, currentColor 9%, transparent);
+  border-radius: 5px;
+  padding: 3px 7px;
+  white-space: nowrap;
+}
+.app-shell.studio-app .studio-table-page {
+  height: 100%;
+  min-height: 520px;
+  gap: 20px;
+}
+.app-shell.studio-app .studio-table-page > div:first-child p.text-sm {
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 760px;
+}
+.app-shell.studio-app .studio-table-page > .studio-card > div:first-child {
+  padding: 16px;
+  background: var(--studio-surface);
+}
+.app-shell.studio-app table thead,
+.app-shell.studio-app table thead tr {
+  background: var(--studio-soft);
+}
+.app-shell.studio-app table thead th {
+  padding-block: 13px;
+  font-size: 10px;
+  text-transform: none;
+  font-weight: 500;
+  letter-spacing: 0.1px;
+  color: var(--color-zinc-500);
+}
+.app-shell.studio-app table thead button {
+  font-size: 10px;
+  text-transform: none;
+  letter-spacing: 0.1px;
+}
+.app-shell.studio-app table tbody td {
+  padding-top: 14px;
+  padding-bottom: 14px;
+  font-size: 12px;
+}
+.app-shell.studio-app table tbody td .text-sm {
+  font-size: 12px;
+}
+.app-shell.studio-app table tbody tr:hover {
+  background: var(--studio-soft);
+}
+.app-shell.studio-app .studio-dashboard {
+  padding-bottom: 28px;
+}
+.app-shell.studio-app .studio-dashboard-heading {
+  padding-block: 5px 3px;
+}
+.app-shell.studio-app .studio-dashboard-heading h1 {
+  font-size: 29px;
+  font-weight: 500;
+  margin-top: 8px;
+}
+.app-shell.studio-app .studio-dashboard-heading p:last-child {
+  font-size: 12px;
+  margin-top: 9px;
+}
+.app-shell.studio-app
+  .studio-dashboard-heading
+  > div:first-child
+  > p:first-child {
+  font-size: 9px;
+  letter-spacing: 1.1px;
+}
+.app-shell.studio-app .studio-dashboard-heading a {
+  font-size: 11px;
+  padding: 11px 15px;
+  border-radius: 6px;
+}
+.app-shell.studio-app .studio-metric {
+  padding: 22px;
+  border-radius: 10px;
+  box-shadow: var(--studio-shadow);
+}
+.app-shell.studio-app .studio-metric > div:last-child {
+  margin-top: 17px;
+}
+.app-shell.studio-app .studio-metric .font-display {
+  font-size: 33px;
+  line-height: 1.2;
+  font-weight: 500;
+  letter-spacing: -1.4px;
+}
+.app-shell.studio-app .studio-metric > div:first-child > p {
+  font-size: 10px;
+  text-transform: none;
+  letter-spacing: 0.1px;
+}
+.app-shell.studio-app .studio-metric > div:first-child > span {
+  font-size: 8px;
+  font-weight: 500;
+  text-transform: none;
+  padding: 4px 7px;
+  border-radius: 4px;
+}
+.app-shell.studio-app .studio-metric .text-\[11px\] {
+  font-size: 10px;
+  margin-top: 6px;
+}
+.app-shell.studio-app .studio-pipeline-strip {
+  background: var(--studio-surface);
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 9px;
+  padding: 15px 0;
+  gap: 0;
+}
+.app-shell.studio-app .studio-pipeline-strip > div {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  padding: 4px 23px;
+}
+.app-shell.studio-app .studio-pipeline-strip > div + div {
+  border-left: 1px solid var(--color-zinc-200);
+}
+.app-shell.studio-app .studio-pipeline-strip .font-display {
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 7px;
+}
+.app-shell.studio-app .studio-dashboard-focus {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(280px, 1fr);
+  gap: 20px;
+}
+.app-shell.studio-app .studio-dashboard-focus > .studio-card {
+  min-width: 0;
+}
+.app-shell.studio-app .studio-recent-reviews {
+  display: flex;
+  flex-direction: column;
+}
+.app-shell.studio-app .studio-recent-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 21px 20px 18px;
+  border-bottom: 1px solid var(--color-zinc-100);
+}
+.app-shell.studio-app .studio-recent-heading h2 {
+  font-size: 15px;
+  margin: 0;
+}
+.app-shell.studio-app .studio-recent-heading p {
+  color: var(--color-zinc-500);
+  font-size: 11px;
+  margin-top: 4px;
+}
+.app-shell.studio-app .studio-recent-heading > a {
+  color: var(--color-zinc-400);
+  font-size: 20px;
+}
+.app-shell.studio-app .studio-recent-reviews ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  flex: 1;
+}
+.app-shell.studio-app .studio-recent-reviews li > a {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 16px;
+  border-bottom: 1px solid var(--color-zinc-100);
+}
+.app-shell.studio-app .studio-recent-reviews li > a:hover {
+  background: var(--studio-soft);
+}
+.app-shell.studio-app .studio-review-glyph {
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  height: 29px;
+  width: 29px;
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 7px;
+  color: var(--color-blue-600);
+  background: var(--studio-soft);
+  font-size: 21px;
+}
+.app-shell.studio-app .studio-recent-copy {
+  min-width: 0;
+  flex: 1;
+}
+.app-shell.studio-app .studio-recent-copy strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--color-zinc-800);
+}
+.app-shell.studio-app .studio-recent-copy strong > span {
+  color: var(--color-zinc-500);
+}
+.app-shell.studio-app .studio-recent-copy small {
+  display: block;
+  font-size: 11px;
+  color: var(--color-zinc-500);
+  margin-top: 3px;
+}
+.app-shell.studio-app .studio-recent-reviews .studio-badge {
+  font-size: 10px;
+  padding: 2px 5px;
+}
+.app-shell.studio-app .studio-recent-footer {
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-blue-700);
+  padding: 13px 20px;
+  display: flex;
+  justify-content: space-between;
+}
+.app-shell.studio-app .studio-recent-reviews > .type-body {
+  padding: 20px;
+}
+.app-shell.studio-app .studio-rulebook > .studio-card,
+.app-shell.studio-app .studio-repo-detail > .studio-card {
+  padding: 24px;
+}
+.app-shell.studio-app .studio-rulebook .studio-card li {
+  padding-block: 19px;
+}
+.app-shell.studio-app .studio-rulebook .studio-card li > div {
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.app-shell.studio-app .studio-run-detail > div:first-child,
+.app-shell.studio-app .studio-repo-detail > div:first-child {
+  background: var(--studio-surface);
+  border: 1px solid var(--color-zinc-200);
+  border-radius: 10px;
+  padding: 25px;
+}
+.app-shell.studio-app .studio-run-detail > div:first-child .type-title {
+  font-size: 25px;
+}
+.app-shell.studio-app .studio-run-detail .studio-card {
+  box-shadow: none;
+}
+.app-shell.studio-app pre,
+.app-shell.studio-app code {
+  font-variant-ligatures: none;
+}
+.app-shell.studio-app .studio-drawer-backdrop {
+  background: #0d1c1480;
+  backdrop-filter: blur(3px);
+}
+.app-shell.studio-app .studio-drawer {
+  background: var(--studio-sidebar);
+  width: min(295px, 85vw);
+}
+.app-shell.studio-app .studio-drawer .studio-brand-row {
+  padding-left: 20px;
+}
+.app-shell.studio-app .studio-drawer > div:first-child {
+  border-bottom: 1px solid var(--color-zinc-200);
+}
+@media (max-width: 1200px) {
+  .app-shell.studio-app .studio-header-row {
+    padding-inline: 22px;
+  }
+  .app-shell.studio-app .studio-page-content {
+    padding: 22px;
+  }
+  .app-shell.studio-app .studio-dashboard-focus {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 1023px) {
+  .app-shell.studio-app .studio-demo-label {
+    display: none;
+  }
+}
+@media (max-width: 639px) {
+  .app-shell.studio-app .studio-header-row {
+    height: 72px;
+    padding-inline: 15px;
+    gap: 12px;
+  }
+  .app-shell.studio-app .studio-breadcrumb {
+    display: none;
+  }
+  .app-shell.studio-app h1.studio-header-title {
+    font-size: 17px;
+    margin-top: 0;
+  }
+  .app-shell.studio-app .studio-page-content {
+    padding: 20px 15px;
+  }
+  .app-shell.studio-app .studio-table-page {
+    min-height: 620px;
+    height: auto;
+  }
+  .app-shell.studio-app .studio-table-page > .studio-card {
+    min-height: 440px;
+  }
+  .app-shell.studio-app .studio-table-page > .studio-card > div:first-child {
+    padding: 12px;
+  }
+  .app-shell.studio-app .studio-dashboard-heading h1 {
+    font-size: 27px;
+  }
+  .app-shell.studio-app .studio-metric {
+    padding: 18px 20px;
+  }
+  .app-shell.studio-app .studio-pipeline-strip {
+    row-gap: 18px;
+  }
+  .app-shell.studio-app .studio-pipeline-strip > div:nth-child(3) {
+    border-left: none;
+  }
+  .app-shell.studio-app .studio-rulebook > .studio-card,
+  .app-shell.studio-app .studio-repo-detail > .studio-card {
+    padding: 17px;
+  }
+  .app-shell.studio-app .studio-run-detail > div:first-child,
+  .app-shell.studio-app .studio-repo-detail > div:first-child {
+    padding: 18px;
+  }
+  .app-shell.studio-app .studio-run-detail > div:first-child .type-title {
+    font-size: 21px;
+  }
+  .app-shell.studio-app .studio-run-detail .studio-card > .flex {
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell.studio-app *,
+  .app-shell.studio-app *::before,
+  .app-shell.studio-app *::after {
+    transition: none !important;
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+.app-shell.studio-app[data-theme="dark"] :where(button, a).bg-emerald-600 {
+  color: var(--rt-accent-fg);
+}
+
+@media (max-width: 767px) {
+  .app-shell.studio-app .studio-repos-page th:nth-child(1) {
+    width: 52%;
+  }
+  .app-shell.studio-app .studio-repos-page th:nth-child(3) {
+    width: 25%;
+  }
+  .app-shell.studio-app .studio-repos-page th:nth-child(4) {
+    width: 15%;
+  }
+  .app-shell.studio-app .studio-repos-page th:last-child {
+    width: 8%;
+  }
+  .app-shell.studio-app .studio-repos-page td:first-child .truncate {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+  .app-shell.studio-app .studio-repos-page td:last-child {
+    padding-inline: 0;
+  }
+}
+
+.app-shell.studio-app .studio-dashboard-focus-solo {
+  grid-template-columns: 1fr;
+}

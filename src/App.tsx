@@ -1,9 +1,19 @@
 import { lazy, Suspense, useEffect } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Link, Navigate, Outlet, Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Navigate,
+  Outlet,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import { useAuth } from "./hooks/useAuth";
 import { OrgProvider } from "./hooks/useOrg";
 import { PublicHeader } from "./components/ui";
+import { PublicFooter } from "./components/layout/PublicSite";
+import "./components/layout/PublicSite.css";
 import { AppShell } from "./components/layout/AppShell";
 import { ErrorBoundary } from "./components/ErrorBoundary";
 import { trackVisit } from "./lib/tracking";
@@ -37,7 +47,11 @@ const BitbucketAccounts = lazy(() => import("./pages/BitbucketAccounts"));
 const Profile = lazy(() => import("./pages/Profile"));
 
 function RouteFallback() {
-  return <div className="flex min-h-[50vh] items-center justify-center text-sm text-zinc-500">Loading…</div>;
+  return (
+    <div className="flex min-h-[50vh] items-center justify-center text-sm text-zinc-500">
+      Loading…
+    </div>
+  );
 }
 
 const queryClient = new QueryClient({
@@ -54,25 +68,21 @@ function PublicLayout() {
   }, [location.pathname]);
 
   return (
-    <div className="marketing-shell">
-      <PublicHeader />
+    <div className="marketing-shell home-page public-site">
+      <a href="#public-main" className="home-skip">
+        Skip to content
+      </a>
+      <PublicHeader key={"header-" + location.pathname} />
       <ErrorBoundary key={location.pathname} scope="page">
-        <Outlet />
-      </ErrorBoundary>
-      <footer className="border-t border-[var(--mk-border)] bg-gradient-to-b from-[#eef3ff] to-[#e4ecff]">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-10 text-sm text-[var(--mk-faint)] sm:flex-row sm:items-center sm:justify-between">
-          <div>
-            <p className="font-display text-base font-semibold text-[var(--mk-ink)]">Scrutinye</p>
-            <p className="mt-1 text-xs">© 2026 · Web app · PR bot · CLI · GitHub · Bitbucket</p>
-          </div>
-          <nav className="flex flex-wrap gap-5 text-sm font-medium">
-            <Link to="/terms" className="transition hover:text-[var(--mk-accent)]">Terms</Link>
-            <Link to="/privacy" className="transition hover:text-[var(--mk-accent)]">Privacy</Link>
-            <Link to="/refunds" className="transition hover:text-[var(--mk-accent)]">Refunds</Link>
-            <Link to="/security" className="transition hover:text-[var(--mk-accent)]">Security</Link>
-          </nav>
+        <div
+          id="public-main"
+          className={location.pathname === "/" ? undefined : "public-content"}
+          tabIndex={-1}
+        >
+          <Outlet />
         </div>
-      </footer>
+      </ErrorBoundary>
+      <PublicFooter />
     </div>
   );
 }
@@ -92,12 +102,17 @@ function ProtectedShell() {
   }, [authenticated, navigate]);
 
   if (loading) {
-    return <div className="flex min-h-screen items-center justify-center text-zinc-500">Loading…</div>;
+    return (
+      <div className="flex min-h-screen items-center justify-center text-zinc-500">
+        Loading…
+      </div>
+    );
   }
   // Preserve any ?error=/error_description= Supabase attaches to a failed OAuth
   // callback — otherwise it's silently dropped on the way to /signin and the
   // failure is invisible.
-  if (!authenticated) return <Navigate to={`/signin${window.location.search}`} replace />;
+  if (!authenticated)
+    return <Navigate to={`/signin${window.location.search}`} replace />;
   return (
     <OrgProvider>
       <AppShell />
@@ -113,12 +128,7 @@ function NotFound() {
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <BrowserRouter
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true,
-        }}
-      >
+      <BrowserRouter>
         <Suspense fallback={<RouteFallback />}>
           <Routes>
             <Route element={<PublicLayout />}>
@@ -148,7 +158,10 @@ export default function App() {
               <Route path="/runs/:id" element={<RunDetail />} />
               <Route path="/rulebook" element={<Rulebook />} />
               <Route path="/settings" element={<Settings />} />
-              <Route path="/settings/bitbucket" element={<BitbucketAccounts />} />
+              <Route
+                path="/settings/bitbucket"
+                element={<BitbucketAccounts />}
+              />
               <Route path="/profile" element={<Profile />} />
             </Route>
 

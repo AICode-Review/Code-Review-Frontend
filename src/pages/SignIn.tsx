@@ -44,10 +44,10 @@ export default function SignIn() {
   if (!loading && authenticated && !DEMO_MODE) return <Navigate to="/dashboard" replace />;
 
   return (
-    <div className="grid min-h-screen lg:grid-cols-2">
+    <div className="marketing-shell home-page public-site site-auth grid min-h-screen lg:grid-cols-2">
       {/* Brand panel */}
-      <div className="marketing-shell relative hidden flex-col justify-between overflow-hidden px-12 py-10 lg:flex">
-        <div className="mk-mesh pointer-events-none absolute inset-0" aria-hidden="true" />
+      <div className="site-auth-brand relative hidden flex-col justify-between overflow-hidden px-12 py-10 lg:flex">
+        <div className="site-auth-orbits pointer-events-none absolute inset-0" aria-hidden="true" />
         <Link to="/" className="font-display relative inline-flex items-center gap-2.5 text-lg font-semibold tracking-tight text-[var(--mk-ink)]">
           <span className="flex size-8 items-center justify-center rounded-lg bg-[var(--mk-accent)] text-[var(--mk-accent-fg)] shadow-[0_4px_14px_rgba(57,86,221,0.35)]">
             <LogoMark className="size-4" />
@@ -73,7 +73,7 @@ export default function SignIn() {
       </div>
 
       {/* Auth panel */}
-      <div className="flex flex-col items-center justify-center bg-slate-50 px-6 py-16">
+      <div className="site-auth-form flex flex-col items-center justify-center bg-slate-50 px-6 py-16">
         <div className="w-full max-w-sm">
           <Link to="/" className="font-display inline-flex items-center gap-2 text-lg font-semibold tracking-tight text-slate-900 lg:hidden">
             <span className="flex size-7 items-center justify-center rounded-md bg-[var(--mk-accent)] text-white">
